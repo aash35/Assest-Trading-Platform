@@ -4,9 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class GUI {
+public class GUI extends JFrame{
     public GUI(){
-
         //Sets the Look and Feel to Nimbus or SystemLookAndFeel if nimbus isn't found
         try{
             boolean nimbus = false;
@@ -26,16 +25,17 @@ public class GUI {
                 InstantiationException ignored) {
         }
 
-
-        JFrame jframe = new JFrame();
+        setLayout(new BorderLayout());
+        Container container = getContentPane();
 
         //removes the default icon
         Image icon = new BufferedImage(1,1,BufferedImage.TYPE_INT_ARGB_PRE);
-        jframe.setIconImage(icon);
+        setIconImage(icon);
 
-        jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        jframe.setPreferredSize(new Dimension(800,600));
+        setPreferredSize(new Dimension(800,600));
+
 
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Change");
@@ -43,19 +43,7 @@ public class GUI {
         fileMenu.add("Store");
 
         menuBar.add(fileMenu);
-        jframe.setJMenuBar(menuBar);
-
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Label A"));
-        panel.add(new JLabel("Label B"));
-        panel.add(new JLabel("Label C"));
-
-        panel.setBorder(BorderFactory.createTitledBorder("This is a panel"));
-
-        //TextArea
-        JTextArea textArea = new JTextArea(25, 80);
-        //scroll pane is a scrollable component
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        setJMenuBar(menuBar);
 
         //Panel to hold the button
         JPanel buttonPanel = new JPanel();
@@ -70,36 +58,13 @@ public class GUI {
             }
         });
 
-        button.setToolTipText("Clicking this button results in a divide by 0 error!");
-        button.addActionListener(e -> {
-            System.out.println(Thread.currentThread());
-        });
+        Login loginPanel = new Login();
+        container.add(loginPanel, BorderLayout.CENTER);
 
-        JTabbedPane panel2 = new JTabbedPane();
-        panel2.add("Panel 1", scrollPane);
-        panel2.add("Panel 2", buttonPanel);
+        pack();
 
-        // ********* BorderLayout ************
-        JPanel interiorPanel = new JPanel();
-        BorderLayout layoutManager = new BorderLayout();
-        interiorPanel.setLayout(layoutManager);
-        interiorPanel.add(new JButton("Button C"), BorderLayout.NORTH);
-        interiorPanel.add(new JButton("Button D"), BorderLayout.SOUTH);
-        interiorPanel.add(new JButton("Button E"), BorderLayout.WEST);
-        interiorPanel.add(new JTextArea(), BorderLayout.EAST);
-        interiorPanel.add(new JList<String>(new String[]{"Hello", "Im","Here"}), BorderLayout.CENTER);
-        panel2.add("Panel 3",interiorPanel);
+        setLocationRelativeTo(null);
 
-        jframe.getContentPane().add(panel2);
-
-        jframe.pack();
-
-        jframe.setLocationRelativeTo(null);
-
-        jframe.setVisible(true);
-
-
+        setVisible(true);
     }
-
-
 }
