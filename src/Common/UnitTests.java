@@ -1,6 +1,5 @@
 package Common;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 public class UnitTests {
@@ -14,7 +13,7 @@ public class UnitTests {
         String OUname = "New Unit";
         int budget = 100;
          // Organisational Units should be constructed with a name and budget.
-        OrginisationalUnit OU = new OrginisationalUnit(name, budget);
+        OrganisationalUnit OU = new OrganisationalUnit(name, budget);
 
         String assetName = "New Asset";
 

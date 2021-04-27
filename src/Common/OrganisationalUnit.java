@@ -2,13 +2,13 @@ package Common;
 
 import java.util.HashMap;
 
-public class OrginisationalUnit {
+public class OrganisationalUnit {
 
     private String unitName;
     private HashMap<Asset, Integer> availableAssets;
     private int availableCredits;
 
-    public OrginisationalUnit(){
+    public OrganisationalUnit(){
         unitName = "Keepers of Potatos";
         availableCredits = 10;
     }
