@@ -1,14 +1,13 @@
 package Common;
 
-import java.util.HashMap;
+import Common.Enums.AccountTypeRole;
 
-public class User {
+public class User extends BaseClass {
 
-    private String username;
-    private boolean role; //True for Admin, False for not
+    public String username;
+    public String hashedPassword;
+    public AccountTypeRole assetTypeRole;
+    public OrganisationalUnit organisationalUnit;
 
-    public User(){
-        username = "Samwise Gamgee";
-        role = true;
-    }
+    public User() { }
 }
