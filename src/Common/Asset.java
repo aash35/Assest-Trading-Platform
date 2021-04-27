@@ -1,11 +1,10 @@
 package Common;
 
-public class Asset {
-    private String assetName;
-    private String assetUnitType;
+public class Asset extends BaseClass {
 
-    public Asset(){
-        assetName = "Potato";
-        assetUnitType = "KG";
-    }
+    public int quantity;
+    public AssetType assetType;
+    public OrganisationalUnit organisationalUnit;
+
+    public Asset() { }
 }
