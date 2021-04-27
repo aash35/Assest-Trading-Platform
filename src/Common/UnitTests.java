@@ -1,6 +1,8 @@
 package Common;
 import org.junit.jupiter.api.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Hashtable;
 
@@ -41,10 +43,11 @@ public class UnitTests {
         String tradeType = "buy";
         int numOfAssets = 10;
         int pricePerUnit = 5;
+        LocalDate creationDate = LocalDate.now();
 
         // Trade object should require the type of trade, the organisational unit submitting the trade,
         // the asset being traded and the quantity and price per unit of the asset.
-        Trade buyTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit);
+        Trade buyTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit, creationDate);
     }
 
     /*
@@ -55,8 +58,9 @@ public class UnitTests {
         String tradeType = "sell";
         int numOfAssets = 10;
         int pricePerUnit = 5;
+        LocalDate creationDate = LocalDate.now();
 
-        Trade sellTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit);
+        Trade sellTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit, creationDate);
     }
 
     /*
@@ -67,10 +71,11 @@ public class UnitTests {
         String tradeType = "buy";
         int numOfAssets = 20;
         int pricePerUnit = 10;
+        LocalDate creationDate = LocalDate.now();
 
         // This trade requires more credits than the organisational unit has access to.
         assertThrows(IllegalTradeException.class, () -> {
-            Trade illegalBuyTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit);
+            Trade illegalBuyTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit, creationDate);
         });
     }
 
@@ -82,10 +87,11 @@ public class UnitTests {
         String tradeType = "sell";
         int numOfAssets = 60;
         int pricePerUnit = 5;
+        LocalDate creationDate = LocalDate.now();
 
         // This trade requires more assets than the organisation unit has available to them.
         assertThrows(IllegalTradeException.class, () -> {
-           Trade illegalSellTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit);
+           Trade illegalSellTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit, creationDate);
         });
     }
 }
