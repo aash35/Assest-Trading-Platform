@@ -76,14 +76,14 @@ public class UnitTests {
      */
     @Test
     public void newIllegalBuy() {
-        String tradeType = "buy";
-        int numOfAssets = 20;
+        TradeTransactionType tradeType = TradeTransactionType.Buying;
+        int quantity = 20;
         int pricePerUnit = 10;
-        LocalDate creationDate = LocalDate.now();
+        LocalDateTime creationDate = LocalDateTime.now();
 
         // This trade requires more credits than the organisational unit has access to.
         assertThrows(IllegalTradeException.class, () -> {
-            Trade illegalBuyTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit, creationDate);
+            Trade illegalBuyTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
         });
     }
 
