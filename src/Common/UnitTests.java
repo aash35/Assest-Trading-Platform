@@ -63,12 +63,12 @@ public class UnitTests {
      */
     @Test
     public void newLegalSell() throws IllegalTradeException {
-        String tradeType = "sell";
-        int numOfAssets = 10;
-        int pricePerUnit = 5;
-        LocalDate creationDate = LocalDate.now();
+        TradeTransactionType tradeType = TradeTransactionType.Selling;
+        int quantity = 10;
+        double pricePerUnit = 5;
+        LocalDateTime creationDate = LocalDateTime.now();
 
-        Trade sellTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit, creationDate);
+        Trade sellTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
     }
 
     /*
