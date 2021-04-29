@@ -1,4 +1,5 @@
 package Common;
+import Common.Enums.AccountTypeRole;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -16,23 +17,29 @@ public class UnitTests {
      */
     @BeforeEach @Test
     public void newOrganisationalUnit() {
-        String assetName = "New Asset";
-
-        Asset asset = new Asset(assetName);
-
-        String OUname = "New Unit";
-        int budget = 100;
-        HashMap<Asset, Integer> availableAssets = new HashMap<>();
-        availableAssets.put(asset, 50);
-         // Organisational Units should be constructed with a name, budget and a key-value organised list
+        // Organisational Units should be constructed with a name, budget and a key-value organised list
         // of the unit's available assets.
-        OrganisationalUnit OU = new OrganisationalUnit(name, budget, availableAssets);
+        String unitName = "New Unit";
+        int availableCredits = 100;
+        HashMap<Asset, Integer> availableAssets = new HashMap<>();
+        OrganisationalUnit OU = new OrganisationalUnit(unitName, availableCredits, availableAssets);
 
-        String userID = "john.smith@wherever.com";
-        String userFirstName = "John";
-        String userLastName = "Smith";
+        // Constuctor for an Asset object, to be added to the organisational unit's HashMap of available assets
+        int id = 1;
+        String assetTypeName = "Asset type";
+        String description = "Placeholder asset type";
+        AssetType assetType = new AssetType(id, assetTypeName, description);
 
-        User johnSmith = new User(userID, userFirstName, userLastName, OU);
+        int quantity = 100;
+        Asset asset = new Asset(assetType, quantity, OU);
+
+        OU.addAsset(asset);
+
+        String username = "john.smith@wherever.com";
+        String hashedPassword = hashString("password");
+        AccountTypeRole accountTypeRole = AccountTypeRole.Standard;
+
+        User johnSmith = new User(username, hashedPassword, accountTypeRole, OU);
     }
 
     /*
