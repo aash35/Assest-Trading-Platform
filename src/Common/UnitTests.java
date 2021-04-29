@@ -1,5 +1,6 @@
 package Common;
 import Common.Enums.AccountTypeRole;
+import Common.Enums.TradeTransactionType;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -47,14 +48,14 @@ public class UnitTests {
      */
     @Test
     public void newLegalBuy() throws IllegalTradeException {
-        String tradeType = "buy";
-        int numOfAssets = 10;
-        int pricePerUnit = 5;
-        LocalDate creationDate = LocalDate.now();
+        TradeTransactionType tradeType = TradeTransactionType.Buying;
+        int quantity = 10;
+        double pricePerUnit = 5;
+        LocalDateTime creationDate = LocalDateTime.now();
 
         // Trade object should require the type of trade, the organisational unit submitting the trade,
         // the asset being traded and the quantity and price per unit of the asset.
-        Trade buyTrade = new Trade(tradeType, OU, asset, numOfAssets, pricePerUnit, creationDate);
+        Trade buyTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
     }
 
     /*
