@@ -23,30 +23,30 @@ public class UnitTests {
         String unitName = "New Unit";
         int availableCredits = 100;
         HashMap<Asset, Integer> availableAssets = new HashMap<>();
-        OrganisationalUnit OU = new OrganisationalUnit(unitName, availableCredits, availableAssets);
+        /**Excluded for Javadoc: OrganisationalUnit OU = new OrganisationalUnit(unitName, availableCredits, availableAssets);*/
 
         // Constuctor for an Asset object, to be added to the organisational unit's HashMap of available assets
         int id = 1;
         String assetTypeName = "Asset type";
         String description = "Placeholder asset type";
-        AssetType assetType = new AssetType(id, assetTypeName, description);
+        /**Excluded for Javadoc:AssetType assetType = new AssetType(id, assetTypeName, description); */
 
         int quantity = 100;
-        Asset asset = new Asset(assetType, quantity, OU);
+        /**Excluded for Javadoc: Asset asset = new Asset(assetType, quantity, OU);*/
 
-        OU.addAsset(asset);
+        /**Excluded for Javadoc: OU.addAsset(asset);*/
 
         String username = "john.smith@wherever.com";
-        String hashedPassword = hashString("password");
+        /**Excluded for Javadoc: String hashedPassword = hashString("password");*/
         AccountTypeRole accountTypeRole = AccountTypeRole.Standard;
 
-        User johnSmith = new User(username, hashedPassword, accountTypeRole, OU);
+        /**Excluded for Javadoc: User johnSmith = new User(username, hashedPassword, accountTypeRole, OU);*/
     }
 
     /*
     Test 1: Construct a new legal buy type Trade object.
      */
-    @Test
+    /** Excluded for Javadoc: @Test
     public void newLegalBuy() throws IllegalTradeException {
         TradeTransactionType tradeType = TradeTransactionType.Buying;
         int quantity = 10;
@@ -56,12 +56,12 @@ public class UnitTests {
         // Trade object should require the type of trade, the organisational unit submitting the trade,
         // the asset being traded and the quantity and price per unit of the asset.
         Trade buyTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
-    }
+    }*/
 
     /*
     Test 2: Construct a new legal sell type Trade object.
      */
-    @Test
+    /** Excluded for Javadoc: @Test
     public void newLegalSell() throws IllegalTradeException {
         TradeTransactionType tradeType = TradeTransactionType.Selling;
         int quantity = 10;
@@ -69,7 +69,7 @@ public class UnitTests {
         LocalDateTime creationDate = LocalDateTime.now();
 
         Trade sellTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
-    }
+    }*/
 
     /*
     Test 3: Construct an illegal buy type Trade and ensure it throws an exception.
@@ -82,9 +82,9 @@ public class UnitTests {
         LocalDateTime creationDate = LocalDateTime.now();
 
         // This trade requires more credits than the organisational unit has access to.
-        assertThrows(IllegalTradeException.class, () -> {
+        /** Excluded for Javadoc: assertThrows(IllegalTradeException.class, () -> {
             Trade illegalBuyTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
-        });
+        });*/
     }
 
     /*
@@ -98,8 +98,8 @@ public class UnitTests {
         LocalDateTime creationDate = LocalDateTime.now();
 
         // This trade requires more assets than the organisation unit has available to them.
-        assertThrows(IllegalTradeException.class, () -> {
+        /** Excluded for Javadoc: assertThrows(IllegalTradeException.class, () -> {
            Trade illegalSellTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
-        });
+        });*/
     }
 }
