@@ -1,12 +1,10 @@
-package Common;
+package CAB302.Common;
 
-import Common.Enums.TradeStatus;
-import Common.Enums.TradeTransactionType;
+import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Enums.TradeTransactionType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Trade")

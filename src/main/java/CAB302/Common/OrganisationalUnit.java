@@ -1,8 +1,7 @@
-package Common;
+package CAB302.Common;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Entity

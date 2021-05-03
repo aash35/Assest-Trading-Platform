@@ -1,4 +1,4 @@
-package Client;
+package CAB302.Client;
 
 import javax.swing.*;
 import java.awt.*;

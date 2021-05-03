@@ -1,4 +1,4 @@
-package Common;
+package CAB302.Common;
 
 import org.hibernate.annotations.GenericGenerator;
 

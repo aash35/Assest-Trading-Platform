@@ -1,4 +1,4 @@
-package Common.Enums;
+package CAB302.Common.Enums;
 
 public enum TradeTransactionType {
     Selling,

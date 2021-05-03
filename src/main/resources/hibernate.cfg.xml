@@ -15,11 +15,11 @@
         <property name="format_sql">true</property>
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping class="Common.BaseClass"/>
-        <mapping class="Common.Asset"/>
-        <mapping class="Common.AssetType"/>
-        <mapping class="Common.User"/>
-        <mapping class="Common.OrganisationalUnit"/>
-        <mapping class="Common.Trade"/>
+        <mapping class="CAB302.Common.BaseClass"/>
+        <mapping class="CAB302.Common.Asset"/>
+        <mapping class="CAB302.Common.AssetType"/>
+        <mapping class="CAB302.Common.User"/>
+        <mapping class="CAB302.Common.OrganisationalUnit"/>
+        <mapping class="CAB302.Common.Trade"/>
     </session-factory>
 </hibernate-configuration>

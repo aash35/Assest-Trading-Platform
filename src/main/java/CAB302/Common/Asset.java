@@ -1,4 +1,4 @@
-package Common;
+package CAB302.Common;
 
 import javax.persistence.*;
 import java.util.ArrayList;

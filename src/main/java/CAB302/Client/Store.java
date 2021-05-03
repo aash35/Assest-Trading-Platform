@@ -1,4 +1,4 @@
-package Client;
+package CAB302.Client;
 
 public class Store {
 }

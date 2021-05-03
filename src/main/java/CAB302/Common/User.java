@@ -1,6 +1,6 @@
-package Common;
+package CAB302.Common;
 
-import Common.Enums.AccountTypeRole;
+import CAB302.Common.Enums.AccountTypeRole;
 
 import javax.persistence.*;
 import java.util.ArrayList;

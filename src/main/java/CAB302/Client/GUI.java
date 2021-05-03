@@ -1,8 +1,7 @@
-package Client;
+package CAB302.Client;
 
-import Common.Asset;
-import Common.*;
-import Common.Enums.AccountTypeRole;
+import CAB302.Common.*;
+import CAB302.Common.Enums.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -14,8 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class GUI extends JFrame {
     public GUI() throws Exception {
