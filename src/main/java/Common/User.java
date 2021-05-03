@@ -10,22 +10,25 @@ import java.util.List;
 @Table(name = "User")
 public class User extends BaseClass {
 
+    @Column(name = "username")
     private String username;
 
     @Column(name = "username")
     public String getUsername() { return this.username; }
     public void setUsername(String username) { this.username = username; }
 
+    @Column(name = "password")
     private String hashedPassword;
 
     @Column(name = "password")
     public String getHashedPassword() { return this.hashedPassword; }
     public void setHashedPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
 
+    @Column(name = "accountRoleTypeID")
+    @Enumerated(EnumType.ORDINAL)
     private AccountTypeRole accountRoleType;
 
     @Column(name = "accountRoleTypeID")
-    @Enumerated(EnumType.ORDINAL)
     public AccountTypeRole getAccountRoleType() { return this.accountRoleType; }
     public void setAccountRoleType(AccountTypeRole accountRoleType) { this.accountRoleType = accountRoleType; }
 

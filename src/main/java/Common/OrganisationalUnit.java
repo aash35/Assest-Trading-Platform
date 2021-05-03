@@ -9,12 +9,14 @@ import java.util.List;
 @Table(name = "OrganisationalUnit")
 public class OrganisationalUnit extends BaseClass {
 
+    @Column(name = "name")
     private String unitName;
 
     @Column(name = "name")
     public String getUnitName() { return this.unitName; }
     public void setUnitName(String unitName) { this.unitName = unitName; }
 
+    @Column(name = "credit")
     private int availableCredit;
 
     @Column(name = "credit")

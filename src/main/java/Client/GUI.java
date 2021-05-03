@@ -2,6 +2,7 @@ package Client;
 
 import Common.Asset;
 import Common.*;
+import Common.Enums.AccountTypeRole;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -31,10 +32,45 @@ public class GUI extends JFrame {
 
         Query<User> query = session.createQuery(cr);
 
-        User admin = query.getSingleResult();
+        User admin = null;
+
+        try {
+            admin = query.getSingleResult();
+        } catch (Exception ex) { }
 
         if (admin == null) {
+            admin = new User();
             admin.setUsername("admin");
+            admin.setHashedPassword("123");
+            admin.setAccountRoleType(AccountTypeRole.Administrator);
+
+            cb = session.getCriteriaBuilder();
+            CriteriaQuery<OrganisationalUnit> ouCriteria = cb.createQuery(OrganisationalUnit.class);
+            Root<OrganisationalUnit> rootOU = ouCriteria.from(OrganisationalUnit.class);
+
+            ouCriteria.select(rootOU).where(cb.equal(rootOU.get("unitName"), "Administrators"));
+
+            Query<OrganisationalUnit> ouQuery = session.createQuery(ouCriteria);
+
+            OrganisationalUnit ou = null;
+
+            try {
+                ou = ouQuery.getSingleResult();
+            }
+            catch (Exception ex) {}
+
+            if (ou == null) {
+                ou = new OrganisationalUnit();
+                ou.setUnitName("Administrators");
+                ou.setAvailableCredit(1000);
+            }
+
+            admin.setOrganisationalUnit(ou);
+
+            session.save(ou);
+            session.save(admin);
+
+            session.getTransaction().commit();
         }
 
         session.close();
