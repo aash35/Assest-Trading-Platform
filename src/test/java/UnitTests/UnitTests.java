@@ -1,22 +1,21 @@
-package Common;
+/*package UnitTests;
+import Common.*;
 import Common.Enums.AccountTypeRole;
 import Common.Enums.TradeTransactionType;
-import org.junit.jupiter.api.*;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class UnitTests {
 
-    /*
     Test 0: Construct a new organisation unit, asset and user objects. In complete program, these will
     be constructed from database information.
-     */
-    @BeforeEach @Test
+
+    @Test
     public void newOrganisationalUnit() {
         // Organisational Units should be constructed with a name, budget and a key-value organised list
         // of the unit's available assets.
@@ -43,9 +42,9 @@ public class UnitTests {
         User johnSmith = new User(username, hashedPassword, accountTypeRole, OU);
     }
 
-    /*
+
     Test 1: Construct a new legal buy type Trade object.
-     */
+
     @Test
     public void newLegalBuy() throws IllegalTradeException {
         TradeTransactionType tradeType = TradeTransactionType.Buying;
@@ -58,9 +57,9 @@ public class UnitTests {
         Trade buyTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
     }
 
-    /*
+
     Test 2: Construct a new legal sell type Trade object.
-     */
+
     @Test
     public void newLegalSell() throws IllegalTradeException {
         TradeTransactionType tradeType = TradeTransactionType.Selling;
@@ -71,9 +70,9 @@ public class UnitTests {
         Trade sellTrade = new Trade(tradeType, OU, asset, quantity, pricePerUnit, creationDate);
     }
 
-    /*
+
     Test 3: Construct an illegal buy type Trade and ensure it throws an exception.
-     */
+
     @Test
     public void newIllegalBuy() {
         TradeTransactionType tradeType = TradeTransactionType.Buying;
@@ -87,9 +86,9 @@ public class UnitTests {
         });
     }
 
-    /*
+
     Test 4: Construct an illegal sell type Trade and ensure it throws an exception.
-     */
+
     @Test
     public void newIllegalSell() {
         TradeTransactionType tradeType = TradeTransactionType.Selling;
@@ -103,3 +102,4 @@ public class UnitTests {
         });
     }
 }
+*/
