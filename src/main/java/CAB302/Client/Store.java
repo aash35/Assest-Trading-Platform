@@ -1,4 +1,10 @@
 package CAB302.Client;
 
-public class Store {
+import javax.swing.*;
+
+public class Store extends JPanel {
+
+    public Store() {
+
+    }
 }

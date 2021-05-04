@@ -2,6 +2,7 @@ package CAB302.Common;
 
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
+import org.hibernate.SessionFactory;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

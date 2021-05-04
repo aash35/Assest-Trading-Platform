@@ -1,8 +1,17 @@
 package CAB302.Common;
 
 import CAB302.Common.Enums.AccountTypeRole;
+import CAB302.Common.Helpers.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.*;
 
 import javax.persistence.*;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +19,10 @@ import java.util.List;
 @Table(name = "User")
 public class User extends BaseClass {
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     public String getUsername() { return this.username; }
     public void setUsername(String username) { this.username = username; }
 
@@ -47,4 +56,36 @@ public class User extends BaseClass {
     private List<Trade> trades = new ArrayList<Trade>();
 
     public User() { }
+
+    public boolean isValid() throws Exception {
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+
+        criteria.select(root).where(
+                criteriaBuilder.equal(root.get("username"), this.getUsername()),
+                criteriaBuilder.equal(root.get("hashedPassword"), this.getHashedPassword())
+        );
+
+        Query query = session.createQuery(criteria);
+
+        User user = null;
+
+        try {
+            user = (User) query.getSingleResult();
+        }
+        catch (Exception ex) { }
+
+        session.close();
+
+        if (user == null) {
+            return false;
+        }
+
+        return true;
+    }
 }

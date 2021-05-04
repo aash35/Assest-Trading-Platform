@@ -1,5 +1,7 @@
 package CAB302.Common;
 
+import org.hibernate.SessionFactory;
+
 import javax.persistence.*;
 import java.util.*;
 

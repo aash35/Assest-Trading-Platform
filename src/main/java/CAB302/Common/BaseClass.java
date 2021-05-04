@@ -1,5 +1,6 @@
 package CAB302.Common;
 
+import org.hibernate.SessionFactory;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

@@ -13,67 +13,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.*;
 
 public class GUI extends JFrame {
+
     public GUI() throws Exception {
-        SessionFactory sessionFactory = setUp();
 
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<User> cr = cb.createQuery(User.class);
-        Root<User> root = cr.from(User.class);
-
-        cr.select(root).where(cb.equal(root.get("username"), "admin"));
-
-        Query<User> query = session.createQuery(cr);
-
-        User admin = null;
-
-        try {
-            admin = query.getSingleResult();
-        } catch (Exception ex) { }
-
-        if (admin == null) {
-            admin = new User();
-            admin.setUsername("admin");
-            admin.setHashedPassword("123");
-            admin.setAccountRoleType(AccountTypeRole.Administrator);
-
-            cb = session.getCriteriaBuilder();
-            CriteriaQuery<OrganisationalUnit> ouCriteria = cb.createQuery(OrganisationalUnit.class);
-            Root<OrganisationalUnit> rootOU = ouCriteria.from(OrganisationalUnit.class);
-
-            ouCriteria.select(rootOU).where(cb.equal(rootOU.get("unitName"), "Administrators"));
-
-            Query<OrganisationalUnit> ouQuery = session.createQuery(ouCriteria);
-
-            OrganisationalUnit ou = null;
-
-            try {
-                ou = ouQuery.getSingleResult();
-            }
-            catch (Exception ex) {}
-
-            if (ou == null) {
-                ou = new OrganisationalUnit();
-                ou.setUnitName("Administrators");
-                ou.setAvailableCredit(1000);
-            }
-
-            admin.setOrganisationalUnit(ou);
-
-            session.save(ou);
-            session.save(admin);
-
-            session.getTransaction().commit();
-        }
-
-        session.close();
-
-
-        /*//Sets the Look and Feel to Nimbus or SystemLookAndFeel if nimbus isn't found
+        //Sets the Look and Feel to Nimbus or SystemLookAndFeel if nimbus isn't found
         try {
             boolean nimbus = false;
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -105,7 +52,7 @@ public class GUI extends JFrame {
 
 
         JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("Change");
+        JMenu fileMenu = new JMenu("Menu");
         fileMenu.add("Login");
         fileMenu.add("Store");
 
@@ -125,14 +72,14 @@ public class GUI extends JFrame {
             }
         });
 
-        Login loginPanel = new Login();
+        Login loginPanel = new Login(this);
         container.add(loginPanel, BorderLayout.CENTER);
 
         pack();
 
         setLocationRelativeTo(null);
 
-        setVisible(true);*/
+        setVisible(true);
     }
 
     private SessionFactory setUp() throws Exception {
