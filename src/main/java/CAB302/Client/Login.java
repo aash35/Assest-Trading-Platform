@@ -2,6 +2,7 @@ package CAB302.Client;
 
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Helpers.HibernateUtil;
+import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.User;
@@ -13,6 +14,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.event.*;
 import java.awt.*;
 
@@ -28,13 +31,14 @@ public class Login extends JPanel {
     JButton loginButton = new JButton("Login");
 
     public Login(JFrame frame){
+
         setBackground(new Color(243, 244, 246));
         setLayout(new GridBagLayout());
         //gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
-        //// First Column
+        // First Column
         gbc.anchor = GridBagConstraints.LINE_END;
 
         gbc.gridx = 0;
@@ -46,16 +50,59 @@ public class Login extends JPanel {
         gbc.gridy = 1;
         add(passwordLabel, gbc);
 
-        //// Second Column
+        // Second Column
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 1;
         gbc.gridy = 0;
         add(usernameField, gbc);
 
+        usernameField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if(e.getKeyChar()==KeyEvent.VK_ENTER){
+                    passwordField.grabFocus();
+                }
+
+                //need to remove on the way out
+                if (e.getKeyChar()==KeyEvent.VK_ESCAPE) {
+                    NavigationHelper.mainMenu(frame);
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
         gbc.insets = new Insets(0,0,0,0);
         gbc.gridx = 1;
         gbc.gridy = 1;
         add(passwordField, gbc);
+
+        passwordField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if(e.getKeyChar()==KeyEvent.VK_ENTER){
+                    loginButton.doClick();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
 
         loginButton.addActionListener(
                 new ActionListener() {
@@ -135,26 +182,17 @@ public class Login extends JPanel {
                                 session.getTransaction().commit();
 
                                 session.close();
+
+                                NavigationHelper.mainMenu(frame);
                             }
                         }
                         else {
-
-                            frame.setContentPane(new Store());
-
-                            JMenuBar menuBar = new JMenuBar();
-                            JMenu fileMenu = new JMenu("Menu");
-                            fileMenu.add("Store");
-                            fileMenu.add("Logout");
-
-                            menuBar.add(fileMenu);
-                            frame.setJMenuBar(menuBar);
-
-                            frame.revalidate();
+                            NavigationHelper.mainMenu(frame);
                         }
                     }
                 });
 
-        //// Last Row
+        // Last Row
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         gbc.weighty = 5;
         gbc.insets = new Insets(20,0,0,0);
