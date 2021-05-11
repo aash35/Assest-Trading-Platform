@@ -44,6 +44,18 @@ public class NavigationHelper {
         NavigationHelper.generateMenuBar(frame);
     }
 
+    public static void administation(JFrame frame) {
+        frame.setContentPane(new Administration(frame));
+
+        NavigationHelper.generateMenuBar(frame);
+    }
+
+    public static void assetType(JFrame frame) {
+        frame.setContentPane(new AssetType(frame));
+
+        NavigationHelper.generateMenuBar(frame);
+    }
+
     public static void generateMenuBar(JFrame frame) {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Menu");
@@ -87,6 +99,16 @@ public class NavigationHelper {
         });
 
         fileMenu.add(ouItem);
+
+        JMenuItem administrationItem = new JMenuItem("Administration");
+        administrationItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                NavigationHelper.administation(frame);
+            }
+        });
+
+        fileMenu.add(administrationItem);
 
         JMenuItem logoutItem = new JMenuItem("Logout");
         logoutItem.addActionListener(new ActionListener() {

@@ -4,5 +4,8 @@ public enum JsonPayloadType {
     Create,
     Delete,
     Update,
-    Buy
+    List,
+    Get,
+    Buy,
+    Sell
 }

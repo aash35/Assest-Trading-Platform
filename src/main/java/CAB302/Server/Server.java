@@ -1,8 +1,9 @@
 package CAB302.Server;
 
-import CAB302.Common.JsonPayload;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import CAB302.Common.BaseClass;
+import CAB302.Common.JsonPayloadRequest;
+import CAB302.Common.Interfaces.*;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,9 +11,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class Server extends Thread {
 
@@ -112,13 +110,18 @@ class RequestHandler extends Thread {
 
     protected void processData(String data) throws IOException {
 
-        ObjectMapper mapper = new ObjectMapper();
+        Gson g = new Gson();
 
-        JsonPayload jsonPayload = mapper.readValue(data, JsonPayload.class);
+        JsonPayloadRequest jsonPayload = null;
+
+        try {
+            jsonPayload = g.fromJson(data, JsonPayloadRequest.class);
+        } catch (Exception ex) { }
 
         //close the connection if we don't like the result or the checksum is empty
         if (jsonPayload == null || jsonPayload.getChecksum() == null || jsonPayload.getChecksum().length() == 0) {
             socket.close();
+            return;
         }
 
         //need to add validation of the checksum
@@ -126,11 +129,27 @@ class RequestHandler extends Thread {
         switch (jsonPayload.getJsonPayloadType()) {
             case Buy:
                 break;
+
+            case Sell:
+                break;
+
+            case Get:
+                Object object = jsonPayload.getPayloadObject();
+                if (object instanceof iGet)
+                {
+                }
+                break;
+
+            case List:
+                break;
+
             case Create:
                 break;
-            case Delete:
-                break;
+
             case Update:
+                break;
+
+            case Delete:
                 break;
         }
     }

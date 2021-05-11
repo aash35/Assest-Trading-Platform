@@ -30,6 +30,8 @@ public class MainMenu extends JPanel {
 
     JButton ouButton = new JButton("Organisational Unit");
 
+    JButton adminButton = new JButton("Administration");
+
     JButton logoutButton = new JButton("Logout");
 
     public MainMenu(JFrame frame) {
@@ -96,6 +98,20 @@ public class MainMenu extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 0, 0);
         gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(adminButton, gbc);
+
+        adminButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NavigationHelper.administation(frame);
+                    }
+                });
+
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.gridx = 2;
         gbc.gridy = 2;
         add(logoutButton, gbc);
 

@@ -1,13 +1,19 @@
 package CAB302.Common;
 
+import CAB302.Common.Helpers.HibernateUtil;
+import CAB302.Common.Interfaces.*;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Entity
 @Table(name = "AssetType")
-public class AssetType extends BaseClass {
+public class AssetType extends BaseClass implements iGet {
 
     private String name;
 
@@ -23,6 +29,38 @@ public class AssetType extends BaseClass {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assetType")
     private List<Asset> assets = new ArrayList<Asset>();
+    public List<Asset> getAssets() { return this.assets; }
+    public void setAssets(List<Asset> assets) { this.assets = assets; }
 
     public AssetType() { }
+
+    public boolean exists() {
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<AssetType> criteria = criteriaBuilder.createQuery(AssetType.class);
+        Root<AssetType> root = criteria.from(AssetType.class);
+
+        criteria.select(root).where(criteriaBuilder.equal(root.get("name"), this.getName()));
+
+        Query query = session.createQuery(criteria);
+
+        AssetType assetType = null;
+
+        try {
+            assetType = (AssetType)query.getSingleResult();
+        }
+        catch (Exception ex) { }
+
+        session.close();
+
+        if (assetType != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
