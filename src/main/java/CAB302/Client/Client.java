@@ -76,6 +76,7 @@ public class Client {
         try {
             response = g.fromJson(stringResponse, JsonPayloadResponse.class);
         }
+
         catch (Exception ex) { }
 
         return response;

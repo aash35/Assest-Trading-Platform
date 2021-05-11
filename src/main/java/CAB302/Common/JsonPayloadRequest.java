@@ -4,7 +4,7 @@ import CAB302.Common.Enums.JsonPayloadType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
-public class JsonPayloadRequest {
+public class JsonPayloadRequest extends JsonBaseObject {
 
     private String checksum;
 
@@ -29,7 +29,7 @@ public class JsonPayloadRequest {
     public Object getPayloadObject() {
         try {
             Class classType = Class.forName(getObjectType());
-            return (BaseClass)new ObjectMapper().convertValue(payloadObject, classType);
+            return (BaseObject)new ObjectMapper().convertValue(payloadObject, classType);
         } catch (Exception e) {
             return null;
         }
@@ -45,12 +45,4 @@ public class JsonPayloadRequest {
     public String getObjectType() { return this.objectType; }
 
     public void setObjectType(String objectType) { this.objectType = objectType; }
-
-    public String getJsonString()  {
-        Gson g = new Gson();
-
-        String jsonString = g.toJson(this);
-
-        return jsonString;
-    }
 }

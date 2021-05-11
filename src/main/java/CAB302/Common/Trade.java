@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Trade")
-public class Trade extends BaseClass {
+public class Trade extends BaseObject {
 
     private TradeTransactionType transactionType;
 

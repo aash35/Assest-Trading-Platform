@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "OrganisationalUnit")
-public class OrganisationalUnit extends BaseClass {
+public class OrganisationalUnit extends BaseObject {
 
     @Column(name = "name")
     private String unitName;

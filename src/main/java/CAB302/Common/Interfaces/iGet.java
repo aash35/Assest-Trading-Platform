@@ -1,5 +1,7 @@
 package CAB302.Common.Interfaces;
 
+import CAB302.Common.BaseObject;
+
 public interface iGet {
-    public boolean exists();
+    public BaseObject get();
 }

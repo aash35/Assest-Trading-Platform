@@ -1,9 +1,12 @@
 package CAB302.Server;
 
-import CAB302.Common.BaseClass;
+import CAB302.Common.BaseObject;
+import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.JsonPayloadRequest;
 import CAB302.Common.Interfaces.*;
+import CAB302.Common.JsonPayloadResponse;
 import com.google.gson.Gson;
+import org.hibernate.Session;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -88,13 +91,13 @@ class RequestHandler extends Thread {
 
             String data = in.readLine();
 
-            processData(data);
+            String result = processData(data);
 
-            while (data != null && data.length() > 0) {
-                data = in.readLine();
+            out.println(result);
 
-                processData(data);
-            }
+            out.flush();
+
+            data = null;
 
             // Close our connection
             in.close();
@@ -108,7 +111,7 @@ class RequestHandler extends Thread {
         }
     }
 
-    protected void processData(String data) throws IOException {
+    protected String processData(String data) throws IOException {
 
         Gson g = new Gson();
 
@@ -121,7 +124,7 @@ class RequestHandler extends Thread {
         //close the connection if we don't like the result or the checksum is empty
         if (jsonPayload == null || jsonPayload.getChecksum() == null || jsonPayload.getChecksum().length() == 0) {
             socket.close();
-            return;
+            return null;
         }
 
         //need to add validation of the checksum
@@ -134,16 +137,39 @@ class RequestHandler extends Thread {
                 break;
 
             case Get:
-                Object object = jsonPayload.getPayloadObject();
-                if (object instanceof iGet)
+                var objectGet = jsonPayload.getPayloadObject();
+
+                if (objectGet instanceof iGet)
                 {
+                    var result = ((iGet)objectGet).get();
+
+                    JsonPayloadResponse response = new JsonPayloadResponse();
+
+                    response.setPayloadObject(result);
+
+                    String jsonString = response.getJsonString();
+
+                    return jsonString;
                 }
+
                 break;
 
             case List:
                 break;
 
             case Create:
+                var objectCreate = jsonPayload.getPayloadObject();
+
+                Session session = HibernateUtil.getHibernateSession();
+
+                session.beginTransaction();
+
+                session.save(objectCreate);
+
+                session.getTransaction().commit();
+
+                session.close();
+
                 break;
 
             case Update:
@@ -152,5 +178,7 @@ class RequestHandler extends Thread {
             case Delete:
                 break;
         }
+
+        return null;
     }
 }

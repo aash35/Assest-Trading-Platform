@@ -13,7 +13,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "AssetType")
-public class AssetType extends BaseClass implements iGet {
+public class AssetType extends BaseObject implements iGet {
 
     private String name;
 
@@ -34,7 +34,7 @@ public class AssetType extends BaseClass implements iGet {
 
     public AssetType() { }
 
-    public boolean exists() {
+    public BaseObject get() {
         Session session = HibernateUtil.getHibernateSession();
 
         session.beginTransaction();
@@ -56,11 +56,6 @@ public class AssetType extends BaseClass implements iGet {
 
         session.close();
 
-        if (assetType != null) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return assetType;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "User")
-public class User extends BaseClass {
+public class User extends BaseObject {
 
     @Column(name = "username", unique = true)
     private String username;

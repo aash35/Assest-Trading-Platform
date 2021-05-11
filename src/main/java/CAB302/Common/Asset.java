@@ -1,14 +1,12 @@
 package CAB302.Common;
 
-import org.hibernate.SessionFactory;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Asset")
-public class Asset extends BaseClass {
+public class Asset extends BaseObject {
 
     private int quantity;
 

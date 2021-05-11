@@ -3,15 +3,21 @@ package CAB302.Common;
 import com.fasterxml.jackson.databind.*;
 import CAB302.Common.Enums.JsonPayloadType;
 
-public class JsonPayloadResponse {
+public class JsonPayloadResponse extends JsonBaseObject {
 
-    private BaseClass payloadObject;
+    private BaseObject payloadObject;
 
-    public BaseClass getPayloadObject() {
+    public BaseObject getPayloadObject() {
         try {
-            Class classType = Class.forName(getObjectType());
+            String currentObjectType = getObjectType();
 
-            return (BaseClass)new ObjectMapper().convertValue(payloadObject, classType);
+            if (currentObjectType == null) {
+                return null;
+            }
+
+            Class classType = Class.forName(currentObjectType);
+
+            return (BaseObject)new ObjectMapper().convertValue(payloadObject, classType);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -25,7 +31,7 @@ public class JsonPayloadResponse {
 
     public void setObjectType(String objectType) { this.objectType = objectType; }
 
-    public void setPayloadObject(BaseClass payloadObject) {
+    public void setPayloadObject(BaseObject payloadObject) {
         this.payloadObject = payloadObject;
     }
 }

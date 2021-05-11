@@ -6,11 +6,11 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @MappedSuperclass
-public class BaseClass {
+public class BaseObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public int id;
 
-    public BaseClass() { }
+    public BaseObject() { }
 }
