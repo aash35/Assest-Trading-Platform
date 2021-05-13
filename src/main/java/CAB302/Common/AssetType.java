@@ -27,7 +27,7 @@ public class AssetType extends BaseObject implements iGet {
     public String getDescription() { return this.description; }
     public void setDescription(String description) { this.description = description; }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assetType")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "assetType")
     private List<Asset> assets = new ArrayList<Asset>();
     public List<Asset> getAssets() { return this.assets; }
     public void setAssets(List<Asset> assets) { this.assets = assets; }
@@ -52,7 +52,9 @@ public class AssetType extends BaseObject implements iGet {
         try {
             assetType = (AssetType)query.getSingleResult();
         }
-        catch (Exception ex) { }
+        catch (Exception ex) {
+
+        }
 
         session.close();
 

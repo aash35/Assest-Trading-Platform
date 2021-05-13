@@ -33,5 +33,9 @@ public class JsonPayloadResponse extends JsonBaseObject {
 
     public void setPayloadObject(BaseObject payloadObject) {
         this.payloadObject = payloadObject;
+
+        if (payloadObject != null) {
+            this.setObjectType(payloadObject.getClass().getName());
+        }
     }
 }

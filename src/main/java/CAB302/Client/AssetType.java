@@ -99,7 +99,7 @@ public class AssetType extends JPanel{
 
                         JsonPayloadResponse response = new Client().SendRequest(request);
 
-                        CAB302.Common.AssetType assetType = response.getPayloadObject() == null ? null : (CAB302.Common.AssetType)response.getPayloadObject();
+                        CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
 
                         if (assetType == null) {
 
@@ -127,7 +127,22 @@ public class AssetType extends JPanel{
                             add(saveButton, gbc);
                         }
                         else {
-                            messageStackLabel.setText(String.format("Asset type %s already exists", name));
+                            messageStackLabel.setText(String.format("Asset Type (%s) already exists", name));
+
+                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                            gbc.weighty = 5;
+                            gbc.insets = new Insets(20,0,0,0);
+                            gbc.gridx = 1;
+                            gbc.gridy = 2;
+                            add(messageStackLabel, gbc);
+                            remove(saveButton);
+
+                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                            gbc.weighty = 5;
+                            gbc.insets = new Insets(20,0,0,0);
+                            gbc.gridx = 1;
+                            gbc.gridy = 3;
+                            add(saveButton, gbc);
                         }
                     }
                 });

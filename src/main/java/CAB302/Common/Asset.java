@@ -42,7 +42,7 @@ public class Asset extends BaseObject {
         this.createdByUser = createdByUserID;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "asset")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "asset")
     private List<Trade> trades = new ArrayList<Trade>();
 
     public Asset() { }
