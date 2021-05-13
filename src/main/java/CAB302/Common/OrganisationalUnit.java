@@ -24,7 +24,7 @@ public class OrganisationalUnit extends BaseObject {
     public int getAvailableCredit() { return this.availableCredit; }
     public void setAvailableCredit(int availableCredit) { this.availableCredit = availableCredit; }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "organisationalUnit")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisationalUnit")
     private List<User> users = new ArrayList<User>();
 
     public OrganisationalUnit() { }

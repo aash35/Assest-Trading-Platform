@@ -49,10 +49,10 @@ public class User extends BaseObject {
     public OrganisationalUnit getOrganisationalUnit() { return this.organisationalUnit; }
     public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) { this.organisationalUnit = organisationalUnit; }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "createdByUser")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdByUser")
     private List<Asset> assets = new ArrayList<Asset>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "createdByUser")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdByUser")
     private List<Trade> trades = new ArrayList<Trade>();
 
     public User() { }
