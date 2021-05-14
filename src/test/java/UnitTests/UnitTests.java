@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.SHA256HashHelper;
+import CAB302.Server.Server;
 import org.junit.jupiter.api.*;
 
 import java.io.BufferedReader;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+@SuppressWarnings("deprecation")
 public class UnitTests {
 
     /**
@@ -33,6 +35,24 @@ public class UnitTests {
     OrganisationalUnit OU;
     User user;
     Asset asset;
+    Server server;
+
+    private static boolean setUpIsDone = false;
+
+    @BeforeEach @Test
+    public void before() {
+        if (setUpIsDone) {
+            return;
+        }
+
+        server = new Server(8080);
+
+        server.startServer();
+
+        System.out.println("Started Server");
+
+        setUpIsDone = true;
+    }
 
     /**
      * Test 0: Construct objects for AssetType, OrganisationalUnit, User and Asset classes.
@@ -56,6 +76,11 @@ public class UnitTests {
         asset.setAssetType(type);
         asset.setQuantity(50);
         asset.setCreatedByUserID(user);
+    }
+
+    @AfterEach @Test
+
+    public void afterTest() {
     }
 
     /**
