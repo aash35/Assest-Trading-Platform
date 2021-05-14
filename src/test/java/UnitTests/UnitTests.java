@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-@SuppressWarnings("deprecation")
+
 public class UnitTests {
 
     /**
@@ -35,23 +35,15 @@ public class UnitTests {
     OrganisationalUnit OU;
     User user;
     Asset asset;
-    Server server;
 
-    private static boolean setUpIsDone = false;
 
-    @BeforeEach @Test
-    public void before() {
-        if (setUpIsDone) {
-            return;
-        }
-
-        server = new Server(8080);
+    @BeforeAll
+    public static void before() {
+        Server server = new Server(8080);
 
         server.startServer();
 
         System.out.println("Started Server");
-
-        setUpIsDone = true;
     }
 
     /**
@@ -61,6 +53,7 @@ public class UnitTests {
     public void tradeTestData() {
         type = new AssetType();
         type.setName("Potatoes");
+        type.setDescription("Many potatoes");
 
         OU = new OrganisationalUnit();
         OU.setUnitName("Unit A");
@@ -76,11 +69,6 @@ public class UnitTests {
         asset.setAssetType(type);
         asset.setQuantity(50);
         asset.setCreatedByUserID(user);
-    }
-
-    @AfterEach @Test
-
-    public void afterTest() {
     }
 
     /**
