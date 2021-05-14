@@ -299,4 +299,21 @@ public class UnitTests {
 
         response.getPayloadObject();
     }
+
+    /**
+     * Test 13: Retrieve a list of current trades
+     */
+    @Test
+    public void listCurrentTrades() {
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(new Trade());
+        request.setJsonPayloadType(JsonPayloadType.List);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+
+        response.getPayloadObject();
+    }
 }
