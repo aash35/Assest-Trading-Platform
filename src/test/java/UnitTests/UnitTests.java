@@ -230,4 +230,22 @@ public class UnitTests {
             JsonPayloadResponse response = client.SendRequest(request);
         });
     }
+
+    /**
+     * Test 9: Retrieve a list of current users
+     */
+    @Test
+    public void listCurrentUsers() {
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(new User());
+        request.setJsonPayloadType(JsonPayloadType.List);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+
+        // Not too sure how to verify the result. - Chris
+        response.getPayloadObject();
+    }
 }
