@@ -265,4 +265,21 @@ public class UnitTests {
 
         response.getPayloadObject();
     }
+
+    /**
+     * Test 11: Retrieve a list of current asset types
+     */
+    @Test
+    public void listCurrentAssetTypes() {
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(new AssetType());
+        request.setJsonPayloadType(JsonPayloadType.List);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+
+        response.getPayloadObject();
+    }
 }
