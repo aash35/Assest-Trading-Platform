@@ -248,4 +248,21 @@ public class UnitTests {
         // Not too sure how to verify the result. - Chris
         response.getPayloadObject();
     }
+
+    /**
+     * Test 10: Retrieve a list of current organisational units
+     */
+    @Test
+    public void listCurrentOrganisationalUnits() {
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(new OrganisationalUnit());
+        request.setJsonPayloadType(JsonPayloadType.List);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+
+        response.getPayloadObject();
+    }
 }
