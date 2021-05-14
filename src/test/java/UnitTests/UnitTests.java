@@ -147,7 +147,7 @@ public class UnitTests {
         request.setJsonPayloadType(JsonPayloadType.Buy);
 
         JsonPayloadResponse response = client.SendRequest(request);
-        // I think we'd still be expecting a null response from this one. - Chris
+        // I assume we'd still be expecting a null response from this one. - Chris
         assertNull(response.getPayloadObject());
     }
 
@@ -171,6 +171,63 @@ public class UnitTests {
         JsonPayloadRequest request = new JsonPayloadRequest();
 
         request.setPayloadObject(sellTrade);
+        request.setJsonPayloadType(JsonPayloadType.Sell);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+        assertNull(response.getPayloadObject());
+    }
+
+    /**
+     * Test 7: Construct an illegal buy type trade, ensure that processing this trade returns an error.
+     */
+    @Test
+    public void newIllegalBuy() {
+        Trade buyTrade = new Trade();
+
+        buyTrade.setAsset(asset);
+        buyTrade.setQuantity(10);
+        buyTrade.setPrice(12);
+        buyTrade.setCreatedByUser(user);
+        buyTrade.setCreatedDate(Timestamp.from(Instant.now()));
+        buyTrade.setTransactionType(TradeTransactionType.Buying);
+        buyTrade.setStatus(TradeStatus.InMarket);
+
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(buyTrade);
         request.setJsonPayloadType(JsonPayloadType.Buy);
+
+        assertThrows(IllegalTradeException.class, () ->{
+            JsonPayloadResponse response = client.SendRequest(request);
+        });
+    }
+
+    /**
+     * Test 8: Construct an illegal buy type trade, ensure that processing this trade returns an error.
+     */
+    @Test
+    public void newIllegalSell() {
+        Trade sellTrade = new Trade();
+
+        sellTrade.setAsset(asset);
+        sellTrade.setQuantity(60);
+        sellTrade.setPrice(10);
+        sellTrade.setCreatedByUser(user);
+        sellTrade.setCreatedDate(Timestamp.from(Instant.now()));
+        sellTrade.setTransactionType(TradeTransactionType.Selling);
+        sellTrade.setStatus(TradeStatus.InMarket);
+
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(sellTrade);
+        request.setJsonPayloadType(JsonPayloadType.Sell);
+
+        assertThrows(IllegalTradeException.class, () -> {
+            JsonPayloadResponse response = client.SendRequest(request);
+        });
     }
 }
