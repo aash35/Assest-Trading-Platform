@@ -1,13 +1,13 @@
 package UnitTests;
 import CAB302.Client.Client;
-import CAB302.Common.AssetType;
+import CAB302.Common.*;
+import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.JsonPayloadType;
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
-import CAB302.Common.OrganisationalUnit;
-import org.junit.Assert;
-import org.junit.Test;
-import junit.framework.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import CAB302.Common.Helpers.SHA256HashHelper;
+import org.junit.jupiter.api.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-public class UnitTests extends TestCase {
+public class UnitTests {
 
     //Test 1: Construct a new Asset Type
     @Test
@@ -43,7 +43,7 @@ public class UnitTests extends TestCase {
 
     //Test 2: Construct a new Organisational Unit
     @Test
-    public void newLegalBuy() {
+    public void newOrganisationalUnit() {
         OrganisationalUnit OU = new OrganisationalUnit();
         OU.setUnitName("Unit A");
         OU.setAvailableCredit(100);
@@ -60,11 +60,25 @@ public class UnitTests extends TestCase {
     }
 
 
-    //Test 2: Construct a new legal sell type Trade object.
-
+    //Test 3: Construct a new User
     @Test
-    public void newLegalSell() {
+    public void newUser() {
+        User user = new User();
+        user.setUsername("User");
+        user.setHashedPassword(SHA256HashHelper.generateHashedString("password"));
+        OrganisationalUnit OU = new OrganisationalUnit(); OU.setUnitName("Unit");
+        user.setOrganisationalUnit(OU);
+        user.setAccountRoleType(AccountTypeRole.Standard);
 
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(user);
+        request.setJsonPayloadType(JsonPayloadType.Create);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+        assertNull(response.getPayloadObject());
     }
 
 
