@@ -4,6 +4,7 @@ import CAB302.Common.AssetType;
 import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.JsonPayloadRequest;
 import CAB302.Common.JsonPayloadResponse;
+import CAB302.Common.OrganisationalUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import junit.framework.*;
@@ -21,7 +22,7 @@ import java.util.Hashtable;
 
 public class UnitTests extends TestCase {
 
-    //Test 0: Construct a new Asset Type
+    //Test 1: Construct a new Asset Type
     @Test
     public void newAssetTypeTest() {
         AssetType type = new AssetType();
@@ -40,10 +41,22 @@ public class UnitTests extends TestCase {
         assertNull(response.getPayloadObject());
     }
 
-    //Test 1: Construct a new legal buy type Trade object.
+    //Test 2: Construct a new Organisational Unit
     @Test
     public void newLegalBuy() {
+        OrganisationalUnit OU = new OrganisationalUnit();
+        OU.setUnitName("Unit A");
+        OU.setAvailableCredit(100);
 
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(OU);
+        request.setJsonPayloadType(JsonPayloadType.Create);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+        assertNull(response.getPayloadObject());
     }
 
 
