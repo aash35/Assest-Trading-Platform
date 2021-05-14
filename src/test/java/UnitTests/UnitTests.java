@@ -3,6 +3,7 @@ import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.JsonPayloadType;
+import CAB302.Common.Exceptions.IllegalTradeException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
