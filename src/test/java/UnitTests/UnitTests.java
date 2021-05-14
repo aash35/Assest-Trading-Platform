@@ -55,7 +55,7 @@ public class UnitTests {
     }
 
     /**
-     * Test 1: Construct a new Asset Type
+     * Test 1: Construct a new AssetType object
      */
     @Test
     public void newAssetTypeTest() {
@@ -73,7 +73,7 @@ public class UnitTests {
     }
 
     /**
-     * Test 2: Construct a new Organisational Unit
+     * Test 2: Construct a new Organisational Unit object
      */
     @Test
     public void newOrganisationalUnit() {
@@ -90,7 +90,7 @@ public class UnitTests {
 
 
     /**
-     * Test 3: Construct a new User
+     * Test 3: Construct a new User object
      */
     @Test
     public void newUser() {
@@ -99,6 +99,22 @@ public class UnitTests {
         JsonPayloadRequest request = new JsonPayloadRequest();
 
         request.setPayloadObject(user);
+        request.setJsonPayloadType(JsonPayloadType.Create);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+        assertNull(response.getPayloadObject());
+    }
+
+    /**
+     * Test 4: Construct a new Asset object
+     */
+    @Test
+    public void newAsset() {
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(asset);
         request.setJsonPayloadType(JsonPayloadType.Create);
 
         JsonPayloadResponse response = client.SendRequest(request);
