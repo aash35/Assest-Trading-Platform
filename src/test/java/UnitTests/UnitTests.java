@@ -6,6 +6,8 @@ import CAB302.Common.Enums.JsonPayloadType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.SHA256HashHelper;
 import org.junit.jupiter.api.*;
 
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -118,6 +121,33 @@ public class UnitTests {
         request.setJsonPayloadType(JsonPayloadType.Create);
 
         JsonPayloadResponse response = client.SendRequest(request);
+        assertNull(response.getPayloadObject());
+    }
+
+    /**
+     * Test 5: Construct a new legal buy type trade
+     */
+    @Test
+    public void newLegalBuy() {
+        Trade buyTrade = new Trade();
+
+        buyTrade.setAsset(asset);
+        buyTrade.setQuantity(10);
+        buyTrade.setPrice(5);
+        buyTrade.setCreatedByUser(user);
+        buyTrade.setCreatedDate(Timestamp.from(Instant.now()));
+        buyTrade.setTransactionType(TradeTransactionType.Buying);
+        buyTrade.setStatus(TradeStatus.InMarket);
+
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(buyTrade);
+        request.setJsonPayloadType(JsonPayloadType.Buy);
+
+        JsonPayloadResponse response = client.SendRequest(request);
+        // I think we'd still be expecting a null response from this one. - Chris
         assertNull(response.getPayloadObject());
     }
 }
