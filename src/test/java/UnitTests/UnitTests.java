@@ -150,4 +150,27 @@ public class UnitTests {
         // I think we'd still be expecting a null response from this one. - Chris
         assertNull(response.getPayloadObject());
     }
+
+    /**
+     * Test 6: Construct a new legal sell type trade.
+     */
+    @Test
+    public void newLegalSell() {
+        Trade sellTrade = new Trade();
+
+        sellTrade.setAsset(asset);
+        sellTrade.setQuantity(10);
+        sellTrade.setPrice(10);
+        sellTrade.setCreatedByUser(user);
+        sellTrade.setCreatedDate(Timestamp.from(Instant.now()));
+        sellTrade.setTransactionType(TradeTransactionType.Selling);
+        sellTrade.setStatus(TradeStatus.InMarket);
+
+        Client client = new Client();
+
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(sellTrade);
+        request.setJsonPayloadType(JsonPayloadType.Buy);
+    }
 }
