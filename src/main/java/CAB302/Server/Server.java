@@ -128,6 +128,7 @@ class RequestHandler extends Thread {
         }
 
         //need to add validation of the checksum
+        var object = jsonPayload.getPayloadObject();
 
         switch (jsonPayload.getJsonPayloadType()) {
             case Buy:
@@ -137,11 +138,9 @@ class RequestHandler extends Thread {
                 break;
 
             case Get:
-                var objectGet = jsonPayload.getPayloadObject();
-
-                if (objectGet instanceof iGet)
+                if (object instanceof iGet)
                 {
-                    var result = ((iGet)objectGet).get();
+                    var result = ((iGet)object).get();
 
                     JsonPayloadResponse response = new JsonPayloadResponse();
 
@@ -155,16 +154,27 @@ class RequestHandler extends Thread {
                 break;
 
             case List:
+                if (object instanceof iList)
+                {
+                    var result = ((iList)object).list();
+
+                    JsonPayloadResponse response = new JsonPayloadResponse();
+
+                    response.setPayloadObject(result);
+
+                    String jsonString = response.getJsonString();
+
+                    return null;
+                }
                 break;
 
             case Create:
-                var objectCreate = jsonPayload.getPayloadObject();
 
                 Session session = HibernateUtil.getHibernateSession();
 
                 session.beginTransaction();
 
-                session.save(objectCreate);
+                session.save(object);
 
                 session.getTransaction().commit();
 
@@ -173,9 +183,27 @@ class RequestHandler extends Thread {
                 break;
 
             case Update:
+                session = HibernateUtil.getHibernateSession();
+
+                session.beginTransaction();
+
+                session.update(object);
+
+                session.getTransaction().commit();
+
+                session.close();
                 break;
 
             case Delete:
+                session = HibernateUtil.getHibernateSession();
+
+                session.beginTransaction();
+
+                session.remove(object);
+
+                session.getTransaction().commit();
+
+                session.close();
                 break;
         }
 

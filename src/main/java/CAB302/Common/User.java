@@ -14,10 +14,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import CAB302.Common.Interfaces.*
 
 @Entity
 @Table(name = "User")
-public class User extends BaseObject {
+public class User extends BaseObject implements iGet, iList {
 
     @Column(name = "username", unique = true)
     private String username;
@@ -57,7 +58,7 @@ public class User extends BaseObject {
 
     public User() { }
 
-    public boolean isValid() throws Exception {
+    public BaseObject get() {
         Session session = HibernateUtil.getHibernateSession();
 
         session.beginTransaction();
@@ -82,10 +83,33 @@ public class User extends BaseObject {
 
         session.close();
 
-        if (user == null) {
-            return false;
-        }
+        return user;
+    }
 
-        return true;
+    public List<BaseObject> list() {
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+
+        criteria.select(root).where(
+                criteriaBuilder.equal(root.get("username"), this.getUsername())
+        );
+
+        Query query = session.createQuery(criteria);
+
+        List<BaseObject> users = null;
+
+        try {
+            users = (List<BaseObject>)query.getResultList();
+        }
+        catch (Exception ex) { }
+
+        session.close();
+
+        return users;
     }
 }

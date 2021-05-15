@@ -13,7 +13,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "AssetType")
-public class AssetType extends BaseObject implements iGet {
+public class AssetType extends BaseObject implements iGet, iList {
 
     private String name;
 
@@ -59,5 +59,32 @@ public class AssetType extends BaseObject implements iGet {
         session.close();
 
         return assetType;
+    }
+
+    public List<BaseObject> list() {
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<AssetType> criteria = criteriaBuilder.createQuery(AssetType.class);
+        Root<AssetType> root = criteria.from(AssetType.class);
+
+        criteria.select(root).where(criteriaBuilder.equal(root.get("name"), this.getName()));
+
+        Query query = session.createQuery(criteria);
+
+        List<BaseObject> assetTypes = null;
+
+        try {
+            assetTypes = (List<BaseObject>)query.getResultList();
+        }
+        catch (Exception ex) {
+
+        }
+
+        session.close();
+
+        return assetTypes;
     }
 }

@@ -5,9 +5,9 @@ import CAB302.Common.Enums.JsonPayloadType;
 
 public class JsonPayloadResponse extends JsonBaseObject {
 
-    private BaseObject payloadObject;
+    private Object payloadObject;
 
-    public BaseObject getPayloadObject() {
+    public Object getPayloadObject() {
         try {
             String currentObjectType = getObjectType();
 
@@ -31,7 +31,7 @@ public class JsonPayloadResponse extends JsonBaseObject {
 
     public void setObjectType(String objectType) { this.objectType = objectType; }
 
-    public void setPayloadObject(BaseObject payloadObject) {
+    public void setPayloadObject(Object payloadObject) {
         this.payloadObject = payloadObject;
 
         if (payloadObject != null) {

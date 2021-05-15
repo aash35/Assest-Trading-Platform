@@ -1,12 +1,19 @@
 package CAB302.Common;
 
+import CAB302.Common.Helpers.HibernateUtil;
+import CAB302.Common.Interfaces.*;
+import org.hibernate.Session;
+
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Asset")
-public class Asset extends BaseObject {
+public class Asset extends BaseObject implements iGet, iList {
 
     private int quantity;
 
@@ -46,4 +53,58 @@ public class Asset extends BaseObject {
     private List<Trade> trades = new ArrayList<Trade>();
 
     public Asset() { }
+
+    public BaseObject get() {
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Asset> criteria = criteriaBuilder.createQuery(Asset.class);
+        Root<Asset> root = criteria.from(Asset.class);
+
+        criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
+
+        Query query = session.createQuery(criteria);
+
+        BaseObject asset = null;
+
+        try {
+            asset = (BaseObject)query.getSingleResult();
+        }
+        catch (Exception ex) {
+
+        }
+
+        session.close();
+
+        return asset;
+    }
+
+    public List<BaseObject> list() {
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Asset> criteria = criteriaBuilder.createQuery(Asset.class);
+        Root<Asset> root = criteria.from(Asset.class);
+
+        criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
+
+        Query query = session.createQuery(criteria);
+
+        List<BaseObject> assets = null;
+
+        try {
+            assets = (List<BaseObject>)query.getResultList();
+        }
+        catch (Exception ex) {
+
+        }
+
+        session.close();
+
+        return assets;
+    }
 }
