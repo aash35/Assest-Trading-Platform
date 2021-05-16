@@ -1,0 +1,8 @@
+CAB302
+CAB302.Client
+CAB302.Common
+CAB302.Common.Enums
+CAB302.Common.Exceptions
+CAB302.Common.Helpers
+CAB302.Common.Interfaces
+CAB302.Server
