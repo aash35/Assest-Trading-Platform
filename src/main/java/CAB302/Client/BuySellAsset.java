@@ -8,11 +8,21 @@ import java.awt.*;
 public class BuySellAsset extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
 
-    JLabel buySellLabel = new JLabel("Buy or Sell Asset");
+    private JPanel titlePanel;
+    private JPanel buySellPanel;
 
     public BuySellAsset(JFrame frame, AssetType assetType){
-        setBackground(new Color(243, 244, 246));
-        setLayout(new GridBagLayout());
+        Color c = new Color(243, 244, 246);
+        setLayout(new BorderLayout());
+
+        titlePanel = createPanel(c);
+        buySellPanel = createPanel(c);
+
+        add(titlePanel, BorderLayout.NORTH);
+        add(buySellPanel, BorderLayout.CENTER);
+
+        JLabel assetName = new JLabel(assetType.getName());
+        assetName.setFont(new Font(assetName.getFont().getFontName(), Font.PLAIN, 42));
 
         //gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.5;
@@ -24,8 +34,11 @@ public class BuySellAsset extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        buySellLabel.setFont(new Font(buySellLabel.getFont().getFontName(), Font.PLAIN, 42));
+    }
 
-        add(buySellLabel, gbc);
+    private JPanel createPanel(Color c){
+        JPanel panel = new JPanel();
+        panel.setBackground(c);
+        return panel;
     }
 }
