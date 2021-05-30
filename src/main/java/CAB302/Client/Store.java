@@ -3,9 +3,11 @@ package CAB302.Client;
 import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
+import CAB302.Common.Helpers.NavigationHelper;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -13,8 +15,10 @@ public class Store extends JPanel {
     private JPanel titlePanel;
     private JPanel assetsPanel;
     private List<BaseObject> assetsList;
+    private JFrame frame;
 
     public Store(JFrame frame) {
+        this.frame = frame;
         Color c = new Color(243, 244, 246);
         setLayout(new BorderLayout());
 
@@ -60,7 +64,12 @@ public class Store extends JPanel {
     private JButton createAssetButton(AssetType assetType){
         JButton button = new JButton();
         button.setText(assetType.getName());
-        button.addActionListener((ActionListener) this);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                NavigationHelper.buySellOrder(frame, assetType);
+            }
+        });
         return button;
     }
 
