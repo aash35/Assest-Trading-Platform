@@ -1,10 +1,12 @@
 package CAB302.Client;
 
+import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class Store extends JPanel {
@@ -54,7 +56,13 @@ public class Store extends JPanel {
         int width = 2;
         int height = 2;
     }
-    
+
+    private JButton createAssetButton(AssetType assetType){
+        JButton button = new JButton();
+        button.setText(assetType.getName());
+        button.addActionListener((ActionListener) this);
+        return button;
+    }
 
     private void addToPanel(JPanel panel, Component component,GridBagConstraints constraints,
                             int xPos, int yPos, int width, int height){
