@@ -1,6 +1,5 @@
 package CAB302.Client;
 
-import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
 import CAB302.Common.Helpers.NavigationHelper;
@@ -37,18 +36,29 @@ public class Store extends JPanel {
         layoutAssetsPanel();
     }
 
+    /**
+     * Creates a JPanel object
+     * @param c the background color of the panel.
+     * @return a JPanel object
+     */
     private JPanel createPanel(Color c){
         JPanel panel = new JPanel();
         panel.setBackground(c);
         return panel;
     }
 
+    /**
+     * Retrieves the list of current asset types from the database, then assigns it to the assetsList property.
+     */
     private void getAssetsList() {
         AssetType emptyType = new AssetType();
 
         assetsList = emptyType.list();
     }
 
+    /**
+     * Method will loop over the assetsList and create a button for each asset in the list.
+     */
     private void layoutAssetsPanel() {
         assetsPanel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -79,6 +89,11 @@ public class Store extends JPanel {
         }
     }
 
+    /**
+     * Creates a button for an asset, that will direct to the appropriate BuySellAsset page when clicked.
+     * @param assetType
+     * @return a JButton object.
+     */
     private JButton createAssetButton(AssetType assetType){
         JButton button = new JButton();
         button.setText(assetType.getName());
@@ -91,6 +106,16 @@ public class Store extends JPanel {
         return button;
     }
 
+    /**
+     * Adds a component to a given panel in a specified grid bag layout organisation
+     * @param panel the panel the component is being added to.
+     * @param component the component being added.
+     * @param constraints the GridBagContraints object used to define the panel.
+     * @param xPos x position in the grid bag layout
+     * @param yPos y position in the grid bag layout
+     * @param width GridBagConstraint gridwidth
+     * @param height GridBagConstraint gridheight
+     */
     private void addToPanel(JPanel panel, Component component,GridBagConstraints constraints,
                             int xPos, int yPos, int width, int height){
         constraints.gridx = xPos;
