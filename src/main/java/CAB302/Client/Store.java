@@ -52,13 +52,27 @@ public class Store extends JPanel {
         constraints.weightx = 0.5;
         constraints.weighty = 0.5;
 
-        constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+        constraints.anchor = GridBagConstraints.CENTER;
         constraints.insets = new Insets(0, 0, 0, 0);
 
         int xPos = 0;
         int yPos = 0;
-        int width = 2;
-        int height = 2;
+        int width = 1;
+        int height = 1;
+
+        for (BaseObject assetType: assetsList
+             ) {
+            JButton assetButton = createAssetButton((AssetType) assetType);
+            addToPanel(assetsPanel, assetButton, constraints, xPos, yPos, width, height);
+
+            if (xPos < 4) {
+                xPos++;
+            }
+            else{
+                xPos = 0;
+                yPos++;
+            }
+        }
     }
 
     private JButton createAssetButton(AssetType assetType){
