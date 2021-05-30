@@ -32,6 +32,12 @@ public class NavigationHelper {
         NavigationHelper.generateMenuBar(frame);
     }
 
+    public static void buySellOrder(JFrame frame, CAB302.Common.AssetType assetType){
+        frame.setContentPane(new BuySellAsset(frame, assetType));
+
+        NavigationHelper.generateMenuBar(frame);
+    }
+
     public static void myAccount(JFrame frame) {
         frame.setContentPane(new MyAccount(frame));
 
