@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BuySellAsset extends JPanel {
-    GridBagConstraints gbc = new GridBagConstraints();
-
     private JPanel titlePanel;
     private JPanel buySellPanel;
     private JSpinner buyQuantity;
@@ -32,18 +30,6 @@ public class BuySellAsset extends JPanel {
         buyPrice = createSpinner();
         sellQuantity = createSpinner();
         sellPrice = createSpinner();
-
-
-
-        //gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.5;
-        gbc.weighty = 0.5;
-
-        // First Column
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
     }
 
     private JPanel createPanel(Color c){
@@ -56,5 +42,17 @@ public class BuySellAsset extends JPanel {
         SpinnerModel model = new SpinnerNumberModel(1, 1, null, 1);
         JSpinner spinner = new JSpinner(model);
         return  spinner;
+    }
+
+    private void layoutBuySellPanel() {
+        buySellPanel.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        constraints.weightx = 0.5;
+        constraints.weighty = 0.5;
+
+        // First Column
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.insets = new Insets(10, 10, 10, 10);
     }
 }
