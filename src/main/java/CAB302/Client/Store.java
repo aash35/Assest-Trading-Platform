@@ -31,6 +31,10 @@ public class Store extends JPanel {
         JLabel storeLabel = new JLabel("Store");
         storeLabel.setFont(new Font(storeLabel.getFont().getFontName(), Font.PLAIN, 42));
         titlePanel.add(storeLabel);
+
+        getAssetsList();
+
+        layoutAssetsPanel();
     }
 
     private JPanel createPanel(Color c){
@@ -53,7 +57,7 @@ public class Store extends JPanel {
         constraints.weighty = 0.5;
 
         constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(0, 0, 0, 0);
+        constraints.insets = new Insets(10, 10, 10, 10);
 
         int xPos = 0;
         int yPos = 0;
