@@ -46,8 +46,23 @@ public class Store extends JPanel {
         constraints.weightx = 0.5;
         constraints.weighty = 0.5;
 
-        // First Column
         constraints.anchor = GridBagConstraints.FIRST_LINE_START;
         constraints.insets = new Insets(0, 0, 0, 0);
+
+        int xPos = 0;
+        int yPos = 0;
+        int width = 2;
+        int height = 2;
+    }
+    
+
+    private void addToPanel(JPanel panel, Component component,GridBagConstraints constraints,
+                            int xPos, int yPos, int width, int height){
+        constraints.gridx = xPos;
+        constraints.gridy = yPos;
+        constraints.gridwidth = width;
+        constraints.gridheight = height;
+
+        panel.add(component, constraints);
     }
 }
