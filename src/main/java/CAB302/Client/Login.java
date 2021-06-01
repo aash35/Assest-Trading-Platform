@@ -1,9 +1,12 @@
 package CAB302.Client;
 
 import CAB302.Common.Enums.AccountTypeRole;
+import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
+import CAB302.Common.JsonPayloadRequest;
+import CAB302.Common.JsonPayloadResponse;
 import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.User;
 import org.hibernate.Session;
@@ -121,14 +124,16 @@ public class Login extends JPanel {
                         user.setUsername(username);
                         user.setHashedPassword(hashedPassword);
 
-                        boolean isValid = false;
+                        JsonPayloadRequest request = new JsonPayloadRequest();
 
-                        try {
-                            isValid = user.isValid();
-                        } catch (Exception exception) {
-                        }
+                        request.setPayloadObject(user);
+                        request.setJsonPayloadType(JsonPayloadType.Get);
 
-                        if (!isValid) {
+                        JsonPayloadResponse response = new Client().SendRequest(request);
+
+                        user = (CAB302.Common.User)response.getPayloadObject();
+
+                        if (user == null) {
                             User adminUser = new User();
 
                             adminUser.setUsername("admin");
@@ -137,14 +142,16 @@ public class Login extends JPanel {
 
                             adminUser.setHashedPassword(hashedAdminPassword);
 
-                            boolean isAdminValid = false;
+                            request = new JsonPayloadRequest();
 
-                            try {
-                                isAdminValid = adminUser.isValid();
-                            } catch (Exception exception) {
-                            }
+                            request.setPayloadObject(user);
+                            request.setJsonPayloadType(JsonPayloadType.Get);
 
-                            if (!isAdminValid) {
+                            response = new Client().SendRequest(request);
+
+                            adminUser = (CAB302.Common.User)response.getPayloadObject();
+
+                            if (adminUser != null) {
 
                                 Session session = HibernateUtil.getHibernateSession();
                                 session.beginTransaction();
