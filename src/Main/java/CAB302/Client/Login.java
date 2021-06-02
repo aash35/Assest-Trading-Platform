@@ -1,14 +1,12 @@
 package CAB302.Client;
 
+import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
 import CAB302.Common.OrganisationalUnit;
-import CAB302.Common.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -68,6 +66,14 @@ public class Login extends JPanel {
 
                 //need to remove on the way out
                 if (e.getKeyChar()==KeyEvent.VK_ESCAPE) {
+
+                    User adminUser = new User();
+
+                    adminUser.setUsername("admin");
+                    adminUser.setAccountRoleType(AccountTypeRole.Administrator);
+
+                    RuntimeSettings.CurrentUser = adminUser;
+
                     NavigationHelper.mainMenu(frame);
                 }
             }
@@ -152,10 +158,14 @@ public class Login extends JPanel {
                             adminUser = (CAB302.Common.User) response.getPayloadObject();
 
                             if (adminUser != null) {
+                                RuntimeSettings.CurrentUser = adminUser;
+
                                 NavigationHelper.mainMenu(frame);
                             }
                         }
                         else {
+                            RuntimeSettings.CurrentUser = user;
+
                             NavigationHelper.mainMenu(frame);
                         }
                     }
