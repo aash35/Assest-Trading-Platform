@@ -105,6 +105,9 @@ class TradeProcessor extends Thread {
             buyTrades.sort(Comparator.comparingDouble(Trade::getPrice));
 
                 for (Trade buyTrade : buyTrades) {
+
+                    session.refresh(buyTrade);
+
                     List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAsset().id == x.getAsset().id).collect(Collectors.toList());
 
                     if (availableSellTrades != null) {
@@ -113,6 +116,9 @@ class TradeProcessor extends Thread {
 
                         sellTradeFinish:
                         for (Trade availableSellTrade : availableSellTrades) {
+
+                            session.refresh(availableSellTrade);
+
                             if (availableSellTrade.getPrice() <= buyTrade.getPrice()) {
                                 int quantityToBuy = buyTrade.getQuantity();
 
