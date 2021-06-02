@@ -1,9 +1,12 @@
 package CAB302.Client;
 
 import CAB302.Common.Enums.AccountTypeRole;
+import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
+import CAB302.Common.JsonPayloadRequest;
+import CAB302.Common.JsonPayloadResponse;
 import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.User;
 import org.hibernate.Session;
@@ -121,14 +124,16 @@ public class Login extends JPanel {
                         user.setUsername(username);
                         user.setHashedPassword(hashedPassword);
 
-                        boolean isValid = false;
+                        JsonPayloadRequest request = new JsonPayloadRequest();
 
-                        try {
-                            //isValid = user.isValid();
-                        } catch (Exception exception) {
-                        }
+                        request.setPayloadObject(user);
+                        request.setJsonPayloadType(JsonPayloadType.Get);
 
-                        if (!isValid) {
+                        JsonPayloadResponse response = new Client().SendRequest(request);
+
+                        user = (CAB302.Common.User)response.getPayloadObject();
+
+                        if (user == null) {
                             User adminUser = new User();
 
                             adminUser.setUsername("admin");
@@ -137,52 +142,16 @@ public class Login extends JPanel {
 
                             adminUser.setHashedPassword(hashedAdminPassword);
 
-                            boolean isAdminValid = false;
+                            request = new JsonPayloadRequest();
 
-                            try {
-                                //isAdminValid = adminUser.isValid();
-                            } catch (Exception exception) {
-                            }
+                            request.setPayloadObject(adminUser);
+                            request.setJsonPayloadType(JsonPayloadType.Get);
 
-                            if (!isAdminValid) {
+                            response = new Client().SendRequest(request);
 
-                                Session session = HibernateUtil.getHibernateSession();
-                                session.beginTransaction();
+                            adminUser = (CAB302.Common.User) response.getPayloadObject();
 
-                                adminUser.setAccountRoleType(AccountTypeRole.Administrator);
-
-                                CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-                                CriteriaQuery<OrganisationalUnit> criteria = criteriaBuilder.createQuery(OrganisationalUnit.class);
-                                Root<OrganisationalUnit> root = criteria.from(OrganisationalUnit.class);
-
-                                criteria.select(root).where(criteriaBuilder.equal(root.get("unitName"), "Administrators"));
-
-                                Query query = session.createQuery(criteria);
-
-                                boolean isOUValid = false;
-
-                                OrganisationalUnit ou = null;
-
-                                try {
-                                    ou = (OrganisationalUnit)query.getSingleResult();
-                                } catch (Exception exception) {
-                                }
-
-                                if (ou == null) {
-                                    ou.setAvailableCredit(100);
-                                    ou.setUnitName("Administrators");
-
-                                    session.save(ou);
-                                }
-
-                                adminUser.setOrganisationalUnit(ou);
-
-                                session.save(adminUser);
-
-                                session.getTransaction().commit();
-
-                                session.close();
-
+                            if (adminUser != null) {
                                 NavigationHelper.mainMenu(frame);
                             }
                         }

@@ -87,8 +87,6 @@ class RequestHandler extends Thread {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream());
 
-            out.flush();
-
             String data = in.readLine();
 
             String result = processData(data);
