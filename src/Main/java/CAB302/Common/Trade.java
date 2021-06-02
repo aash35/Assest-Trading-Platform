@@ -69,19 +69,20 @@ public class Trade extends BaseObject implements iGet, iList {
     public Trade() { }
 
     public BaseObject get() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        if (this.getAsset() == null) {
-            criteria.select(root);
+        criteria.select(root);
+
+        if (this.getAsset() != null) {
+            criteria.where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
         }
-        else {
-            criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
+
+        if (this.getStatus() != null) {
+            criteria.where(criteriaBuilder.equal(root.get("status"), this.getStatus()));
         }
 
         Query query = session.createQuery(criteria);
@@ -95,15 +96,11 @@ public class Trade extends BaseObject implements iGet, iList {
 
         }
 
-        session.close();
-
         return trade;
     }
 
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
@@ -122,7 +119,7 @@ public class Trade extends BaseObject implements iGet, iList {
 
         }
 
-        session.close();
+        session.flush();
 
         return trades;
     }

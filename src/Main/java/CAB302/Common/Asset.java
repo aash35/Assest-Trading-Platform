@@ -58,9 +58,7 @@ public class Asset extends BaseObject implements iGet, iList {
     public Asset() { }
 
     public BaseObject get() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Asset> criteria = criteriaBuilder.createQuery(Asset.class);
@@ -79,15 +77,11 @@ public class Asset extends BaseObject implements iGet, iList {
 
         }
 
-        session.close();
-
         return asset;
     }
 
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Asset> criteria = criteriaBuilder.createQuery(Asset.class);
@@ -110,8 +104,6 @@ public class Asset extends BaseObject implements iGet, iList {
         catch (Exception ex) {
 
         }
-
-        session.close();
 
         return assets;
     }
