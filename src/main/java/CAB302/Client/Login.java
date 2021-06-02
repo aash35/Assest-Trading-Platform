@@ -144,52 +144,14 @@ public class Login extends JPanel {
 
                             request = new JsonPayloadRequest();
 
-                            request.setPayloadObject(user);
+                            request.setPayloadObject(adminUser);
                             request.setJsonPayloadType(JsonPayloadType.Get);
 
                             response = new Client().SendRequest(request);
 
-                            adminUser = (CAB302.Common.User)response.getPayloadObject();
+                            adminUser = (CAB302.Common.User) response.getPayloadObject();
 
                             if (adminUser != null) {
-
-                                Session session = HibernateUtil.getHibernateSession();
-                                session.beginTransaction();
-
-                                adminUser.setAccountRoleType(AccountTypeRole.Administrator);
-
-                                CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-                                CriteriaQuery<OrganisationalUnit> criteria = criteriaBuilder.createQuery(OrganisationalUnit.class);
-                                Root<OrganisationalUnit> root = criteria.from(OrganisationalUnit.class);
-
-                                criteria.select(root).where(criteriaBuilder.equal(root.get("unitName"), "Administrators"));
-
-                                Query query = session.createQuery(criteria);
-
-                                boolean isOUValid = false;
-
-                                OrganisationalUnit ou = null;
-
-                                try {
-                                    ou = (OrganisationalUnit)query.getSingleResult();
-                                } catch (Exception exception) {
-                                }
-
-                                if (ou == null) {
-                                    ou.setAvailableCredit(100);
-                                    ou.setUnitName("Administrators");
-
-                                    session.save(ou);
-                                }
-
-                                adminUser.setOrganisationalUnit(ou);
-
-                                session.save(adminUser);
-
-                                session.getTransaction().commit();
-
-                                session.close();
-
                                 NavigationHelper.mainMenu(frame);
                             }
                         }

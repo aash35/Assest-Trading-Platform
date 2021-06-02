@@ -37,7 +37,10 @@ public class JsonPayloadRequest extends JsonBaseObject {
 
     public void setPayloadObject(Object payloadObject) {
         this.payloadObject = payloadObject;
-        this.setObjectType(payloadObject.getClass().getName());
+
+        if (payloadObject != null) {
+            this.setObjectType(payloadObject.getClass().getName());
+        }
     }
 
     private String objectType;

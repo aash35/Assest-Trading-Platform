@@ -53,8 +53,14 @@ public class User extends BaseObject implements iGet, iList {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdByUser")
     private List<Asset> assets = new ArrayList<Asset>();
 
+    public List<Asset> getAssets() { return this.assets; }
+    public void setAssets(List<Asset> assets) { this.assets = assets; }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdByUser")
     private List<Trade> trades = new ArrayList<Trade>();
+
+    public List<Trade> getTrades() { return this.trades; }
+    public void setTrades(List<Trade> trades) { this.trades = trades; }
 
     public User() { }
 
