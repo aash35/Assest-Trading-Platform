@@ -14,7 +14,7 @@ public class Administration extends JPanel {
 
     JButton mainMenuButton = new JButton("Main Menu");
 
-    public Administration(JFrame frame) {
+    public Administration(JPanel frame) {
 
         setBackground(new Color(243, 244, 246));
         setLayout(new GridBagLayout());
@@ -31,6 +31,7 @@ public class Administration extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+
                         NavigationHelper.assetType(frame);
                     }
                 });
@@ -46,7 +47,7 @@ public class Administration extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.mainMenu(frame);
+                        //NavigationHelper.mainMenu(frame);
                     }
                 });
 

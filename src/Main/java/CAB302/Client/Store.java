@@ -8,7 +8,7 @@ public class Store extends JPanel {
 
     JLabel storeLabel = new JLabel("Store");
 
-    public Store(JFrame frame) {
+    public Store() {
         setBackground(new Color(243, 244, 246));
         setLayout(new GridBagLayout());
         //gbc.fill = GridBagConstraints.HORIZONTAL;

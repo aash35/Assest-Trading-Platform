@@ -25,7 +25,7 @@ public class AssetType extends JPanel{
 
     JButton saveButton = new JButton("Save");
 
-    public AssetType(JFrame frame) {
+    public AssetType() {
 
         setBackground(new Color(243, 244, 246));
         setLayout(new GridBagLayout());
@@ -60,7 +60,7 @@ public class AssetType extends JPanel{
 
                 //need to remove on the way out
                 if (e.getKeyChar()==KeyEvent.VK_ESCAPE) {
-                    NavigationHelper.mainMenu(frame);
+                    //NavigationHelper.mainMenu(frame);
                 }
             }
 

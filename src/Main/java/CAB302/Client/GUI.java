@@ -50,13 +50,6 @@ public class GUI extends JFrame {
 
         setPreferredSize(new Dimension(800, 600));
 
-
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("Menu");
-        fileMenu.add("Login");
-        menuBar.add(fileMenu);
-        setJMenuBar(menuBar);
-
         //Panel to hold the button
         JPanel buttonPanel = new JPanel();
         //Button
