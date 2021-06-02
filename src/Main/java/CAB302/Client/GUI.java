@@ -38,13 +38,13 @@ public class GUI extends JFrame {
                 IllegalAccessException |
                 InstantiationException ignored) {
         }
+        this.setTitle("Organisation Store");
 
         setLayout(new BorderLayout());
         Container container = getContentPane();
 
-        //removes the default icon
-        Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
-        setIconImage(icon);
+        ImageIcon img = new ImageIcon("src\\Main\\graphics\\blueBorder.png");
+        setIconImage(img.getImage());
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -54,7 +54,6 @@ public class GUI extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Menu");
         fileMenu.add("Login");
-
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
 

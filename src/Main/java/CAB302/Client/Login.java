@@ -124,7 +124,7 @@ public class Login extends JPanel {
                         boolean isValid = false;
 
                         try {
-                            isValid = user.isValid();
+                            //isValid = user.isValid();
                         } catch (Exception exception) {
                         }
 
@@ -140,7 +140,7 @@ public class Login extends JPanel {
                             boolean isAdminValid = false;
 
                             try {
-                                isAdminValid = adminUser.isValid();
+                                //isAdminValid = adminUser.isValid();
                             } catch (Exception exception) {
                             }
 
