@@ -7,15 +7,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainLayout extends JPanel {
-    JPanel northPanel = new MainNorth();
-    JPanel centerPanel = new MainCentre();
+    JPanel northPanel;
+    JPanel centerPanel;
     JPanel westPanel;
 
     public MainLayout(JFrame frame) {
 
         User user = RuntimeSettings.CurrentUser;
-        setBackground(new Color(243, 244, 246));
-        westPanel =new MainWest(centerPanel, frame);
+
+
+        northPanel = new MainNorth(user, frame);
+        centerPanel = new MainCentre();
+        westPanel = new MainWest(centerPanel);
+
+
         setLayout(new BorderLayout());
 
         add(northPanel, BorderLayout.NORTH);
