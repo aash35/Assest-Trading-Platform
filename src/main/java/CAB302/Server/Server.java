@@ -1,10 +1,8 @@
 package CAB302.Server;
 
-import CAB302.Common.BaseObject;
+import CAB302.Common.*;
 import CAB302.Common.Helpers.HibernateUtil;
-import CAB302.Common.JsonPayloadRequest;
 import CAB302.Common.Interfaces.*;
-import CAB302.Common.JsonPayloadResponse;
 import com.google.gson.Gson;
 import org.hibernate.Session;
 
@@ -14,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Server extends Thread {
 
@@ -58,6 +57,9 @@ public class Server extends Thread {
             {
                 System.out.println("Listening for a connection");
 
+                TradeProcessor tradeProcessor = new TradeProcessor();
+                tradeProcessor.start();
+
                 Socket socket = serverSocket.accept();
 
                 RequestHandler requestHandler = new RequestHandler( socket );
@@ -65,6 +67,31 @@ public class Server extends Thread {
             }
             catch (IOException e)
             {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class TradeProcessor extends Thread {
+
+    @Override
+    public void run() {
+
+        Session session = HibernateUtil.getHibernateSession();
+
+        List<Asset> assets = (List<Asset>)(List<?>)new Asset().list();
+
+        List<Trade> trades = (List<Trade>)(List<?>)new Asset().list();
+
+
+
+        while(true) {
+            System.out.println("Attempting to process trades");
+
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -130,9 +157,11 @@ class RequestHandler extends Thread {
 
         switch (jsonPayload.getJsonPayloadType()) {
             case Buy:
+
                 break;
 
             case Sell:
+
                 break;
 
             case Get:

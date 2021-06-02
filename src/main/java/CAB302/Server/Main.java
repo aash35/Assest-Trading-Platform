@@ -21,9 +21,5 @@ public class Main {
         server.startServer();
 
         System.out.println("Server running");
-
-        server.stopServer();
-
-        System.out.println("Server stopping");
     }
 }

@@ -33,6 +33,9 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisationalUnit")
     private List<User> users = new ArrayList<User>();
 
+    public List<User> getUsers() { return this.users; }
+    public void setUsers(List<User> users) { this.users = users; }
+
     public OrganisationalUnit() { }
 
     public BaseObject get() {

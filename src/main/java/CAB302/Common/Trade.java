@@ -77,7 +77,12 @@ public class Trade extends BaseObject implements iGet, iList {
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
+        if (this.getAsset() == null) {
+            criteria.select(root);
+        }
+        else {
+            criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
+        }
 
         Query query = session.createQuery(criteria);
 
