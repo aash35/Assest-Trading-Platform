@@ -25,7 +25,6 @@ public class NavigationHelper {
         frame.add(new Store());
         frame.revalidate();
         frame.repaint();
-
     }
 
     public static void myAccount(JPanel frame) {
@@ -48,16 +47,13 @@ public class NavigationHelper {
     public static void administation(JPanel frame) {
         frame.removeAll();
         frame.add(new Administration(frame));
-
         frame.revalidate();
         frame.repaint();
-
     }
 
     public static void assetType(JPanel frame) {
         frame.removeAll();
         frame.add(new AssetType());
-
         frame.revalidate();
         frame.repaint();
     }

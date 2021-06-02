@@ -1,4 +1,9 @@
-package CAB302.Common.Colours;
+package CAB302.Common.Colors;
 
-public class LightBlue {
+import java.awt.*;
+
+public class LightBlue extends Color {
+    public LightBlue() {
+        super(177, 221, 240);
+    }
 }

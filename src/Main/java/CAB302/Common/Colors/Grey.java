@@ -1,4 +1,9 @@
-package CAB302.Common.Colours;
+package CAB302.Common.Colors;
 
-public class Grey {
+import java.awt.*;
+
+public class Grey extends Color {
+    public Grey() {
+        super(100, 118, 135);
+    }
 }
