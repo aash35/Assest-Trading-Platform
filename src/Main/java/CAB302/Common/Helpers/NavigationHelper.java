@@ -16,58 +16,44 @@ public class NavigationHelper {
 
     public static void mainMenu(JFrame frame) {
         frame.setContentPane(new MainLayout(frame));
-
-        NavigationHelper.generateMenuBar(frame);
+        frame.revalidate();
     }
 
-    public static void store(JPanel frame) {
-        frame.removeAll();
-        frame.add(new Store());
-        frame.revalidate();
-        frame.repaint();
+    public static void store(JPanel panel) {
+        panel.removeAll();
+        panel.add(new Store());
+        panel.revalidate();
+        panel.repaint();
     }
 
-    public static void myAccount(JPanel frame) {
-        frame.removeAll();
-        frame.add(new MyAccount());
+    public static void myAccount(JPanel panel) {
+        panel.removeAll();
+        panel.add(new MyAccount());
 
-        frame.revalidate();
-        frame.repaint();
+        panel.revalidate();
+        panel.repaint();
     }
 
-    public static void organisationalUnit(JPanel frame) {
-        frame.removeAll();
-        frame.add(new OrganisationalUnit());
+    public static void organisationalUnit(JPanel panel) {
+        panel.removeAll();
+        panel.add(new OrganisationalUnit());
 
-        frame.revalidate();
-        frame.repaint();
+        panel.revalidate();
+        panel.repaint();
 
     }
 
-    public static void administation(JPanel frame) {
-        frame.removeAll();
-        frame.add(new Administration(frame));
-        frame.revalidate();
-        frame.repaint();
+    public static void administation(JPanel panel) {
+        panel.removeAll();
+        panel.add(new Administration(panel));
+        panel.revalidate();
+        panel.repaint();
     }
 
-    public static void assetType(JPanel frame) {
-        frame.removeAll();
-        frame.add(new AssetType());
-        frame.revalidate();
-        frame.repaint();
-    }
-
-    public static void generateMenuBar(JFrame frame) {
-
-        JMenuItem logoutItem = new JMenuItem("Logout");
-        logoutItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                NavigationHelper.logout(frame);
-            }
-        });
-
-        frame.revalidate();
+    public static void assetType(JPanel panel) {
+        panel.removeAll();
+        panel.add(new AssetType());
+        panel.revalidate();
+        panel.repaint();
     }
 }

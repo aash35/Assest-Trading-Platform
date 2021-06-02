@@ -18,7 +18,7 @@ public class MainLayout extends JPanel {
 
         northPanel = new MainNorth(user, frame);
         centerPanel = new MainCentre();
-        westPanel = new MainWest(centerPanel);
+        westPanel = new MainWest(user, centerPanel);
 
 
         setLayout(new BorderLayout());

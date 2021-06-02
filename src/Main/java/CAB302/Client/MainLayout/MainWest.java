@@ -3,8 +3,10 @@ package CAB302.Client.MainLayout;
 import CAB302.Common.Colors.Grey;
 import CAB302.Common.Colors.LightBlue;
 import CAB302.Common.Colors.Purple;
+import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.RuntimeSettings;
+import CAB302.Common.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +25,7 @@ public class MainWest extends JPanel {
     JButton adminButton = new JButton("Administration");
 
 
-    public MainWest(JPanel panel) {
+    public MainWest(User user, JPanel panel) {
         setLayout(new GridBagLayout());
         setBackground(new Grey());
         setBorder(BorderFactory.createMatteBorder(2,2,2,0, Color.BLACK));
@@ -56,6 +58,7 @@ public class MainWest extends JPanel {
                         NavigationHelper.store(panel);
                     }
                 });
+
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.insets = new Insets(0, 0, 0, 0);
@@ -67,17 +70,21 @@ public class MainWest extends JPanel {
                         NavigationHelper.organisationalUnit(panel);
                     }
                 });
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        add(adminButton, gbc);
 
-        adminButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.administation(panel);
-                    }
-                });
+        if(user.getAccountRoleType() != AccountTypeRole.Standard){
+            gbc.gridx = 0;
+            gbc.gridy = 5;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            add(adminButton, gbc);
+
+            adminButton.addActionListener(
+                    new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            NavigationHelper.administation(panel);
+                        }
+                    });
+
+        }
     }
 }

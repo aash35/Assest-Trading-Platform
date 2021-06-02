@@ -1,5 +1,6 @@
 package CAB302.Client.MainLayout;
 
+import CAB302.Client.OrganisationalUnit;
 import CAB302.Common.Colors.Grey;
 import CAB302.Common.Colors.LightBlue;
 import CAB302.Common.Colors.Purple;
@@ -14,6 +15,6 @@ public class MainCentre extends JPanel {
     public MainCentre() {
         setBorder(BorderFactory.createLineBorder(Color.black, 2));
         setBackground(new Purple());
-
+        add(new OrganisationalUnit());
     }
 }

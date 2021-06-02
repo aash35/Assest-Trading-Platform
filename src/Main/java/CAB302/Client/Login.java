@@ -69,7 +69,7 @@ public class Login extends JPanel {
                     User adminUser = new User();
 
                     adminUser.setUsername("admin");
-                    adminUser.setAccountRoleType(AccountTypeRole.Administrator);
+                    adminUser.setAccountRoleType(AccountTypeRole.Standard);
 
                     CAB302.Common.OrganisationalUnit adminUserOrg = new CAB302.Common.OrganisationalUnit();
                     adminUserOrg.setUnitName("Potatos");
@@ -77,6 +77,23 @@ public class Login extends JPanel {
 
                     adminUser.setOrganisationalUnit(adminUserOrg);
                     RuntimeSettings.CurrentUser = adminUser;
+
+                    NavigationHelper.mainMenu(frame);
+                }
+                //need to remove on the way out
+                if (e.getKeyChar()==KeyEvent.VK_PAGE_UP) {
+
+                    User user = new User();
+
+                    user.setUsername("user");
+                    user.setAccountRoleType(AccountTypeRole.Standard);
+
+                    CAB302.Common.OrganisationalUnit userOrg = new CAB302.Common.OrganisationalUnit();
+                    userOrg.setUnitName("Potatos Farmers");
+                    userOrg.setAvailableCredit(5000);
+
+                    user.setOrganisationalUnit(userOrg);
+                    RuntimeSettings.CurrentUser = user;
 
                     NavigationHelper.mainMenu(frame);
                 }
