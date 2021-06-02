@@ -69,7 +69,7 @@ public class Login extends JPanel {
                     User adminUser = new User();
 
                     adminUser.setUsername("admin");
-                    adminUser.setAccountRoleType(AccountTypeRole.Standard);
+                    adminUser.setAccountRoleType(AccountTypeRole.Administrator);
 
                     CAB302.Common.OrganisationalUnit adminUserOrg = new CAB302.Common.OrganisationalUnit();
                     adminUserOrg.setUnitName("Potatos");
