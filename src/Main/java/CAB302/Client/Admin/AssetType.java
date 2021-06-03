@@ -1,5 +1,6 @@
-package CAB302.Client;
+package CAB302.Client.Admin;
 
+import CAB302.Client.Client;
 import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.JsonPayloadRequest;

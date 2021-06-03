@@ -1,4 +1,4 @@
-package CAB302.Client;
+package CAB302.Client.Admin;
 
 import CAB302.Common.Helpers.NavigationHelper;
 
@@ -31,8 +31,7 @@ public class Administration extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-
-                        NavigationHelper.assetType(panel);
+                        NavigationHelper.changePanel(panel, new AssetType());
                     }
                 });
 

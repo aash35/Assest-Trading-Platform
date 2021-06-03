@@ -1,5 +1,6 @@
-package CAB302.Client;
+package CAB302.Client.Store;
 
+import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.AssetType;
 import CAB302.Common.Colors.Purple;

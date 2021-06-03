@@ -1,4 +1,4 @@
-package CAB302.Client;
+package CAB302.Client.Store;
 
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
@@ -85,7 +85,7 @@ public class Store extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                NavigationHelper.buySellOrder(panel, assetType);
+                NavigationHelper.changePanel(panel, new BuySellAsset(assetType));
             }
         });
         return button;
