@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class BuySellAsset extends JPanel {
@@ -27,6 +28,8 @@ public class BuySellAsset extends JPanel {
 
     private JLabel buyTag;
     private JLabel sellTag;
+    private JLabel priceHistoryTag;
+    private JLabel currentOrderTag;
 
     private JSpinner buyQuantity;
     private JSpinner buyPrice;
@@ -126,6 +129,17 @@ public class BuySellAsset extends JPanel {
         });
 
         allTrades = getTradeList();
+
+        priceHistoryTag = new JLabel(String.format("Price History of %s Sales", assetType.getName()));
+        priceHistoryTag.setFont(new Font(buyTag.getFont().getFontName(), Font.PLAIN, 21));
+
+        currentOrderTag = new JLabel(String.format("Current Orders for %s", assetType.getName()));
+        currentOrderTag.setFont(new Font(sellTag.getFont().getFontName(), Font.PLAIN, 21));
+
+        priceHistoryTable = createOrderTable(findFilledTrades());
+        priceHistoryPanel = new JScrollPane(priceHistoryTable);
+        priceHistoryTable.setFillsViewportHeight(true);
+
         currentOrderTable = createOrderTable(findCurrentTrades());
         currentOrderPanel = new JScrollPane(currentOrderTable);
         currentOrderTable.setFillsViewportHeight(true);
@@ -135,8 +149,13 @@ public class BuySellAsset extends JPanel {
         mainPanel.add(buySellPanel, BorderLayout.CENTER);
 
         tablesPanel = createPanel(c);
+        tablesPanel.setLayout(new BoxLayout(tablesPanel, BoxLayout.Y_AXIS));
+        tablesPanel.setPreferredSize(new Dimension(400,100));
+        tablesPanel.add(priceHistoryTag);
+        tablesPanel.add(priceHistoryPanel);
+        tablesPanel.add(currentOrderTag);
         tablesPanel.add(currentOrderPanel);
-        tablesPanel.setLayout(new GridLayout(2,1,10,10));
+
         mainPanel.add(tablesPanel, BorderLayout.EAST);
     }
 
@@ -177,6 +196,25 @@ public class BuySellAsset extends JPanel {
         }
 
         return currentTrades;
+    }
+
+    private ArrayList<Trade> findFilledTrades(){
+        ArrayList<Trade> filledTrades = new ArrayList<>();
+        for(BaseObject each: allTrades){
+            Trade trade = (Trade) each;
+            if(trade.getStatus() == TradeStatus.Filled &&
+                    trade.getTransactionType() == TradeTransactionType.Selling){
+                filledTrades.add(trade);
+            }
+        }
+
+        filledTrades.sort(new Comparator<Trade>() {
+            @Override
+            public int compare(Trade o1, Trade o2) {
+                return o1.getCreatedDate().compareTo(o2.getCreatedDate());
+            }
+        });
+        return filledTrades;
     }
 
     private JTable createOrderTable(ArrayList<Trade> currentOrders) {
