@@ -81,7 +81,7 @@ public class Login extends JPanel {
                     NavigationHelper.mainMenu(frame);
                 }
                 //need to remove on the way out
-                if (e.getKeyChar()==KeyEvent.VK_PAGE_UP) {
+                if ((int)e.getKeyChar()==96) {
 
                     User user = new User();
 
