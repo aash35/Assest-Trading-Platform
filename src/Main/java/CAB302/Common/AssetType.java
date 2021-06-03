@@ -32,6 +32,9 @@ public class AssetType extends BaseObject implements iGet, iList {
     public List<Asset> getAssets() { return this.assets; }
     public void setAssets(List<Asset> assets) { this.assets = assets; }
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assetType")
+    private List<Trade> trades = new ArrayList<Trade>();
+
     public AssetType() { }
 
     public BaseObject get() {

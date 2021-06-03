@@ -5,7 +5,6 @@ import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Interfaces.*;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -59,12 +58,13 @@ public class Trade extends BaseObject implements iGet, iList {
     public void setCreatedByUser(User createdByUser) { this.createdByUser = createdByUser; }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "assetID")
-    private Asset asset;
+    @JoinColumn(name = "assetTypeID")
 
-    @Column(name = "assetID")
-    public Asset getAsset() { return asset; }
-    public void setAsset(Asset asset) { this.asset = asset; }
+    private AssetType assetType;
+
+    @Column(name = "assetTypeID")
+    public AssetType getAssetType() { return assetType; }
+    public void setAssetType(AssetType assetType) { this.assetType = assetType; }
 
     public Trade() { }
 
@@ -77,7 +77,7 @@ public class Trade extends BaseObject implements iGet, iList {
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
+        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAssetType()));
 
         Query query = session.createQuery(criteria);
 
@@ -104,7 +104,7 @@ public class Trade extends BaseObject implements iGet, iList {
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
+        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAssetType()));
 
         Query query = session.createQuery(criteria);
 

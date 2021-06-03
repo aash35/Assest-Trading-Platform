@@ -6,7 +6,6 @@ import CAB302.Common.Colors.Purple;
 import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
-import CAB302.Common.Exceptions.IllegalTradeException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,13 +61,9 @@ public class BuySellAsset extends JPanel {
         buyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Asset asset = new Asset();
-                asset.setAssetType(assetType);
-                asset.setCreatedByUserID(RuntimeSettings.CurrentUser);
-
                 Trade trade = new Trade();
                 trade.setQuantity((Integer) buyQuantity.getValue());
-                trade.setAsset(asset);
+                trade.setAssetType(assetType);
                 trade.setPrice((Double) buyPrice.getValue());
                 trade.setCreatedByUser(RuntimeSettings.CurrentUser);
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
@@ -95,13 +90,9 @@ public class BuySellAsset extends JPanel {
         sellButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Asset asset = new Asset();
-                asset.setAssetType(assetType);
-                asset.setCreatedByUserID(RuntimeSettings.CurrentUser);
-
                 Trade trade = new Trade();
                 trade.setQuantity((Integer) sellQuantity.getValue());
-                trade.setAsset(asset);
+                trade.setAssetType(assetType);
                 trade.setPrice((Double) sellPrice.getValue());
                 trade.setCreatedByUser(RuntimeSettings.CurrentUser);
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
