@@ -49,8 +49,7 @@ public class Asset extends BaseObject implements iGet, iList {
         this.createdByUser = createdByUserID;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "asset")
-    private List<Trade> trades = new ArrayList<Trade>();
+
 
     public Asset() { }
 
