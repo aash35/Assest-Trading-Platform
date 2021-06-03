@@ -1,6 +1,7 @@
 package CAB302.Client;
 
 import CAB302.Common.AssetType;
+import CAB302.Common.Colors.Purple;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,7 @@ public class BuySellAsset extends JPanel {
     private JButton sellButton;
 
     public BuySellAsset(AssetType assetType){
-        Color c = new Color(243, 244, 246);
+        Color c = new Purple();
         setLayout(new BorderLayout());
 
         titlePanel = createPanel(c);
