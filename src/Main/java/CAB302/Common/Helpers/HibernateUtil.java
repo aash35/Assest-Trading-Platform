@@ -13,8 +13,6 @@ public class HibernateUtil {
 
         Session session = sf.openSession();
 
-        session.beginTransaction();
-
         return session;
     }
 }
