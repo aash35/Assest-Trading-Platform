@@ -5,15 +5,16 @@ import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
 import CAB302.Common.Colors.Grey;
 import CAB302.Common.Colors.Purple;
-import CAB302.Common.Enums.JsonPayloadType;
+import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
+import CAB302.Common.PayloadRequest;
+import CAB302.Common.PayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 
 public class Store extends JPanel {
@@ -51,7 +52,11 @@ public class Store extends JPanel {
         storeLabel.setFont(new Font(storeLabel.getFont().getFontName(), Font.PLAIN, 42));
         titlePanel.add(storeLabel);
 
-        getAssetsList();
+        try {
+            getAssetsList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         for (BaseObject assetType: assetsList
              ) {
@@ -74,14 +79,14 @@ public class Store extends JPanel {
     /**
      * Retrieves the list of current asset types from the database, then assigns it to the assetsList property.
      */
-    private void getAssetsList() {
+    private void getAssetsList() throws IOException {
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new AssetType());
-        request.setJsonPayloadType(JsonPayloadType.List);
+        request.setRequestPayloadType(RequestPayloadType.List);
 
-        JsonPayloadResponse response = new Client().SendRequest(request);
+        PayloadResponse response = new Client().SendRequest(request);
         assetsList = (List<AssetType>)(List<?>)response.getPayloadObject();
     }
 

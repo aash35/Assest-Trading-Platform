@@ -1,11 +1,12 @@
 package CAB302.Client;
 
-import CAB302.Client.Admin.AssetType;
-import CAB302.Common.Enums.JsonPayloadType;
+
+import CAB302.Client.Helper.Toast;
+import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
+import CAB302.Common.PayloadRequest;
+import CAB302.Common.PayloadResponse;
 import CAB302.Common.RuntimeSettings;
 import CAB302.Common.User;
 
@@ -15,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 public class MyAccount extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
@@ -99,6 +101,7 @@ public class MyAccount extends JPanel {
                     public void actionPerformed(ActionEvent e) {
                         remove(changePassword);
                         JLabel errorMessage = new JLabel("");
+                        errorMessage.setForeground(Color.red);
 
                         gbc.anchor = GridBagConstraints.LINE_END;
                         gbc.gridwidth = 1;
@@ -125,6 +128,11 @@ public class MyAccount extends JPanel {
                         gbc.gridy = 6;
                         submit.setEnabled(false);
                         add(submit, gbc);
+
+                        gbc.gridwidth = 3;
+                        gbc.gridx = 0;
+                        gbc.gridy = 7;
+                        add(errorMessage, gbc);
 
                         password.addKeyListener(new KeyListener() {
                             @Override
@@ -167,9 +175,15 @@ public class MyAccount extends JPanel {
                                 String bString = new String(b);
                                 if(!aString.equals(bString) & errorMessage.getText().length() == 0){
                                     errorMessage.setText("Passwords do not match");
+                                    submit.setEnabled(false);
+                                    revalidate();
+                                    repaint();
                                 }
-                                else{
+                                else if(aString.equals(bString)){
                                     submit.setEnabled(true);
+                                    errorMessage.setText("");
+                                    revalidate();
+                                    repaint();
                                 }
                             }
                         });
@@ -189,21 +203,28 @@ public class MyAccount extends JPanel {
 
                                         user.setHashedPassword(hashedPassword);
 
-                                        JsonPayloadRequest request = new JsonPayloadRequest();
+                                        PayloadRequest request = new PayloadRequest();
 
                                         request.setPayloadObject(user);
-                                        request.setJsonPayloadType(JsonPayloadType.Update);
+                                        request.setRequestPayloadType(RequestPayloadType.Update);
 
-                                        JsonPayloadResponse response = new Client().SendRequest(request);
+                                        PayloadResponse response = null;
+                                        try {
+                                            response = new Client().SendRequest(request);
+                                        } catch (IOException ioException) {
+                                            ioException.printStackTrace();
+                                        }
 
                                         user = (CAB302.Common.User)response.getPayloadObject();
 
+                                        Toast t;
                                         if (user == null) {
-
+                                            t = new Toast("Update Failed", 150, 400);
                                         }
                                         else {
-
+                                            t = new Toast("Update Complete", 150, 400);
                                         }
+                                        t.showtoast();
                                     }
                                 });
 

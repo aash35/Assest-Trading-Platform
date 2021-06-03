@@ -14,7 +14,7 @@ public class Toast extends JFrame {
     // JWindow
     JWindow w;
 
-    Toast(String s, int x, int y)
+    public Toast(String s, int x, int y)
     {
         w = new JWindow();
 
@@ -55,7 +55,7 @@ public class Toast extends JFrame {
     }
 
     // function to pop up the toast
-    void showtoast()
+    public void showtoast()
     {
         try {
             w.setOpacity(1);
