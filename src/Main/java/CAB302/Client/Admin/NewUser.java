@@ -1,18 +1,7 @@
 package CAB302.Client.Admin;
 
-import CAB302.Client.Client;
-import CAB302.Common.Enums.JsonPayloadType;
-import CAB302.Common.Helpers.NavigationHelper;
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
-
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class NewUser extends JPanel {
     JLabel enterNameLabel = new JLabel("Enter Full Name: ");

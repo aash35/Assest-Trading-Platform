@@ -16,10 +16,15 @@ import javax.persistence.criteria.Root;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GUI extends JFrame {
 
     public GUI() throws Exception {
+
+        Logger log = Logger.getLogger("org.hibernate");
+        log.setLevel(Level.WARNING);
 
         //Sets the Look and Feel to Nimbus or SystemLookAndFeel if nimbus isn't found
         try {

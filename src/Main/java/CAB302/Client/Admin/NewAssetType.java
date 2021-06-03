@@ -1,10 +1,9 @@
 package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
-import CAB302.Common.Enums.JsonPayloadType;
-import CAB302.Common.Helpers.NavigationHelper;
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
+import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.PayloadRequest;
+import CAB302.Common.PayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 public class NewAssetType extends JPanel{
     GridBagConstraints gbc = new GridBagConstraints();
@@ -93,19 +93,28 @@ public class NewAssetType extends JPanel{
                         type.setName(name);
                         type.setDescription(description);
 
-                        JsonPayloadRequest request = new JsonPayloadRequest();
+                        PayloadRequest request = new PayloadRequest();
 
                         request.setPayloadObject(type);
-                        request.setJsonPayloadType(JsonPayloadType.Get);
+                        request.setRequestPayloadType(RequestPayloadType.Get);
 
-                        JsonPayloadResponse response = new Client().SendRequest(request);
+                        PayloadResponse response = null;
+                        try {
+                            response = new Client().SendRequest(request);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
 
                         CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
 
                         if (assetType == null) {
 
-                            request.setJsonPayloadType(JsonPayloadType.Create);
-                            response = new Client().SendRequest(request);
+                            request.setRequestPayloadType(RequestPayloadType.Create);
+                            try {
+                                response = new Client().SendRequest(request);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
 
                             nameField.setText("");
                             descriptionField.setText("");

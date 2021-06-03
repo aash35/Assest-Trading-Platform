@@ -1,17 +1,15 @@
 package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
-import CAB302.Common.Enums.JsonPayloadType;
-import CAB302.Common.Helpers.NavigationHelper;
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
+import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.PayloadRequest;
+import CAB302.Common.PayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.io.IOException;
 
 public class NewOrganisationalUnit extends JPanel {
     JLabel messageStackLabel = new JLabel("");
@@ -42,19 +40,28 @@ public class NewOrganisationalUnit extends JPanel {
 
                         type.setUnitName(name);
 
-                        JsonPayloadRequest request = new JsonPayloadRequest();
+                        PayloadRequest request = new PayloadRequest();
 
                         request.setPayloadObject(type);
-                        request.setJsonPayloadType(JsonPayloadType.Get);
+                        request.setRequestPayloadType(RequestPayloadType.Get);
 
-                        JsonPayloadResponse response = new Client().SendRequest(request);
+                        PayloadResponse response = null;
+                        try {
+                            response = new Client().SendRequest(request);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
 
                         CAB302.Common.OrganisationalUnit ouName = (CAB302.Common.OrganisationalUnit)response.getPayloadObject();
 
                         if (ouName == null) {
 
-                            request.setJsonPayloadType(JsonPayloadType.Create);
-                            response = new Client().SendRequest(request);
+                            request.setRequestPayloadType(RequestPayloadType.Create);
+                            try {
+                                response = new Client().SendRequest(request);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
 
                             OUnameField.setText("");
 

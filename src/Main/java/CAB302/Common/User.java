@@ -2,6 +2,7 @@ package CAB302.Common;
 
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Helpers.HibernateUtil;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.*;

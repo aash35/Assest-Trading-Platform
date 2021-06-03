@@ -4,7 +4,7 @@ import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.AssetType;
 import CAB302.Common.Colors.Purple;
-import CAB302.Common.Enums.JsonPayloadType;
+import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
 
@@ -102,13 +102,13 @@ public class BuySellAsset extends JPanel {
 
                 Client client = new Client();
 
-                JsonPayloadRequest request = new JsonPayloadRequest();
+                PayloadRequest request = new PayloadRequest();
 
                 request.setPayloadObject(trade);
-                request.setJsonPayloadType(JsonPayloadType.Buy);
+                request.setRequestPayloadType(RequestPayloadType.Buy);
 
                 try {
-                    JsonPayloadResponse response = client.SendRequest(request);
+                    PayloadResponse response = client.SendRequest(request);
                 }
                catch(Exception error){
 
@@ -131,13 +131,13 @@ public class BuySellAsset extends JPanel {
 
                 Client client = new Client();
 
-                JsonPayloadRequest request = new JsonPayloadRequest();
+                PayloadRequest request = new PayloadRequest();
 
                 request.setPayloadObject(trade);
-                request.setJsonPayloadType(JsonPayloadType.Buy);
+                request.setRequestPayloadType(RequestPayloadType.Buy);
 
                 try {
-                    JsonPayloadResponse response = client.SendRequest(request);
+                    PayloadResponse response = client.SendRequest(request);
                 }
                 catch(Exception error){
 

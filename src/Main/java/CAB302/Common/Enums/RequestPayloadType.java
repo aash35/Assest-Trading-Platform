@@ -1,6 +1,6 @@
 package CAB302.Common.Enums;
 
-public enum JsonPayloadType {
+public enum RequestPayloadType {
     Create,
     Delete,
     Update,

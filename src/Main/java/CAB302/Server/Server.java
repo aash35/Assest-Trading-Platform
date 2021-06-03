@@ -5,20 +5,13 @@ import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Interfaces.*;
-import com.google.gson.Gson;
 import org.hibernate.Session;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Server extends Thread {
 
@@ -127,13 +120,13 @@ class TradeProcessor extends Thread {
                                 }
 
                                 Asset asset = new Asset();
-                                asset.setAssetType(availableSellTrade.getAsset().getAssetType());
+                                asset.setAssetType(availableSellTrade.getAssetType());
                                 asset.setQuantity(quantityToBuy);
                                 asset.setCreatedByUserID(buyTrade.getCreatedByUser());
 
                                 Trade trade = new Trade();
                                 trade.setQuantity(quantityToBuy);
-                                trade.setAsset(asset);
+                                trade.setAssetType(buyTrade.getAssetType());
                                 trade.setPrice(buyTrade.getPrice());
                                 trade.setStatus(TradeStatus.Filled);
                                 trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
@@ -190,22 +183,20 @@ class RequestHandler extends Thread {
         try {
             System.out.println("Received a connection");
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            InputStream inputStream = socket.getInputStream();
 
-            String data = in.readLine();
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
-            String result = processData(data);
+            PayloadRequest request = (PayloadRequest)objectInputStream.readObject();
 
-            out.println(result);
+            PayloadResponse response = processData(request);
 
-            out.flush();
+            OutputStream outputStream = socket.getOutputStream();
 
-            data = null;
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 
-            // Close our connection
-            in.close();
-            out.close();
+            objectOutputStream.writeObject(response);
+
             socket.close();
 
             System.out.println("Connection closed");
@@ -215,26 +206,18 @@ class RequestHandler extends Thread {
         }
     }
 
-    protected String processData(String data) throws IOException {
-
-        Gson g = new Gson();
-
-        JsonPayloadRequest jsonPayload = null;
-
-        try {
-            jsonPayload = g.fromJson(data, JsonPayloadRequest.class);
-        } catch (Exception ex) { }
+    protected PayloadResponse processData(PayloadRequest requestPayload) throws IOException {
 
         //close the connection if we don't like the result or the checksum is empty
-        if (jsonPayload == null || jsonPayload.getChecksum() == null || jsonPayload.getChecksum().length() == 0) {
+        if (requestPayload == null || requestPayload.getChecksum() == null || requestPayload.getChecksum().length() == 0) {
             socket.close();
             return null;
         }
 
         //need to add validation of the checksum
-        var object = jsonPayload.getPayloadObject();
+        var object = requestPayload.getPayloadObject();
 
-        switch (jsonPayload.getJsonPayloadType()) {
+        switch (requestPayload.getRequestPayloadType()) {
             case Buy:
 
                 break;
@@ -248,13 +231,11 @@ class RequestHandler extends Thread {
                 {
                     var result = ((iGet)object).get();
 
-                    JsonPayloadResponse response = new JsonPayloadResponse();
+                    PayloadResponse response = new PayloadResponse();
 
                     response.setPayloadObject(result);
 
-                    String jsonString = response.getJsonString();
-
-                    return jsonString;
+                    return response;
                 }
 
                 break;
@@ -264,13 +245,11 @@ class RequestHandler extends Thread {
                 {
                     var result = ((iList)object).list();
 
-                    JsonPayloadResponse response = new JsonPayloadResponse();
+                    PayloadResponse response = new PayloadResponse();
 
                     response.setPayloadObject(result);
 
-                    String jsonString = response.getJsonString();
-
-                    return null;
+                    return response;
                 }
                 break;
 
