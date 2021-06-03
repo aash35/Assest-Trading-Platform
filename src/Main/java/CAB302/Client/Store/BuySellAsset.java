@@ -14,11 +14,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BuySellAsset extends JPanel {
     private JPanel mainPanel;
     private JPanel titlePanel;
     private JPanel buySellPanel;
+    private JPanel tablesPanel;
+    private JScrollPane currentOrderPanel;
+    private JScrollPane priceHistoryPanel;
 
     private JLabel buyTag;
     private JLabel sellTag;
@@ -30,6 +35,10 @@ public class BuySellAsset extends JPanel {
     private JSpinner sellQuantity;
     private JSpinner sellPrice;
     private JButton sellButton;
+
+    private List<BaseObject> allTrades;
+    private JTable currentOrderTable;
+    private JTable priceHistoryTable;
 
     public BuySellAsset(AssetType assetType){
         Color c = new Purple();
@@ -116,9 +125,19 @@ public class BuySellAsset extends JPanel {
             }
         });
 
+        allTrades = getTradeList();
+        currentOrderTable = createOrderTable(findCurrentTrades());
+        currentOrderPanel = new JScrollPane(currentOrderTable);
+        currentOrderTable.setFillsViewportHeight(true);
+
         buySellPanel = createPanel(c);
         layoutBuySellPanel();
         mainPanel.add(buySellPanel, BorderLayout.CENTER);
+
+        tablesPanel = createPanel(c);
+        tablesPanel.add(currentOrderPanel);
+        tablesPanel.setLayout(new GridLayout(2,1,10,10));
+        mainPanel.add(tablesPanel, BorderLayout.EAST);
     }
 
     /**
@@ -141,6 +160,49 @@ public class BuySellAsset extends JPanel {
         JSpinner spinner = new JSpinner(model);
         spinner.setPreferredSize(new Dimension(100, 30));
         return  spinner;
+    }
+    
+    private List<BaseObject> getTradeList(){
+        Trade emptyTrade = new Trade();
+        return emptyTrade.list();
+    }
+
+    private ArrayList<Trade> findCurrentTrades(){
+        ArrayList<Trade> currentTrades = new ArrayList<>();
+        for(BaseObject each: allTrades){
+            Trade trade = (Trade) each;
+            if (trade.getStatus() == TradeStatus.InMarket){
+                currentTrades.add(trade);
+            }
+        }
+
+        return currentTrades;
+    }
+
+    private JTable createOrderTable(ArrayList<Trade> currentOrders) {
+        String[] columnHeaders = {"Asset Type",
+                "Quantity",
+                "Price per Unit",
+                "Order Type",
+                "Created By User",
+                "Date Created"};
+
+        Object[][] data = new Object[currentOrders.size()][6];
+
+        int i = 0;
+        for (Trade order: currentOrders){
+            data[i][0] = order.getAssetType().getName();
+            data[i][1] = order.getQuantity();
+            data[i][2] = order.getPrice();
+            data[i][3] = order.getTransactionType().toString();
+            data[i][4] = order.getCreatedByUser().getUsername();
+            data[i][5] = order.getCreatedDate();
+            i++;
+        }
+        JTable jTable = new JTable(data, columnHeaders);
+        jTable.setRowSelectionAllowed(false);
+        jTable.setColumnSelectionAllowed(false);
+        return jTable;
     }
 
     /**
