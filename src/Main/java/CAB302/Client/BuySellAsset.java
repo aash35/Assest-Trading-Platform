@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BuySellAsset extends JPanel {
+    private JPanel mainPanel;
     private JPanel titlePanel;
     private JPanel buySellPanel;
 
@@ -23,16 +24,19 @@ public class BuySellAsset extends JPanel {
 
     public BuySellAsset(AssetType assetType){
         Color c = new Purple();
-        setLayout(new BorderLayout());
+        mainPanel = createPanel(c);
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(630, 500));
+        add(mainPanel);
 
         titlePanel = createPanel(c);
-        buySellPanel = createPanel(c);
+        titlePanel.setLayout(new FlowLayout());
 
-        add(titlePanel, BorderLayout.NORTH);
-        add(buySellPanel, BorderLayout.CENTER);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
 
         JLabel assetName = new JLabel(assetType.getName());
         assetName.setFont(new Font(assetName.getFont().getFontName(), Font.PLAIN, 42));
+        titlePanel.add(assetName);
 
         buyTag = new JLabel(String.format("Buy %s", assetType.getName()));
         buyTag.setFont(new Font(buyTag.getFont().getFontName(), Font.PLAIN, 21));
@@ -48,7 +52,9 @@ public class BuySellAsset extends JPanel {
         buyButton = new JButton("Buy");
         sellButton = new JButton("Sell");
 
+        buySellPanel = createPanel(c);
         layoutBuySellPanel();
+        mainPanel.add(buySellPanel, BorderLayout.CENTER);
     }
 
     /**
@@ -79,11 +85,11 @@ public class BuySellAsset extends JPanel {
         buySellPanel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
-        constraints.weightx = 0.5;
-        constraints.weighty = 0.5;
+        constraints.weightx = 100;
+        constraints.weighty = 100;
 
         constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(10, 10, 10, 10);
+        constraints.insets = new Insets(0, 0, 0, 0);
 
         addToPanel(buySellPanel, buyTag, constraints, 0,0,1,1);
         addToPanel(buySellPanel, buyQuantity, constraints, 0, 1, 2, 1);
