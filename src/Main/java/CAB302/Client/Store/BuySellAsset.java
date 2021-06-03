@@ -49,6 +49,7 @@ public class BuySellAsset extends JPanel {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630, 500));
         add(mainPanel);
+        setBackground(c);
 
         titlePanel = createPanel(c);
         titlePanel.setLayout(new FlowLayout());
