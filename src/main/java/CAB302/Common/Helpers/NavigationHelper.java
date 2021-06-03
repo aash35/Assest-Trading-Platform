@@ -4,8 +4,6 @@ import CAB302.Client.*;
 import CAB302.Client.MainLayout.MainLayout;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class NavigationHelper {
     public static void logout(JFrame frame) {
@@ -21,7 +19,14 @@ public class NavigationHelper {
 
     public static void store(JPanel panel) {
         panel.removeAll();
-        panel.add(new Store());
+        panel.add(new Store(panel));
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    public static void buySellOrder(JPanel panel, CAB302.Common.AssetType assetType) {
+        panel.removeAll();
+        panel.add(new BuySellAsset(assetType));
         panel.revalidate();
         panel.repaint();
     }

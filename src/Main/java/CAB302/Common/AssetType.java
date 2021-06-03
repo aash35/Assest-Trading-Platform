@@ -70,7 +70,12 @@ public class AssetType extends BaseObject implements iGet, iList {
         CriteriaQuery<AssetType> criteria = criteriaBuilder.createQuery(AssetType.class);
         Root<AssetType> root = criteria.from(AssetType.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("name"), this.getName()));
+        if (this.getName() == null){
+            criteria.select(root);
+        }
+        else{
+            criteria.select(root).where(criteriaBuilder.equal(root.get("name"), this.getName()));
+        }
 
         Query query = session.createQuery(criteria);
 

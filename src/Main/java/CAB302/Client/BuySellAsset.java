@@ -20,7 +20,7 @@ public class BuySellAsset extends JPanel {
     private JSpinner sellPrice;
     private JButton sellButton;
 
-    public BuySellAsset(JFrame frame, AssetType assetType){
+    public BuySellAsset(AssetType assetType){
         Color c = new Color(243, 244, 246);
         setLayout(new BorderLayout());
 

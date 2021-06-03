@@ -14,10 +14,10 @@ public class Store extends JPanel {
     private JPanel titlePanel;
     private JPanel assetsPanel;
     private List<BaseObject> assetsList;
-    private JFrame frame;
+    private JPanel panel;
 
-    public Store(JFrame frame) {
-        this.frame = frame;
+    public Store(JPanel panel) {
+        this.panel = panel;
         Color c = new Color(243, 244, 246);
         setLayout(new BorderLayout());
 
@@ -100,7 +100,7 @@ public class Store extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                NavigationHelper.buySellOrder(frame, assetType);
+                NavigationHelper.buySellOrder(panel, assetType);
             }
         });
         return button;
