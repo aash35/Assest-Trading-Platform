@@ -114,7 +114,7 @@ public class BuySellAsset extends JPanel {
 
                 request.setPayloadObject(trade);
                 request.setJsonPayloadType(JsonPayloadType.Buy);
-                
+
                 try {
                     JsonPayloadResponse response = client.SendRequest(request);
                 }
