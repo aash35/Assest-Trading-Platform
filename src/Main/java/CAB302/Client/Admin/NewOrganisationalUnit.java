@@ -38,9 +38,9 @@ public class NewOrganisationalUnit extends JPanel {
                     public void actionPerformed(ActionEvent e) {
                         String name = OUnameField.getText();
 
-                        CAB302.Common.AssetType type = new CAB302.Common.AssetType();
+                        CAB302.Common.OrganisationalUnit type = new CAB302.Common.OrganisationalUnit();
 
-                        type.setName(name);
+                        type.setUnitName(name);
 
                         JsonPayloadRequest request = new JsonPayloadRequest();
 
