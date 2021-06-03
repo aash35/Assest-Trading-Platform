@@ -6,7 +6,6 @@ import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
-import CAB302.Common.OrganisationalUnit;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -72,7 +71,29 @@ public class Login extends JPanel {
                     adminUser.setUsername("admin");
                     adminUser.setAccountRoleType(AccountTypeRole.Administrator);
 
+                    CAB302.Common.OrganisationalUnit adminUserOrg = new CAB302.Common.OrganisationalUnit();
+                    adminUserOrg.setUnitName("Potatos");
+                    adminUserOrg.setAvailableCredit(50000);
+
+                    adminUser.setOrganisationalUnit(adminUserOrg);
                     RuntimeSettings.CurrentUser = adminUser;
+
+                    NavigationHelper.mainMenu(frame);
+                }
+                //need to remove on the way out
+                if (e.getKeyChar()==KeyEvent.VK_PAGE_UP) {
+
+                    User user = new User();
+
+                    user.setUsername("user");
+                    user.setAccountRoleType(AccountTypeRole.Standard);
+
+                    CAB302.Common.OrganisationalUnit userOrg = new CAB302.Common.OrganisationalUnit();
+                    userOrg.setUnitName("Potatos Farmers");
+                    userOrg.setAvailableCredit(5000);
+
+                    user.setOrganisationalUnit(userOrg);
+                    RuntimeSettings.CurrentUser = user;
 
                     NavigationHelper.mainMenu(frame);
                 }

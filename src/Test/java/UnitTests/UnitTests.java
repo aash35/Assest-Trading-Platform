@@ -13,17 +13,8 @@ import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Server.Server;
 import org.junit.jupiter.api.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Hashtable;
 
 
 public class UnitTests {
@@ -145,7 +136,7 @@ public class UnitTests {
     public void newLegalBuy() {
         Trade buyTrade = new Trade();
 
-        buyTrade.setAsset(asset);
+        buyTrade.setAssetType(type);
         buyTrade.setQuantity(10);
         buyTrade.setPrice(5);
         buyTrade.setCreatedByUser(user);
@@ -172,7 +163,7 @@ public class UnitTests {
     public void newLegalSell() {
         Trade sellTrade = new Trade();
 
-        sellTrade.setAsset(asset);
+        sellTrade.setAssetType(type);
         sellTrade.setQuantity(10);
         sellTrade.setPrice(10);
         sellTrade.setCreatedByUser(user);
@@ -198,7 +189,7 @@ public class UnitTests {
     public void newIllegalBuy() {
         Trade buyTrade = new Trade();
 
-        buyTrade.setAsset(asset);
+        buyTrade.setAssetType(type);
         buyTrade.setQuantity(10);
         buyTrade.setPrice(12);
         buyTrade.setCreatedByUser(user);
@@ -225,7 +216,7 @@ public class UnitTests {
     public void newIllegalSell() {
         Trade sellTrade = new Trade();
 
-        sellTrade.setAsset(asset);
+        sellTrade.setAssetType(type);
         sellTrade.setQuantity(60);
         sellTrade.setPrice(10);
         sellTrade.setCreatedByUser(user);

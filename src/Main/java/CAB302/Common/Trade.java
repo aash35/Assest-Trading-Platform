@@ -5,7 +5,6 @@ import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Interfaces.*;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -31,11 +30,11 @@ public class Trade extends BaseObject implements iGet, iList {
     public int getQuantity() { return this.quantity; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    private double price;
+    private int price;
 
     @Column(name = "price")
-    public double getPrice() { return this.price; }
-    public void setPrice(double price) { this.price = price; }
+    public int getPrice() { return this.price; }
+    public void setPrice(int price) { this.price = price; }
 
     private Timestamp createdDate;
 
@@ -59,31 +58,26 @@ public class Trade extends BaseObject implements iGet, iList {
     public void setCreatedByUser(User createdByUser) { this.createdByUser = createdByUser; }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "assetID")
-    private Asset asset;
+    @JoinColumn(name = "assetTypeID")
 
-    @Column(name = "assetID")
-    public Asset getAsset() { return asset; }
-    public void setAsset(Asset asset) { this.asset = asset; }
+    private AssetType assetType;
+
+    @Column(name = "assetTypeID")
+    public AssetType getAssetType() { return assetType; }
+    public void setAssetType(AssetType assetType) { this.assetType = assetType; }
 
     public Trade() { }
 
     public BaseObject get() {
-        Session session = RuntimeSettings.Session;
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root);
-
-        if (this.getAsset() != null) {
-            criteria.where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
-        }
-
-        if (this.getStatus() != null) {
-            criteria.where(criteriaBuilder.equal(root.get("status"), this.getStatus()));
-        }
+        criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
 
         Query query = session.createQuery(criteria);
 
@@ -96,17 +90,26 @@ public class Trade extends BaseObject implements iGet, iList {
 
         }
 
+        session.close();
+
         return trade;
     }
 
     public List<BaseObject> list() {
-        Session session = RuntimeSettings.Session;
+        Session session = HibernateUtil.getHibernateSession();
+
+        session.beginTransaction();
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAsset()));
+        if (this.getAssetType() == null){
+            criteria.select(root);
+        }
+        else{
+            criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
+        }
 
         Query query = session.createQuery(criteria);
 
@@ -119,7 +122,7 @@ public class Trade extends BaseObject implements iGet, iList {
 
         }
 
-        session.flush();
+        session.close();
 
         return trades;
     }

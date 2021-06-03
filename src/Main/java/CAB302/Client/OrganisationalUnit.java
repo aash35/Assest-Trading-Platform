@@ -6,7 +6,7 @@ import java.awt.*;
 public class OrganisationalUnit extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
 
-    JLabel OULabel = new JLabel("Orginisation Unit");
+    JLabel OULabel = new JLabel("Organisation Unit");
     public OrganisationalUnit() {
 
         setBackground(new Color(243, 244, 246));
