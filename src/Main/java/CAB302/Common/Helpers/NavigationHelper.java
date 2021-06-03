@@ -1,9 +1,7 @@
 package CAB302.Common.Helpers;
 
 import CAB302.Client.*;
-import CAB302.Client.Admin.AssetType;
 import CAB302.Client.MainLayout.MainLayout;
-import CAB302.Client.Store.BuySellAsset;
 
 import javax.swing.*;
 

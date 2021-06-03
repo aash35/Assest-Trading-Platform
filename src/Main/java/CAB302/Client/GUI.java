@@ -2,6 +2,7 @@ package CAB302.Client;
 
 import CAB302.Common.*;
 import CAB302.Common.Enums.*;
+import CAB302.Common.Helpers.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -15,10 +16,15 @@ import javax.persistence.criteria.Root;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GUI extends JFrame {
 
     public GUI() throws Exception {
+
+        Logger log = Logger.getLogger("org.hibernate");
+        log.setLevel(Level.WARNING);
 
         //Sets the Look and Feel to Nimbus or SystemLookAndFeel if nimbus isn't found
         try {
@@ -38,6 +44,9 @@ public class GUI extends JFrame {
                 IllegalAccessException |
                 InstantiationException ignored) {
         }
+
+        RuntimeSettings.Session = HibernateUtil.getHibernateSession();
+
         this.setTitle("Organisation Store");
 
         setLayout(new BorderLayout());

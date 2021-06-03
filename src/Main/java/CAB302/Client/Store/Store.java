@@ -27,6 +27,7 @@ public class Store extends JPanel {
     public Store(JPanel panel) {
         this.panel = panel;
         Color c = new Purple();
+        setBackground(c);
 
         mainPanel = createPanel(c);
         mainPanel.setLayout(new BorderLayout());

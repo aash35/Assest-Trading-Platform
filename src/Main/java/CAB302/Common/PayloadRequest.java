@@ -1,10 +1,9 @@
 package CAB302.Common;
 
-import CAB302.Common.Enums.JsonPayloadType;
+import CAB302.Common.Enums.RequestPayloadType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
-public class JsonPayloadRequest extends JsonBaseObject {
+public class PayloadRequest extends RequestBaseObject {
 
     private String checksum;
 
@@ -14,14 +13,14 @@ public class JsonPayloadRequest extends JsonBaseObject {
         this.checksum = checksum;
     }
 
-    private JsonPayloadType jsonPayloadType;
+    private RequestPayloadType requestPayloadType;
 
-    public JsonPayloadType getJsonPayloadType() {
-        return this.jsonPayloadType;
+    public RequestPayloadType getRequestPayloadType() {
+        return this.requestPayloadType;
     }
 
-    public void setJsonPayloadType(JsonPayloadType jsonPayloadType) {
-        this.jsonPayloadType = jsonPayloadType;
+    public void setRequestPayloadType(RequestPayloadType requestPayloadType) {
+        this.requestPayloadType = requestPayloadType;
     }
 
     private Object payloadObject;

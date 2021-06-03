@@ -2,7 +2,7 @@ package UnitTests;
 import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
-import CAB302.Common.Enums.JsonPayloadType;
+import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Exceptions.IllegalTradeException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,6 +13,7 @@ import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Server.Server;
 import org.junit.jupiter.api.*;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -66,16 +67,16 @@ public class UnitTests {
      * Test 1: Construct a new AssetType object
      */
     @Test
-    public void newAssetTypeTest() {
+    public void newAssetTypeTest() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(type);
 
-        request.setJsonPayloadType(JsonPayloadType.Create);
+        request.setRequestPayloadType(RequestPayloadType.Create);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
 
         assertNull(response.getPayloadObject());
     }
@@ -84,15 +85,15 @@ public class UnitTests {
      * Test 2: Construct a new Organisational Unit object
      */
     @Test
-    public void newOrganisationalUnit() {
+    public void newOrganisationalUnit() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(OU);
-        request.setJsonPayloadType(JsonPayloadType.Create);
+        request.setRequestPayloadType(RequestPayloadType.Create);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
         assertNull(response.getPayloadObject());
     }
 
@@ -101,15 +102,15 @@ public class UnitTests {
      * Test 3: Construct a new User object
      */
     @Test
-    public void newUser() {
+    public void newUser() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(user);
-        request.setJsonPayloadType(JsonPayloadType.Create);
+        request.setRequestPayloadType(RequestPayloadType.Create);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
         assertNull(response.getPayloadObject());
     }
 
@@ -117,15 +118,15 @@ public class UnitTests {
      * Test 4: Construct a new Asset object
      */
     @Test
-    public void newAsset() {
+    public void newAsset() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(asset);
-        request.setJsonPayloadType(JsonPayloadType.Create);
+        request.setRequestPayloadType(RequestPayloadType.Create);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
         assertNull(response.getPayloadObject());
     }
 
@@ -133,7 +134,7 @@ public class UnitTests {
      * Test 5: Construct a new legal buy type trade
      */
     @Test
-    public void newLegalBuy() {
+    public void newLegalBuy() throws IOException {
         Trade buyTrade = new Trade();
 
         buyTrade.setAssetType(type);
@@ -146,12 +147,12 @@ public class UnitTests {
 
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(buyTrade);
-        request.setJsonPayloadType(JsonPayloadType.Buy);
+        request.setRequestPayloadType(RequestPayloadType.Buy);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
         // I assume we'd still be expecting a null response from this one. - Chris
         assertNull(response.getPayloadObject());
     }
@@ -160,7 +161,7 @@ public class UnitTests {
      * Test 6: Construct a new legal sell type trade.
      */
     @Test
-    public void newLegalSell() {
+    public void newLegalSell() throws IOException {
         Trade sellTrade = new Trade();
 
         sellTrade.setAssetType(type);
@@ -173,12 +174,12 @@ public class UnitTests {
 
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(sellTrade);
-        request.setJsonPayloadType(JsonPayloadType.Sell);
+        request.setRequestPayloadType(RequestPayloadType.Sell);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
         assertNull(response.getPayloadObject());
     }
 
@@ -199,13 +200,13 @@ public class UnitTests {
 
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(buyTrade);
-        request.setJsonPayloadType(JsonPayloadType.Buy);
+        request.setRequestPayloadType(RequestPayloadType.Buy);
 
         assertThrows(IllegalTradeException.class, () ->{
-            JsonPayloadResponse response = client.SendRequest(request);
+            PayloadResponse response = client.SendRequest(request);
         });
     }
 
@@ -226,13 +227,13 @@ public class UnitTests {
 
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(sellTrade);
-        request.setJsonPayloadType(JsonPayloadType.Sell);
+        request.setRequestPayloadType(RequestPayloadType.Sell);
 
         assertThrows(IllegalTradeException.class, () -> {
-            JsonPayloadResponse response = client.SendRequest(request);
+            PayloadResponse response = client.SendRequest(request);
         });
     }
 
@@ -240,15 +241,15 @@ public class UnitTests {
      * Test 9: Retrieve a list of current users
      */
     @Test
-    public void listCurrentUsers() {
+    public void listCurrentUsers() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new User());
-        request.setJsonPayloadType(JsonPayloadType.List);
+        request.setRequestPayloadType(RequestPayloadType.List);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
 
         // Not too sure how to verify the result. - Chris
         response.getPayloadObject();
@@ -258,15 +259,15 @@ public class UnitTests {
      * Test 10: Retrieve a list of current organisational units
      */
     @Test
-    public void listCurrentOrganisationalUnits() {
+    public void listCurrentOrganisationalUnits() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new OrganisationalUnit());
-        request.setJsonPayloadType(JsonPayloadType.List);
+        request.setRequestPayloadType(RequestPayloadType.List);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
 
         response.getPayloadObject();
     }
@@ -275,15 +276,15 @@ public class UnitTests {
      * Test 11: Retrieve a list of current asset types
      */
     @Test
-    public void listCurrentAssetTypes() {
+    public void listCurrentAssetTypes() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new AssetType());
-        request.setJsonPayloadType(JsonPayloadType.List);
+        request.setRequestPayloadType(RequestPayloadType.List);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
 
         response.getPayloadObject();
     }
@@ -292,15 +293,15 @@ public class UnitTests {
      * Test 12: Retrieve a list of current assets
      */
     @Test
-    public void listCurrentAssets() {
+    public void listCurrentAssets() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new Asset());
-        request.setJsonPayloadType(JsonPayloadType.List);
+        request.setRequestPayloadType(RequestPayloadType.List);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
 
         response.getPayloadObject();
     }
@@ -309,15 +310,15 @@ public class UnitTests {
      * Test 13: Retrieve a list of current trades
      */
     @Test
-    public void listCurrentTrades() {
+    public void listCurrentTrades() throws IOException {
         Client client = new Client();
 
-        JsonPayloadRequest request = new JsonPayloadRequest();
+        PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new Trade());
-        request.setJsonPayloadType(JsonPayloadType.List);
+        request.setRequestPayloadType(RequestPayloadType.List);
 
-        JsonPayloadResponse response = client.SendRequest(request);
+        PayloadResponse response = client.SendRequest(request);
 
         response.getPayloadObject();
     }

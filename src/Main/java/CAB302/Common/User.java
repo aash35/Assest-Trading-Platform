@@ -2,6 +2,7 @@ package CAB302.Common;
 
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Helpers.HibernateUtil;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.*;
@@ -65,9 +66,7 @@ public class User extends BaseObject implements iGet, iList {
     public User() { }
 
     public BaseObject get() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
@@ -87,15 +86,11 @@ public class User extends BaseObject implements iGet, iList {
         }
         catch (Exception ex) { }
 
-        session.close();
-
         return user;
     }
 
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
@@ -113,8 +108,6 @@ public class User extends BaseObject implements iGet, iList {
             users = (List<BaseObject>)query.getResultList();
         }
         catch (Exception ex) { }
-
-        session.close();
 
         return users;
     }

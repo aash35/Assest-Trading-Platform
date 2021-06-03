@@ -35,12 +35,13 @@ public class AssetType extends BaseObject implements iGet, iList {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assetType")
     private List<Trade> trades = new ArrayList<Trade>();
 
+    public List<Trade> getTrades() { return this.trades; }
+    public void setTrades(List<Trade> trades) { this.trades = trades; }
+
     public AssetType() { }
 
     public BaseObject get() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<AssetType> criteria = criteriaBuilder.createQuery(AssetType.class);
@@ -59,15 +60,11 @@ public class AssetType extends BaseObject implements iGet, iList {
 
         }
 
-        session.close();
-
         return assetType;
     }
 
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<AssetType> criteria = criteriaBuilder.createQuery(AssetType.class);
@@ -90,8 +87,6 @@ public class AssetType extends BaseObject implements iGet, iList {
         catch (Exception ex) {
 
         }
-
-        session.close();
 
         return assetTypes;
     }

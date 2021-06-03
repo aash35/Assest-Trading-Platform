@@ -1,21 +1,14 @@
 package CAB302.Client;
 
-import CAB302.Common.JsonPayloadRequest;
-import CAB302.Common.JsonPayloadResponse;
-import com.google.gson.Gson;
+import CAB302.Common.PayloadRequest;
+import CAB302.Common.PayloadResponse;
 
-import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.time.Instant;
 
 public class Client {
-    public JsonPayloadResponse SendRequest(JsonPayloadRequest request) {
-
-        Gson g = new Gson();
+    public PayloadResponse SendRequest(PayloadRequest request) throws IOException {
 
         Socket socket = null;
 
@@ -25,17 +18,19 @@ public class Client {
             ioException.printStackTrace();
         }
 
-        PrintWriter printWriter = null;
+        OutputStream outputStream = null;
 
         try {
-            printWriter = new PrintWriter(socket.getOutputStream(), true);
+            outputStream = socket.getOutputStream();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
 
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
         request.setChecksum(String.valueOf(Instant.now().getEpochSecond()));
 
-        printWriter.println(request.getJsonString());
+        objectOutputStream.writeObject(request);
 
         BufferedReader bufferReader = null;
 
@@ -45,15 +40,23 @@ public class Client {
             ioException.printStackTrace();
         }
 
-        String stringResponse = null;
+        InputStream inputStream = null;
 
         try {
-            stringResponse = bufferReader.readLine();
+            inputStream = socket.getInputStream();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
 
-        printWriter.close();
+        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+
+        PayloadResponse response = null;
+
+        try {
+            response = (PayloadResponse)objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException ioException) {
+            ioException.printStackTrace();
+        }
 
         try {
             bufferReader.close ();
@@ -66,18 +69,6 @@ public class Client {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
-
-        if (stringResponse == null) {
-            return null;
-        }
-
-        JsonPayloadResponse response = null;
-
-        try {
-            response = g.fromJson(stringResponse, JsonPayloadResponse.class);
-        }
-
-        catch (Exception ex) { }
 
         return response;
     }

@@ -2,22 +2,14 @@ package CAB302.Client;
 
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
-import CAB302.Common.Enums.JsonPayloadType;
-import CAB302.Common.Helpers.HibernateUtil;
+import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import java.awt.event.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class Login extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
@@ -151,12 +143,17 @@ public class Login extends JPanel {
                         user.setUsername(username);
                         user.setHashedPassword(hashedPassword);
 
-                        JsonPayloadRequest request = new JsonPayloadRequest();
+                        PayloadRequest request = new PayloadRequest();
 
                         request.setPayloadObject(user);
-                        request.setJsonPayloadType(JsonPayloadType.Get);
+                        request.setRequestPayloadType(RequestPayloadType.Get);
 
-                        JsonPayloadResponse response = new Client().SendRequest(request);
+                        PayloadResponse response = null;
+                        try {
+                            response = new Client().SendRequest(request);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
 
                         user = (CAB302.Common.User)response.getPayloadObject();
 
@@ -169,12 +166,16 @@ public class Login extends JPanel {
 
                             adminUser.setHashedPassword(hashedAdminPassword);
 
-                            request = new JsonPayloadRequest();
+                            request = new PayloadRequest();
 
                             request.setPayloadObject(adminUser);
-                            request.setJsonPayloadType(JsonPayloadType.Get);
+                            request.setRequestPayloadType(RequestPayloadType.Get);
 
-                            response = new Client().SendRequest(request);
+                            try {
+                                response = new Client().SendRequest(request);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
 
                             adminUser = (CAB302.Common.User) response.getPayloadObject();
 

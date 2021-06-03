@@ -1,19 +1,17 @@
 package CAB302.Server;
 
-import CAB302.Common.BaseObject;
+import CAB302.Common.*;
+import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
-import CAB302.Common.JsonPayloadRequest;
 import CAB302.Common.Interfaces.*;
-import CAB302.Common.JsonPayloadResponse;
-import com.google.gson.Gson;
 import org.hibernate.Session;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Comparator;
+import java.util.List;
 
 public class Server extends Thread {
 
@@ -32,6 +30,8 @@ public class Server extends Thread {
     {
         try
         {
+            RuntimeSettings.Session = HibernateUtil.getHibernateSession();
+
             serverSocket = new ServerSocket(port);
             this.start();
         }
@@ -58,6 +58,9 @@ public class Server extends Thread {
             {
                 System.out.println("Listening for a connection");
 
+                TradeProcessor tradeProcessor = new TradeProcessor();
+                tradeProcessor.start();
+
                 Socket socket = serverSocket.accept();
 
                 RequestHandler requestHandler = new RequestHandler( socket );
@@ -65,6 +68,102 @@ public class Server extends Thread {
             }
             catch (IOException e)
             {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class TradeProcessor extends Thread {
+
+    @Override
+    public void run() {
+
+        Session session = RuntimeSettings.Session;
+
+        while(true) {
+            System.out.println("Attempting to process trades");
+
+            Trade buyTradeSelection = new Trade();
+            buyTradeSelection.setTransactionType(TradeTransactionType.Buying);
+            buyTradeSelection.setStatus(TradeStatus.InMarket);
+
+            Trade sellTradeSelection = new Trade();
+            sellTradeSelection.setTransactionType(TradeTransactionType.Selling);
+            sellTradeSelection.setStatus(TradeStatus.InMarket);
+
+            List<Trade> buyTrades = (List<Trade>)(List<?>)buyTradeSelection.list();
+            List<Trade> sellTrades = (List<Trade>)(List<?>)sellTradeSelection.list();
+
+            buyTrades.sort(Comparator.comparingDouble(Trade::getPrice));
+
+                for (Trade buyTrade : buyTrades) {
+
+                    session.refresh(buyTrade);
+
+                    /*List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAsset().id == x.getAsset().id).collect(Collectors.toList());
+
+                    if (availableSellTrades != null) {
+
+                        int quantityLeftToBuy = buyTrade.getQuantity();
+
+                        sellTradeFinish:
+                        for (Trade availableSellTrade : availableSellTrades) {
+
+                            session.refresh(availableSellTrade);
+
+                            if (availableSellTrade.getPrice() <= buyTrade.getPrice()) {
+                                int quantityToBuy = buyTrade.getQuantity();
+
+                                if (buyTrade.getQuantity() > availableSellTrade.getQuantity()) {
+                                    quantityToBuy = availableSellTrade.getQuantity();
+                                }
+
+                                Asset asset = new Asset();
+                                asset.setAssetType(availableSellTrade.getAssetType());
+                                asset.setQuantity(quantityToBuy);
+                                asset.setCreatedByUserID(buyTrade.getCreatedByUser());
+
+                                Trade trade = new Trade();
+                                trade.setQuantity(quantityToBuy);
+                                trade.setAssetType(buyTrade.getAssetType());
+                                trade.setPrice(buyTrade.getPrice());
+                                trade.setStatus(TradeStatus.Filled);
+                                trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+
+                                if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
+                                    availableSellTrade.setStatus(TradeStatus.Filled);
+                                }
+
+                                availableSellTrade.setQuantity(availableSellTrade.getQuantity() - quantityToBuy);
+
+                                quantityLeftToBuy -= quantityToBuy;
+
+                                if (quantityLeftToBuy == 0) {
+                                    buyTrade.setStatus(TradeStatus.Filled);
+                                }
+
+                                session.save(trade);
+
+                                session.save(asset);
+
+                                session.update(availableSellTrade);
+
+                                session.update(buyTrade);
+
+                                session.getTransaction().commit();
+
+                                if (quantityLeftToBuy == 0) {
+                                    break sellTradeFinish;
+                                }
+                            }
+                        }
+                    }*/
+                }
+
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -84,22 +183,20 @@ class RequestHandler extends Thread {
         try {
             System.out.println("Received a connection");
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            InputStream inputStream = socket.getInputStream();
 
-            String data = in.readLine();
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
-            String result = processData(data);
+            PayloadRequest request = (PayloadRequest)objectInputStream.readObject();
 
-            out.println(result);
+            PayloadResponse response = processData(request);
 
-            out.flush();
+            OutputStream outputStream = socket.getOutputStream();
 
-            data = null;
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 
-            // Close our connection
-            in.close();
-            out.close();
+            objectOutputStream.writeObject(response);
+
             socket.close();
 
             System.out.println("Connection closed");
@@ -109,30 +206,24 @@ class RequestHandler extends Thread {
         }
     }
 
-    protected String processData(String data) throws IOException {
-
-        Gson g = new Gson();
-
-        JsonPayloadRequest jsonPayload = null;
-
-        try {
-            jsonPayload = g.fromJson(data, JsonPayloadRequest.class);
-        } catch (Exception ex) { }
+    protected PayloadResponse processData(PayloadRequest requestPayload) throws IOException {
 
         //close the connection if we don't like the result or the checksum is empty
-        if (jsonPayload == null || jsonPayload.getChecksum() == null || jsonPayload.getChecksum().length() == 0) {
+        if (requestPayload == null || requestPayload.getChecksum() == null || requestPayload.getChecksum().length() == 0) {
             socket.close();
             return null;
         }
 
         //need to add validation of the checksum
-        var object = jsonPayload.getPayloadObject();
+        var object = requestPayload.getPayloadObject();
 
-        switch (jsonPayload.getJsonPayloadType()) {
+        switch (requestPayload.getRequestPayloadType()) {
             case Buy:
+
                 break;
 
             case Sell:
+
                 break;
 
             case Get:
@@ -140,13 +231,11 @@ class RequestHandler extends Thread {
                 {
                     var result = ((iGet)object).get();
 
-                    JsonPayloadResponse response = new JsonPayloadResponse();
+                    PayloadResponse response = new PayloadResponse();
 
                     response.setPayloadObject(result);
 
-                    String jsonString = response.getJsonString();
-
-                    return jsonString;
+                    return response;
                 }
 
                 break;
@@ -156,52 +245,40 @@ class RequestHandler extends Thread {
                 {
                     var result = ((iList)object).list();
 
-                    JsonPayloadResponse response = new JsonPayloadResponse();
+                    PayloadResponse response = new PayloadResponse();
 
                     response.setPayloadObject(result);
 
-                    String jsonString = response.getJsonString();
-
-                    return null;
+                    return response;
                 }
                 break;
 
             case Create:
 
-                Session session = HibernateUtil.getHibernateSession();
-
-                session.beginTransaction();
+                Session session = RuntimeSettings.Session;
 
                 session.save(object);
 
                 session.getTransaction().commit();
 
-                session.close();
-
                 break;
 
             case Update:
-                session = HibernateUtil.getHibernateSession();
-
-                session.beginTransaction();
+                session = RuntimeSettings.Session;
 
                 session.update(object);
 
                 session.getTransaction().commit();
 
-                session.close();
                 break;
 
             case Delete:
-                session = HibernateUtil.getHibernateSession();
-
-                session.beginTransaction();
+                session = RuntimeSettings.Session;
 
                 session.remove(object);
 
                 session.getTransaction().commit();
 
-                session.close();
                 break;
         }
 

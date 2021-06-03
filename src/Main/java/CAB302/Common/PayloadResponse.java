@@ -1,23 +1,22 @@
 package CAB302.Common;
 
-import com.fasterxml.jackson.databind.*;
-import CAB302.Common.Enums.JsonPayloadType;
-
-public class JsonPayloadResponse extends JsonBaseObject {
+public class PayloadResponse extends RequestBaseObject {
 
     private Object payloadObject;
 
     public Object getPayloadObject() {
+
+        String currentObjectType = getObjectType();
+
+        if (currentObjectType == null) {
+            return null;
+        }
+
         try {
-            String currentObjectType = getObjectType();
-
-            if (currentObjectType == null) {
-                return null;
-            }
-
             Class classType = Class.forName(currentObjectType);
 
-            return (BaseObject)new ObjectMapper().convertValue(payloadObject, classType);
+            return classType.cast(this.payloadObject);
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
