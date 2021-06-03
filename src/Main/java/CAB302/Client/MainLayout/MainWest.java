@@ -1,5 +1,6 @@
 package CAB302.Client.MainLayout;
 
+import CAB302.Client.*;
 import CAB302.Common.Colors.Grey;
 import CAB302.Common.Colors.LightBlue;
 import CAB302.Common.Colors.Purple;
@@ -43,7 +44,7 @@ public class MainWest extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.myAccount(panel);
+                        NavigationHelper.changePanel(panel, new MyAccount());
                     }
                 });
 
@@ -55,7 +56,7 @@ public class MainWest extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.store(panel);
+                        NavigationHelper.changePanel(panel, new Store(panel));
                     }
                 });
 
@@ -67,7 +68,7 @@ public class MainWest extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.organisationalUnit(panel);
+                        NavigationHelper.changePanel(panel, new OrganisationalUnit());
                     }
                 });
 
@@ -81,7 +82,7 @@ public class MainWest extends JPanel {
                     new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            NavigationHelper.administation(panel);
+                            NavigationHelper.changePanel(panel, new Administration(panel));
                         }
                     });
 
