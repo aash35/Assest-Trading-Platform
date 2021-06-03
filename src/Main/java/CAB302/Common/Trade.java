@@ -30,11 +30,11 @@ public class Trade extends BaseObject implements iGet, iList {
     public int getQuantity() { return this.quantity; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    private double price;
+    private int price;
 
     @Column(name = "price")
-    public double getPrice() { return this.price; }
-    public void setPrice(double price) { this.price = price; }
+    public int getPrice() { return this.price; }
+    public void setPrice(int price) { this.price = price; }
 
     private Timestamp createdDate;
 
@@ -77,7 +77,7 @@ public class Trade extends BaseObject implements iGet, iList {
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAssetType()));
+        criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
 
         Query query = session.createQuery(criteria);
 
@@ -104,7 +104,12 @@ public class Trade extends BaseObject implements iGet, iList {
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("asset"), this.getAssetType()));
+        if (this.getAssetType() == null){
+            criteria.select(root);
+        }
+        else{
+            criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
+        }
 
         Query query = session.createQuery(criteria);
 

@@ -14,14 +14,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class BuySellAsset extends JPanel {
     private JPanel mainPanel;
     private JPanel titlePanel;
     private JPanel buySellPanel;
+    private JPanel tablesPanel;
+    private JScrollPane currentOrderPanel;
+    private JScrollPane priceHistoryPanel;
 
     private JLabel buyTag;
     private JLabel sellTag;
+    private JLabel priceHistoryTag;
+    private JLabel currentOrderTag;
 
     private JSpinner buyQuantity;
     private JSpinner buyPrice;
@@ -31,12 +39,17 @@ public class BuySellAsset extends JPanel {
     private JSpinner sellPrice;
     private JButton sellButton;
 
+    private List<BaseObject> allTrades;
+    private JTable currentOrderTable;
+    private JTable priceHistoryTable;
+
     public BuySellAsset(AssetType assetType){
         Color c = new Purple();
         mainPanel = createPanel(c);
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630, 500));
         add(mainPanel);
+        setBackground(c);
 
         titlePanel = createPanel(c);
         titlePanel.setLayout(new FlowLayout());
@@ -65,7 +78,7 @@ public class BuySellAsset extends JPanel {
                 Trade trade = new Trade();
                 trade.setQuantity((Integer) buyQuantity.getValue());
                 trade.setAssetType(assetType);
-                trade.setPrice((Double) buyPrice.getValue());
+                trade.setPrice((Integer) buyPrice.getValue());
                 trade.setCreatedByUser(RuntimeSettings.CurrentUser);
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Buying);
@@ -94,7 +107,7 @@ public class BuySellAsset extends JPanel {
                 Trade trade = new Trade();
                 trade.setQuantity((Integer) sellQuantity.getValue());
                 trade.setAssetType(assetType);
-                trade.setPrice((Double) sellPrice.getValue());
+                trade.setPrice((Integer) sellPrice.getValue());
                 trade.setCreatedByUser(RuntimeSettings.CurrentUser);
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Selling);
@@ -116,9 +129,35 @@ public class BuySellAsset extends JPanel {
             }
         });
 
+        allTrades = getTradeList();
+
+        priceHistoryTag = new JLabel(String.format("Price History of %s Sales", assetType.getName()));
+        priceHistoryTag.setFont(new Font(buyTag.getFont().getFontName(), Font.PLAIN, 21));
+
+        currentOrderTag = new JLabel(String.format("Current Orders for %s", assetType.getName()));
+        currentOrderTag.setFont(new Font(sellTag.getFont().getFontName(), Font.PLAIN, 21));
+
+        priceHistoryTable = createOrderTable(findFilledTrades());
+        priceHistoryPanel = new JScrollPane(priceHistoryTable);
+        priceHistoryTable.setFillsViewportHeight(true);
+
+        currentOrderTable = createOrderTable(findCurrentTrades());
+        currentOrderPanel = new JScrollPane(currentOrderTable);
+        currentOrderTable.setFillsViewportHeight(true);
+
         buySellPanel = createPanel(c);
         layoutBuySellPanel();
         mainPanel.add(buySellPanel, BorderLayout.CENTER);
+
+        tablesPanel = createPanel(c);
+        tablesPanel.setLayout(new BoxLayout(tablesPanel, BoxLayout.Y_AXIS));
+        tablesPanel.setPreferredSize(new Dimension(400,100));
+        tablesPanel.add(priceHistoryTag);
+        tablesPanel.add(priceHistoryPanel);
+        tablesPanel.add(currentOrderTag);
+        tablesPanel.add(currentOrderPanel);
+
+        mainPanel.add(tablesPanel, BorderLayout.EAST);
     }
 
     /**
@@ -141,6 +180,68 @@ public class BuySellAsset extends JPanel {
         JSpinner spinner = new JSpinner(model);
         spinner.setPreferredSize(new Dimension(100, 30));
         return  spinner;
+    }
+    
+    private List<BaseObject> getTradeList(){
+        Trade emptyTrade = new Trade();
+        return emptyTrade.list();
+    }
+
+    private ArrayList<Trade> findCurrentTrades(){
+        ArrayList<Trade> currentTrades = new ArrayList<>();
+        for(BaseObject each: allTrades){
+            Trade trade = (Trade) each;
+            if (trade.getStatus() == TradeStatus.InMarket){
+                currentTrades.add(trade);
+            }
+        }
+
+        return currentTrades;
+    }
+
+    private ArrayList<Trade> findFilledTrades(){
+        ArrayList<Trade> filledTrades = new ArrayList<>();
+        for(BaseObject each: allTrades){
+            Trade trade = (Trade) each;
+            if(trade.getStatus() == TradeStatus.Filled &&
+                    trade.getTransactionType() == TradeTransactionType.Selling){
+                filledTrades.add(trade);
+            }
+        }
+
+        filledTrades.sort(new Comparator<Trade>() {
+            @Override
+            public int compare(Trade o1, Trade o2) {
+                return o1.getCreatedDate().compareTo(o2.getCreatedDate());
+            }
+        });
+        return filledTrades;
+    }
+
+    private JTable createOrderTable(ArrayList<Trade> currentOrders) {
+        String[] columnHeaders = {"Asset Type",
+                "Quantity",
+                "Price per Unit",
+                "Order Type",
+                "Created By User",
+                "Date Created"};
+
+        Object[][] data = new Object[currentOrders.size()][6];
+
+        int i = 0;
+        for (Trade order: currentOrders){
+            data[i][0] = order.getAssetType().getName();
+            data[i][1] = order.getQuantity();
+            data[i][2] = order.getPrice();
+            data[i][3] = order.getTransactionType().toString();
+            data[i][4] = order.getCreatedByUser().getUsername();
+            data[i][5] = order.getCreatedDate();
+            i++;
+        }
+        JTable jTable = new JTable(data, columnHeaders);
+        jTable.setRowSelectionAllowed(false);
+        jTable.setColumnSelectionAllowed(false);
+        return jTable;
     }
 
     /**
