@@ -1,10 +1,14 @@
 package CAB302.Client.Store;
 
+import CAB302.Client.Client;
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
 import CAB302.Common.Colors.Grey;
 import CAB302.Common.Colors.Purple;
+import CAB302.Common.Enums.JsonPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
+import CAB302.Common.JsonPayloadRequest;
+import CAB302.Common.JsonPayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +21,7 @@ public class Store extends JPanel {
     private JPanel titlePanel;
     private JPanel innerAssetsPanel;
     private JScrollPane outerAssetsPanel;
-    private List<BaseObject> assetsList;
+    private List<AssetType> assetsList;
     private JPanel panel;
 
     public Store(JPanel panel) {
@@ -70,9 +74,14 @@ public class Store extends JPanel {
      * Retrieves the list of current asset types from the database, then assigns it to the assetsList property.
      */
     private void getAssetsList() {
-        AssetType emptyType = new AssetType();
 
-        assetsList = emptyType.list();
+        JsonPayloadRequest request = new JsonPayloadRequest();
+
+        request.setPayloadObject(new AssetType());
+        request.setJsonPayloadType(JsonPayloadType.List);
+
+        JsonPayloadResponse response = new Client().SendRequest(request);
+        assetsList = (List<AssetType>)(List<?>)response.getPayloadObject();
     }
 
     /**
