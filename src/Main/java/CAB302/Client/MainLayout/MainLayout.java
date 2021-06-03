@@ -14,8 +14,6 @@ public class MainLayout extends JPanel {
     public MainLayout(JFrame frame) {
 
         User user = RuntimeSettings.CurrentUser;
-
-
         northPanel = new MainNorth(user, frame);
         centerPanel = new MainCentre();
         westPanel = new MainWest(user, centerPanel);

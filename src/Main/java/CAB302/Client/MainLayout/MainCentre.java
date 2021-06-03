@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 public class MainCentre extends JPanel {
     public MainCentre() {
         setBorder(BorderFactory.createLineBorder(Color.black, 2));
-        setBackground(new Purple());
+        //setBackground(new LightBlue());
         add(new OrganisationalUnit());
     }
 }

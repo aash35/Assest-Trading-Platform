@@ -2,6 +2,7 @@ package CAB302.Client.Store;
 
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
+import CAB302.Common.Colors.Grey;
 import CAB302.Common.Colors.Purple;
 import CAB302.Common.Helpers.NavigationHelper;
 
@@ -61,7 +62,7 @@ public class Store extends JPanel {
      */
     private JPanel createPanel(Color c){
         JPanel panel = new JPanel();
-        panel.setBackground(c);
+        //panel.setBackground(c);
         return panel;
     }
 

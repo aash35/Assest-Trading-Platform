@@ -34,33 +34,8 @@ public class MainWest extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 0.1;
         gbc.weighty = 0.1;
-        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.gridx = 0;
-        gbc.gridy = 2;
-
-        add(myAccountButton, gbc);
-        myAccountButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new MyAccount());
-                    }
-                });
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        add(storeButton, gbc);
-        storeButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new Store(panel));
-                    }
-                });
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 0;
         gbc.insets = new Insets(0, 0, 0, 0);
         add(ouButton, gbc);
         ouButton.addActionListener(
@@ -71,9 +46,34 @@ public class MainWest extends JPanel {
                     }
                 });
 
-        if(user.getAccountRoleType() != AccountTypeRole.Standard){
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        add(storeButton, gbc);
+        storeButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NavigationHelper.changePanel(panel, new Store(panel));
+                    }
+                });
+
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+
+        add(myAccountButton, gbc);
+        myAccountButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NavigationHelper.changePanel(panel, new MyAccount(user));
+                    }
+                });
+
+        if(user.getAccountRoleType() == AccountTypeRole.Administrator){
             gbc.gridx = 0;
-            gbc.gridy = 5;
+            gbc.gridy = 3;
             gbc.insets = new Insets(0, 0, 0, 0);
             add(adminButton, gbc);
 
