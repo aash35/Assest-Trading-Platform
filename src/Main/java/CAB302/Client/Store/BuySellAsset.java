@@ -30,6 +30,10 @@ public class BuySellAsset extends JPanel {
     private JLabel sellTag;
     private JLabel priceHistoryTag;
     private JLabel currentOrderTag;
+    private JLabel buyQuantityTag;
+    private JLabel buyPriceTag;
+    private JLabel sellQuantityTag;
+    private JLabel sellPriceTag;
 
     private JSpinner buyQuantity;
     private JSpinner buyPrice;
@@ -65,6 +69,18 @@ public class BuySellAsset extends JPanel {
 
         sellTag = new JLabel(String.format("Sell %s", assetType.getName()));
         sellTag.setFont(new Font(sellTag.getFont().getFontName(), Font.PLAIN, 21));
+
+        buyQuantityTag = new JLabel("Quantity");
+        buyQuantityTag.setFont(new Font(buyQuantityTag.getFont().getFontName(), Font.PLAIN, 14));
+
+        buyPriceTag = new JLabel(("Price"));
+        buyPriceTag.setFont(new Font(buyPriceTag.getFont().getFontName(), Font.PLAIN, 14));
+
+        sellQuantityTag = new JLabel("Quantity");
+        sellQuantityTag.setFont(new Font(buyQuantityTag.getFont().getFontName(), Font.PLAIN, 14));
+
+        sellPriceTag = new JLabel(("Price"));
+        sellPriceTag.setFont(new Font(buyPriceTag.getFont().getFontName(), Font.PLAIN, 14));
 
         buyQuantity = createSpinner();
         buyPrice = createSpinner();
@@ -251,21 +267,30 @@ public class BuySellAsset extends JPanel {
         buySellPanel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
-        constraints.weightx = 100;
-        constraints.weighty = 100;
+        constraints.weightx = 10;
+        constraints.weighty = 50;
 
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.insets = new Insets(0, 0, 0, 0);
 
         addToPanel(buySellPanel, buyTag, constraints, 0,0,1,1);
-        addToPanel(buySellPanel, buyQuantity, constraints, 0, 1, 1, 1);
-        addToPanel(buySellPanel, buyPrice, constraints, 0, 2, 1, 1);
-        addToPanel(buySellPanel, buyButton, constraints, 1,2,1,1);
 
-        addToPanel(buySellPanel, sellTag, constraints, 0,4,1,1);
-        addToPanel(buySellPanel, sellQuantity, constraints, 0, 5, 1, 1);
-        addToPanel(buySellPanel, sellPrice, constraints, 0, 6, 1,1);
-        addToPanel(buySellPanel, sellButton, constraints, 1,6,1,1);
+        addToPanel(buySellPanel, buyQuantityTag, constraints, 0,1,1,1);
+        addToPanel(buySellPanel, buyQuantity, constraints, 0, 2, 2, 1);
+
+        addToPanel(buySellPanel, buyPriceTag, constraints, 0,3,1,1);
+        addToPanel(buySellPanel, buyPrice, constraints, 0, 4, 2, 1);
+        addToPanel(buySellPanel, buyButton, constraints, 1,4,1,1);
+
+        addToPanel(buySellPanel, sellTag, constraints, 0,5,1,1);
+
+        addToPanel(buySellPanel, sellQuantityTag, constraints, 0,6,1,1);
+        addToPanel(buySellPanel, sellQuantity, constraints, 0, 7, 2, 1);
+
+        addToPanel(buySellPanel, sellPriceTag, constraints, 0,8,1,1);
+        addToPanel(buySellPanel, sellPrice, constraints, 0, 9, 2,1);
+
+        addToPanel(buySellPanel, sellButton, constraints, 1,9,1,1);
     }
 
     /**
