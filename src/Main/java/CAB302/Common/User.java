@@ -65,9 +65,7 @@ public class User extends BaseObject implements iGet, iList {
     public User() { }
 
     public BaseObject get() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
@@ -87,15 +85,11 @@ public class User extends BaseObject implements iGet, iList {
         }
         catch (Exception ex) { }
 
-        session.close();
-
         return user;
     }
 
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
@@ -113,8 +107,6 @@ public class User extends BaseObject implements iGet, iList {
             users = (List<BaseObject>)query.getResultList();
         }
         catch (Exception ex) { }
-
-        session.close();
 
         return users;
     }

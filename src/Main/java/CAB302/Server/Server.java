@@ -1,10 +1,10 @@
 package CAB302.Server;
 
-import CAB302.Common.BaseObject;
+import CAB302.Common.*;
+import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
-import CAB302.Common.JsonPayloadRequest;
 import CAB302.Common.Interfaces.*;
-import CAB302.Common.JsonPayloadResponse;
 import com.google.gson.Gson;
 import org.hibernate.Session;
 
@@ -14,6 +14,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Server extends Thread {
 
@@ -32,6 +37,8 @@ public class Server extends Thread {
     {
         try
         {
+            RuntimeSettings.Session = HibernateUtil.getHibernateSession();
+
             serverSocket = new ServerSocket(port);
             this.start();
         }
@@ -58,6 +65,9 @@ public class Server extends Thread {
             {
                 System.out.println("Listening for a connection");
 
+                TradeProcessor tradeProcessor = new TradeProcessor();
+                tradeProcessor.start();
+
                 Socket socket = serverSocket.accept();
 
                 RequestHandler requestHandler = new RequestHandler( socket );
@@ -65,6 +75,102 @@ public class Server extends Thread {
             }
             catch (IOException e)
             {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class TradeProcessor extends Thread {
+
+    @Override
+    public void run() {
+
+        Session session = RuntimeSettings.Session;
+
+        while(true) {
+            System.out.println("Attempting to process trades");
+
+            Trade buyTradeSelection = new Trade();
+            buyTradeSelection.setTransactionType(TradeTransactionType.Buying);
+            buyTradeSelection.setStatus(TradeStatus.InMarket);
+
+            Trade sellTradeSelection = new Trade();
+            sellTradeSelection.setTransactionType(TradeTransactionType.Selling);
+            sellTradeSelection.setStatus(TradeStatus.InMarket);
+
+            List<Trade> buyTrades = (List<Trade>)(List<?>)buyTradeSelection.list();
+            List<Trade> sellTrades = (List<Trade>)(List<?>)sellTradeSelection.list();
+
+            buyTrades.sort(Comparator.comparingDouble(Trade::getPrice));
+
+                for (Trade buyTrade : buyTrades) {
+
+                    session.refresh(buyTrade);
+
+                    List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAsset().id == x.getAsset().id).collect(Collectors.toList());
+
+                    if (availableSellTrades != null) {
+
+                        int quantityLeftToBuy = buyTrade.getQuantity();
+
+                        sellTradeFinish:
+                        for (Trade availableSellTrade : availableSellTrades) {
+
+                            session.refresh(availableSellTrade);
+
+                            if (availableSellTrade.getPrice() <= buyTrade.getPrice()) {
+                                int quantityToBuy = buyTrade.getQuantity();
+
+                                if (buyTrade.getQuantity() > availableSellTrade.getQuantity()) {
+                                    quantityToBuy = availableSellTrade.getQuantity();
+                                }
+
+                                Asset asset = new Asset();
+                                asset.setAssetType(availableSellTrade.getAsset().getAssetType());
+                                asset.setQuantity(quantityToBuy);
+                                asset.setCreatedByUserID(buyTrade.getCreatedByUser());
+
+                                Trade trade = new Trade();
+                                trade.setQuantity(quantityToBuy);
+                                trade.setAsset(asset);
+                                trade.setPrice(buyTrade.getPrice());
+                                trade.setStatus(TradeStatus.Filled);
+                                trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+
+                                if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
+                                    availableSellTrade.setStatus(TradeStatus.Filled);
+                                }
+
+                                availableSellTrade.setQuantity(availableSellTrade.getQuantity() - quantityToBuy);
+
+                                quantityLeftToBuy -= quantityToBuy;
+
+                                if (quantityLeftToBuy == 0) {
+                                    buyTrade.setStatus(TradeStatus.Filled);
+                                }
+
+                                session.save(trade);
+
+                                session.save(asset);
+
+                                session.update(availableSellTrade);
+
+                                session.update(buyTrade);
+
+                                session.getTransaction().commit();
+
+                                if (quantityLeftToBuy == 0) {
+                                    break sellTradeFinish;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -130,9 +236,11 @@ class RequestHandler extends Thread {
 
         switch (jsonPayload.getJsonPayloadType()) {
             case Buy:
+
                 break;
 
             case Sell:
+
                 break;
 
             case Get:
@@ -168,40 +276,30 @@ class RequestHandler extends Thread {
 
             case Create:
 
-                Session session = HibernateUtil.getHibernateSession();
-
-                session.beginTransaction();
+                Session session = RuntimeSettings.Session;
 
                 session.save(object);
 
                 session.getTransaction().commit();
 
-                session.close();
-
                 break;
 
             case Update:
-                session = HibernateUtil.getHibernateSession();
-
-                session.beginTransaction();
+                session = RuntimeSettings.Session;
 
                 session.update(object);
 
                 session.getTransaction().commit();
 
-                session.close();
                 break;
 
             case Delete:
-                session = HibernateUtil.getHibernateSession();
-
-                session.beginTransaction();
+                session = RuntimeSettings.Session;
 
                 session.remove(object);
 
                 session.getTransaction().commit();
 
-                session.close();
                 break;
         }
 

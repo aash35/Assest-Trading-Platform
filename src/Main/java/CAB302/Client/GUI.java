@@ -2,6 +2,7 @@ package CAB302.Client;
 
 import CAB302.Common.*;
 import CAB302.Common.Enums.*;
+import CAB302.Common.Helpers.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -38,6 +39,9 @@ public class GUI extends JFrame {
                 IllegalAccessException |
                 InstantiationException ignored) {
         }
+
+        RuntimeSettings.Session = HibernateUtil.getHibernateSession();
+
         this.setTitle("Organisation Store");
 
         setLayout(new BorderLayout());

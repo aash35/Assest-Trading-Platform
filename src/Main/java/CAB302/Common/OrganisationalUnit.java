@@ -33,12 +33,13 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisationalUnit")
     private List<User> users = new ArrayList<User>();
 
+    public List<User> getUsers() { return this.users; }
+    public void setUsers(List<User> users) { this.users = users; }
+
     public OrganisationalUnit() { }
 
     public BaseObject get() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<OrganisationalUnit> criteria = criteriaBuilder.createQuery(OrganisationalUnit.class);
@@ -57,15 +58,11 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
 
         }
 
-        session.close();
-
         return ou;
     }
 
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
-
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<OrganisationalUnit> criteria = criteriaBuilder.createQuery(OrganisationalUnit.class);
@@ -83,8 +80,6 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
         catch (Exception ex) {
 
         }
-
-        session.close();
 
         return ous;
     }
