@@ -1,10 +1,19 @@
 package CAB302.Client;
 
+import CAB302.Common.*;
 import CAB302.Common.AssetType;
 import CAB302.Common.Colors.Purple;
+import CAB302.Common.Enums.JsonPayloadType;
+import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Enums.TradeTransactionType;
+import CAB302.Common.Exceptions.IllegalTradeException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 public class BuySellAsset extends JPanel {
     private JPanel mainPanel;
@@ -50,7 +59,70 @@ public class BuySellAsset extends JPanel {
         sellPrice = createSpinner();
 
         buyButton = new JButton("Buy");
+        buyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Asset asset = new Asset();
+                asset.setAssetType(assetType);
+                asset.setCreatedByUserID(RuntimeSettings.CurrentUser);
+
+                Trade trade = new Trade();
+                trade.setQuantity((Integer) buyQuantity.getValue());
+                trade.setAsset(asset);
+                trade.setPrice((Double) buyPrice.getValue());
+                trade.setCreatedByUser(RuntimeSettings.CurrentUser);
+                trade.setCreatedDate(Timestamp.from(Instant.now()));
+                trade.setTransactionType(TradeTransactionType.Buying);
+                trade.setStatus(TradeStatus.InMarket);
+
+                Client client = new Client();
+
+                JsonPayloadRequest request = new JsonPayloadRequest();
+
+                request.setPayloadObject(trade);
+                request.setJsonPayloadType(JsonPayloadType.Buy);
+
+                try {
+                    JsonPayloadResponse response = client.SendRequest(request);
+                }
+               catch(Exception error){
+
+               }
+            }
+        });
+
         sellButton = new JButton("Sell");
+        sellButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Asset asset = new Asset();
+                asset.setAssetType(assetType);
+                asset.setCreatedByUserID(RuntimeSettings.CurrentUser);
+
+                Trade trade = new Trade();
+                trade.setQuantity((Integer) sellQuantity.getValue());
+                trade.setAsset(asset);
+                trade.setPrice((Double) sellPrice.getValue());
+                trade.setCreatedByUser(RuntimeSettings.CurrentUser);
+                trade.setCreatedDate(Timestamp.from(Instant.now()));
+                trade.setTransactionType(TradeTransactionType.Selling);
+                trade.setStatus(TradeStatus.InMarket);
+
+                Client client = new Client();
+
+                JsonPayloadRequest request = new JsonPayloadRequest();
+
+                request.setPayloadObject(trade);
+                request.setJsonPayloadType(JsonPayloadType.Buy);
+                
+                try {
+                    JsonPayloadResponse response = client.SendRequest(request);
+                }
+                catch(Exception error){
+
+                }
+            }
+        });
 
         buySellPanel = createPanel(c);
         layoutBuySellPanel();
@@ -75,6 +147,7 @@ public class BuySellAsset extends JPanel {
     private JSpinner createSpinner(){
         SpinnerModel model = new SpinnerNumberModel(1, 1, null, 1);
         JSpinner spinner = new JSpinner(model);
+        spinner.setPreferredSize(new Dimension(100, 30));
         return  spinner;
     }
 
@@ -92,14 +165,14 @@ public class BuySellAsset extends JPanel {
         constraints.insets = new Insets(0, 0, 0, 0);
 
         addToPanel(buySellPanel, buyTag, constraints, 0,0,1,1);
-        addToPanel(buySellPanel, buyQuantity, constraints, 0, 1, 2, 1);
-        addToPanel(buySellPanel, buyPrice, constraints, 0, 2, 2, 1);
-        addToPanel(buySellPanel, buyButton, constraints, 2,2,1,1);
+        addToPanel(buySellPanel, buyQuantity, constraints, 0, 1, 1, 1);
+        addToPanel(buySellPanel, buyPrice, constraints, 0, 2, 1, 1);
+        addToPanel(buySellPanel, buyButton, constraints, 1,2,1,1);
 
         addToPanel(buySellPanel, sellTag, constraints, 0,4,1,1);
-        addToPanel(buySellPanel, sellQuantity, constraints, 0, 5, 2, 1);
-        addToPanel(buySellPanel, sellPrice, constraints, 0, 6, 2,1);
-        addToPanel(buySellPanel, sellButton, constraints, 2,6,1,1);
+        addToPanel(buySellPanel, sellQuantity, constraints, 0, 5, 1, 1);
+        addToPanel(buySellPanel, sellPrice, constraints, 0, 6, 1,1);
+        addToPanel(buySellPanel, sellButton, constraints, 1,6,1,1);
     }
 
     /**
