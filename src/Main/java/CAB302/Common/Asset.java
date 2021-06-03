@@ -49,11 +49,6 @@ public class Asset extends BaseObject implements iGet, iList {
         this.createdByUser = createdByUserID;
     }
 
-
-
-    public List<Trade> getTrades() { return this.trades; }
-    public void setTrades(List<Trade> trades) { this.trades = trades; }
-
     public Asset() { }
 
     public BaseObject get() {
