@@ -65,7 +65,7 @@ public class BuySellAsset extends JPanel {
                 Trade trade = new Trade();
                 trade.setQuantity((Integer) buyQuantity.getValue());
                 trade.setAssetType(assetType);
-                trade.setPrice((Double) buyPrice.getValue());
+                trade.setPrice((Integer) buyPrice.getValue());
                 trade.setCreatedByUser(RuntimeSettings.CurrentUser);
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Buying);
@@ -94,7 +94,7 @@ public class BuySellAsset extends JPanel {
                 Trade trade = new Trade();
                 trade.setQuantity((Integer) sellQuantity.getValue());
                 trade.setAssetType(assetType);
-                trade.setPrice((Double) sellPrice.getValue());
+                trade.setPrice((Integer) sellPrice.getValue());
                 trade.setCreatedByUser(RuntimeSettings.CurrentUser);
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Selling);
