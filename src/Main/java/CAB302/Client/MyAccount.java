@@ -33,8 +33,10 @@ public class MyAccount extends JPanel {
     JPasswordField password = new JPasswordField(10);
     JPasswordField repeatPassword = new JPasswordField(10);
 
+    User selectedUser;
 
     public MyAccount(User user) {
+        selectedUser = user;
         name = new JLabel("Name: ");
         role = new JLabel("Role: ");
         organisationUnit = new JLabel("Organisation: ");
@@ -94,6 +96,7 @@ public class MyAccount extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 4;
         add(changePassword, gbc);
+
 
         changePassword.addActionListener(
                 new ActionListener() {
@@ -188,52 +191,49 @@ public class MyAccount extends JPanel {
                             }
                         });
 
-                        submit.addActionListener(
-                                new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-
-                                        char[] charArray = password.getPassword();
-
-                                        String password = new String(charArray);
-
-                                        String hashedPassword = SHA256HashHelper.generateHashedString(password);
-
-                                        User user = new User();
-
-                                        user.setHashedPassword(hashedPassword);
-
-                                        PayloadRequest request = new PayloadRequest();
-
-                                        request.setPayloadObject(user);
-                                        request.setRequestPayloadType(RequestPayloadType.Update);
-
-                                        PayloadResponse response = null;
-                                        try {
-                                            response = new Client().SendRequest(request);
-                                        } catch (IOException ioException) {
-                                            ioException.printStackTrace();
-                                        }
-
-                                        user = (CAB302.Common.User)response.getPayloadObject();
-
-                                        Toast t;
-                                        if (user == null) {
-                                            t = new Toast("Update Failed", 150, 400);
-                                        }
-                                        else {
-                                            t = new Toast("Update Complete", 150, 400);
-                                        }
-                                        t.showtoast();
-                                    }
-                                });
-
-
-
                         revalidate();
                         repaint();
                     }
                 });
+        submit.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        char[] charArray = password.getPassword();
+
+                        String password = new String(charArray);
+
+                        String hashedPassword = SHA256HashHelper.generateHashedString(password);
+
+                        selectedUser.setHashedPassword(hashedPassword);
+
+                        PayloadRequest request = new PayloadRequest();
+
+                        request.setPayloadObject(selectedUser);
+                        request.setRequestPayloadType(RequestPayloadType.Update);
+
+                        PayloadResponse response = null;
+                        try {
+                            response = new Client().SendRequest(request);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+
+                        selectedUser = (CAB302.Common.User)response.getPayloadObject();
+
+                        Toast t;
+                        if (selectedUser == null) {
+                            t = new Toast("Update Failed", 150, 400);
+                        }
+                        else {
+                            t = new Toast("Update Complete", 150, 400);
+                        }
+                        t.showtoast();
+                    }
+                });
+
+
 
 
 
