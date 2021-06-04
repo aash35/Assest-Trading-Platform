@@ -1,5 +1,7 @@
 package CAB302.Server;
 
+import CAB302.Common.RuntimeSettings;
+
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +16,9 @@ public class Main {
     {
         Console console = System.console();
 
-        Server server = new Server(8080);
+        ServerSettings settings = new ServerSettings();
+
+        Server server = new Server(RuntimeSettings.Port);
 
         System.out.println("Starting up server");
 
