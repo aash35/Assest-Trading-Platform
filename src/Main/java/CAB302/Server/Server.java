@@ -360,9 +360,6 @@ class RequestHandler extends Thread {
 
                 session.getTransaction().commit();
                 session.refresh(object);
-                
-                session.flush();
-                session.clear();
 
                 PayloadResponse response = new PayloadResponse();
 

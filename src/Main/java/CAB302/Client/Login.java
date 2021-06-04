@@ -157,35 +157,7 @@ public class Login extends JPanel {
 
                         user = (CAB302.Common.User)response.getPayloadObject();
 
-                        if (user == null) {
-                            User adminUser = new User();
-
-                            adminUser.setUsername("admin");
-
-                            String hashedAdminPassword = SHA256HashHelper.generateHashedString("admin");
-
-                            adminUser.setHashedPassword(hashedAdminPassword);
-
-                            request = new PayloadRequest();
-
-                            request.setPayloadObject(adminUser);
-                            request.setRequestPayloadType(RequestPayloadType.Get);
-
-                            try {
-                                response = new Client().SendRequest(request);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
-
-                            adminUser = (CAB302.Common.User) response.getPayloadObject();
-
-                            if (adminUser != null) {
-                                RuntimeSettings.CurrentUser = adminUser;
-
-                                NavigationHelper.mainMenu(frame);
-                            }
-                        }
-                        else {
+                        if (user != null) {
                             RuntimeSettings.CurrentUser = user;
 
                             NavigationHelper.mainMenu(frame);
