@@ -35,7 +35,7 @@ public class MyAccount extends JPanel {
 
     User selectedUser;
 
-    public MyAccount(User user) {
+    public MyAccount(User user, JPanel panel) {
         selectedUser = user;
         name = new JLabel("Name: ");
         role = new JLabel("Role: ");
@@ -225,10 +225,11 @@ public class MyAccount extends JPanel {
                         selectedUser = (CAB302.Common.User)response.getPayloadObject();
                         Toast t;
                         if (selectedUser == null) {
-                            t = new Toast("Update Failed", 150, 400);
+                            t = new Toast("Update Failed", panel);
                         }
                         else {
-                            t = new Toast("Update Complete", 150, 400);
+
+                            t = new Toast("Update Complete", panel);
                         }
                         t.showtoast();
                     }

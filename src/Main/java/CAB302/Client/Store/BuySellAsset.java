@@ -1,6 +1,7 @@
 package CAB302.Client.Store;
 
 import CAB302.Client.Client;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.AssetType;
 import CAB302.Common.Colors.Purple;
@@ -126,8 +127,13 @@ public class BuySellAsset extends JPanel {
 
 
                 //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
+
+
                 if (response == null) {
-                    //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT - THROW TOAST
+                    Toast t;
+                    t = new Toast("Credit Error", panel);
+                    mainPanel.add(t);
+                    t.showtoast();
                 }
                 else {
                     OrganisationalUnit ou = RuntimeSettings.CurrentUser.getOrganisationalUnit();

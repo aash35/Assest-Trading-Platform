@@ -14,7 +14,7 @@ public class Toast extends JFrame {
     // JWindow
     JWindow w;
 
-    public Toast(String s, int x, int y)
+    public Toast(String s, JPanel panel)
     {
         w = new JWindow();
 
@@ -50,7 +50,8 @@ public class Toast extends JFrame {
         };
 
         w.add(p);
-        w.setLocation(x, y);
+        w.setLocationRelativeTo(this);
+        w.setLocation(50, 50);
         w.setSize(300, 100);
     }
 

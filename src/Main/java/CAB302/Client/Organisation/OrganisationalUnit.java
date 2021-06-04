@@ -6,6 +6,9 @@ import CAB302.Common.Enums.RequestPayloadType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.io.Console;
 import java.io.IOException;
 import java.util.List;
 
@@ -34,7 +37,8 @@ public class OrganisationalUnit extends JPanel {
 
 
 
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.CENTER;
+        c.gridwidth = 2;
         c.gridx = 0;
         c.gridy = 1;
         add(assetPanel, c);
@@ -45,8 +49,14 @@ public class OrganisationalUnit extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         //add(currentTradesPanel, c);
+        addComponentListener(new ResizeListener());
 
+    }
 
+    class ResizeListener extends ComponentAdapter {
+        public void componentResized(ComponentEvent e) {
+            System.out.println(e.getComponent().getWidth());
+        }
     }
     private JPanel createAssetPanel(){
         JPanel panelOne = new JPanel();
@@ -63,9 +73,8 @@ public class OrganisationalUnit extends JPanel {
             allPanel.add(createAssets(asset));
         }
         JScrollPane scrollPane = new JScrollPane(allPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        //scrollPane.setPreferredSize(new Dimension(650, 110));
+        scrollPane.setPreferredSize(new Dimension(650, 110));
         panelOne.add(scrollPane);
-
         return panelOne;
     }
     private JPanel createCurrentTradesPanel(){
@@ -123,11 +132,23 @@ public class OrganisationalUnit extends JPanel {
         return panel;
     }
 
+
     private void getAssetsList() throws IOException {
         PayloadRequest request = new PayloadRequest();
         Asset newAsset = new Asset();
         newAsset.setOrganisationalUnit(focusUser.getOrganisationalUnit());
         request.setPayloadObject(newAsset);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = new Client().SendRequest(request);
+        assetsList = (java.util.List<Asset>)(List<?>)response.getPayloadObject();
+    }
+
+    private void getTradeList() throws IOException {
+        PayloadRequest request = new PayloadRequest();
+        Trade newTrade = new Trade();
+        newTrade.setOrganisationalUnit(focusUser.getOrganisationalUnit());
+        request.setPayloadObject(newTrade);
         request.setRequestPayloadType(RequestPayloadType.List);
 
         PayloadResponse response = new Client().SendRequest(request);
