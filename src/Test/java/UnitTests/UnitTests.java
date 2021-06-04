@@ -140,7 +140,7 @@ public class UnitTests {
         buyTrade.setAssetType(type);
         buyTrade.setQuantity(10);
         buyTrade.setPrice(5);
-        buyTrade.setCreatedByUser(user);
+        buyTrade.setOrganisationalUnit(user.getOrganisationalUnit());
         buyTrade.setCreatedDate(Timestamp.from(Instant.now()));
         buyTrade.setTransactionType(TradeTransactionType.Buying);
         buyTrade.setStatus(TradeStatus.InMarket);
@@ -167,7 +167,7 @@ public class UnitTests {
         sellTrade.setAssetType(type);
         sellTrade.setQuantity(10);
         sellTrade.setPrice(10);
-        sellTrade.setCreatedByUser(user);
+        sellTrade.setOrganisationalUnit(user.getOrganisationalUnit());
         sellTrade.setCreatedDate(Timestamp.from(Instant.now()));
         sellTrade.setTransactionType(TradeTransactionType.Selling);
         sellTrade.setStatus(TradeStatus.InMarket);
@@ -193,7 +193,7 @@ public class UnitTests {
         buyTrade.setAssetType(type);
         buyTrade.setQuantity(10);
         buyTrade.setPrice(12);
-        buyTrade.setCreatedByUser(user);
+        buyTrade.setOrganisationalUnit(user.getOrganisationalUnit());
         buyTrade.setCreatedDate(Timestamp.from(Instant.now()));
         buyTrade.setTransactionType(TradeTransactionType.Buying);
         buyTrade.setStatus(TradeStatus.InMarket);
@@ -220,7 +220,7 @@ public class UnitTests {
         sellTrade.setAssetType(type);
         sellTrade.setQuantity(60);
         sellTrade.setPrice(10);
-        sellTrade.setCreatedByUser(user);
+        sellTrade.setOrganisationalUnit(user.getOrganisationalUnit());
         sellTrade.setCreatedDate(Timestamp.from(Instant.now()));
         sellTrade.setTransactionType(TradeTransactionType.Selling);
         sellTrade.setStatus(TradeStatus.InMarket);

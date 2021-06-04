@@ -27,30 +27,29 @@ public class Store extends JPanel {
 
     public Store(JPanel panel) {
         this.panel = panel;
-        Color c = new Purple();
-        setBackground(c);
 
-        mainPanel = createPanel(c);
+        mainPanel = createPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630,500));
         add(mainPanel);
 
-        titlePanel = createPanel(c);
+        titlePanel = createPanel();
         titlePanel.setLayout(new FlowLayout());
 
-        innerAssetsPanel = createPanel(c);
-        innerAssetsPanel.setLayout(new GridLayout(0,4,10,10));
+        innerAssetsPanel = createPanel();
+        innerAssetsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        outerAssetsPanel = new JScrollPane(innerAssetsPanel,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        outerAssetsPanel = new JScrollPane(innerAssetsPanel);
+        outerAssetsPanel.setPreferredSize(new Dimension(400,400));
+        outerAssetsPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        outerAssetsPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         outerAssetsPanel.setWheelScrollingEnabled(true);
-
-        mainPanel.add(titlePanel, BorderLayout.NORTH);
-        mainPanel.add(outerAssetsPanel, BorderLayout.CENTER);
 
         JLabel storeLabel = new JLabel("Store");
         storeLabel.setFont(new Font(storeLabel.getFont().getFontName(), Font.PLAIN, 42));
         titlePanel.add(storeLabel);
+
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
 
         try {
             getAssetsList();
@@ -58,21 +57,22 @@ public class Store extends JPanel {
             e.printStackTrace();
         }
 
-        for (BaseObject assetType: assetsList
-             ) {
+        innerAssetsPanel.setPreferredSize(new Dimension(400, 70 * (assetsList.size()/4)));
+
+        for (BaseObject assetType: assetsList) {
             JButton assetButton = createAssetButton((AssetType) assetType);
             innerAssetsPanel.add(assetButton);
         }
+
+        mainPanel.add(outerAssetsPanel, BorderLayout.CENTER);
     }
 
     /**
      * Creates a JPanel object
-     * @param c the background color of the panel.
      * @return a JPanel object
      */
-    private JPanel createPanel(Color c){
+    private JPanel createPanel(){
         JPanel panel = new JPanel();
-        //panel.setBackground(c);
         return panel;
     }
 
@@ -96,14 +96,14 @@ public class Store extends JPanel {
      * @return a JButton object.
      */
     private JButton createAssetButton(AssetType assetType){
-        JButton button = new JButton();
-        button.setText(assetType.getName());
+        JButton button = new JButton(assetType.getName());
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 NavigationHelper.changePanel(panel, new BuySellAsset(assetType));
             }
         });
+        button.setPreferredSize(new Dimension(140,50));
         return button;
     }
 }

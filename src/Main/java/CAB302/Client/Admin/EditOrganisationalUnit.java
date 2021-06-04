@@ -1,64 +1,286 @@
 package CAB302.Client.Admin;
 
+import CAB302.Client.Client;
+import CAB302.Common.*;
+import CAB302.Common.Enums.RequestPayloadType;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.List;
 
-public class EditOrganisationalUnit extends JPanel{
-    JLabel assetNameLabel = new JLabel("Select Asset: ");
-    JComboBox assetCB;
+public class EditOrganisationalUnit extends JPanel {
+    private JLabel messageStackLabel = new JLabel("");
 
-    JLabel ouNameLabel = new JLabel("Select Organisational Unit: ");
-    JComboBox ouCB;
+    private JLabel assetNameLabel = new JLabel("Select Asset: ");
+    private JComboBox assetCB;
 
-    JLabel changeAmtLabel = new JLabel("Change Amount To: ");
-    JTextField changeAmtField = new JTextField(20);
+    private JLabel ouNameLabel = new JLabel("Select Organisational Unit: ");
+    private JComboBox ouCB;
 
-    JButton confirmBtn = new JButton("Confirm");
-    public EditOrganisationalUnit(){
+    private JLabel changeAmtLabel = new JLabel("Change Amount To: ");
+    private JSpinner changeAmtField = createSpinner();
 
-        //Placeholder - NEED TO GET DATA FROM DATABASE//////////////////////
-        String[] assetString = { "Credits", "PooPoo", "PeePee", "Water"};
-        String[] ouString = { "Marketing", "Finance", "Accounting", "Admin"};
+    private JButton confirmBtn = new JButton("Confirm");
 
-        JComboBox assetCB = new JComboBox(assetString);
-        JComboBox ouCB = new JComboBox(ouString);
-        //////////////////////////////////////////////////////////////////////
+    private List<OrganisationalUnit> ouList;
+    private List<AssetType> assetsTypeList;
+
+    public EditOrganisationalUnit() {
+
+        //Get list of all OrgUnits and add to combobox
+        try {
+            getOUList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String[] organisationalUnits = new String[ouList.size()];
+        for (int i = 0; i < ouList.size(); i++) {
+            organisationalUnits[i] = ouList.get(i).getUnitName();
+        }
+        ouCB = new JComboBox(organisationalUnits);
+
+        //Get list of all assets and add to combobox
+        try {
+            getAssetTypeList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String[] assetString = new String[assetsTypeList.size() + 1];
+        assetString[0] = "Credits";
+        for (int i = 1; i < assetString.length; i++) {
+            assetString[i] = ((AssetType) assetsTypeList.get(i - 1)).getName();
+        }
+        assetCB = new JComboBox(assetString);
 
         setLayout(new GridBagLayout());
-        GridBagConstraints gc = new GridBagConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 0;
-        add(assetNameLabel, gc);
+        //Left Column
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(ouNameLabel, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 0;
-        add(assetCB, gc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(assetNameLabel, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 1;
-        add(ouNameLabel, gc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(changeAmtLabel, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 1;
-        add(ouCB, gc);
+        //Right Column
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        add(ouCB, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 2;
-        add(changeAmtLabel, gc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        add(assetCB, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 2;
-        add(changeAmtField, gc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        add(changeAmtField, gbc);
 
-        gc.gridx = 1;
-        gc.gridy = 3;
-        add(confirmBtn, gc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        add(confirmBtn, gbc);
+
+        confirmBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        OrganisationalUnit oUnit = (OrganisationalUnit) ouList.get(ouCB.getSelectedIndex());
+                        Integer changeAmt = (Integer) changeAmtField.getValue();
+
+                        AssetType assetType;
+                        if (assetCB.getSelectedIndex() == 0) {
+                            editCredits(oUnit, changeAmt);
+                        } else {
+                            assetType = (AssetType) assetsTypeList.get(assetCB.getSelectedIndex()-1);
+                            Asset asset = getAsset(oUnit, assetType);
+                            if (asset == null)
+                            {
+                                createAsset(oUnit,assetType,changeAmt);
+                            }
+                            else
+                            {
+                                if (changeAmt == 0)
+                                {
+                                    if(!checkTrades(oUnit, assetType))
+                                    {
+                                        deleteAsset(oUnit, assetType);
+                                    }
+                                }
+                                else
+                                {
+                                    editAssets(asset, changeAmt);
+                                }
+                            }
+                        }
+
+
+                        messageStackLabel.setText("Successfully saved");
+
+                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                        gbc.weighty = 5;
+                        gbc.insets = new Insets(20, 0, 0, 0);
+                        gbc.gridx = 1;
+                        gbc.gridy = 3;
+                        add(messageStackLabel, gbc);
+                        remove(confirmBtn);
+
+                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                        gbc.weighty = 5;
+                        gbc.insets = new Insets(20, 0, 0, 0);
+                        gbc.gridx = 1;
+                        gbc.gridy = 4;
+                        add(confirmBtn, gbc);
+                    }
+                });
+
     }
+
+    private boolean checkTrades(OrganisationalUnit ou, AssetType assetType){
+        Trade type = new Trade();
+
+        type.setAssetType(assetType);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.List);
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        List<Trade> tradesList = (List<Trade>)(List<?>) response.getPayloadObject();
+        return (tradesList.size() != 0);
+    }
+
+    private void deleteAsset(OrganisationalUnit ou, AssetType assetType){
+        Asset asset = getAsset(ou, assetType);
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(asset);
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private void createAsset(OrganisationalUnit ou, AssetType assetType, int changeAmt){
+        Asset type = new Asset();
+        type.setQuantity(changeAmt);
+        type.setAssetType(assetType);
+        type.setOrganisationalUnit(ou);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Create);
+
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private Asset getAsset(OrganisationalUnit ou, AssetType assetType) {
+
+        Asset type = new Asset();
+
+        type.setOrganisationalUnit(ou);
+        type.setAssetType(assetType);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        Asset asset = (Asset) response.getPayloadObject();
+        return asset;
+    }
+
+    private void editAssets (Asset asset, int changeAmt){
+        asset.setQuantity(changeAmt);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(asset);
+
+        PayloadResponse response = null;
+
+        request.setRequestPayloadType(RequestPayloadType.Update);
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private void editCredits(OrganisationalUnit ou, int changeAmt){
+        ou.setAvailableCredit(changeAmt);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(ou);
+
+        PayloadResponse response = null;
+
+        request.setRequestPayloadType(RequestPayloadType.Update);
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private JSpinner createSpinner () {
+        SpinnerModel model = new SpinnerNumberModel(0, 0, null, 1);
+        JSpinner spinner = new JSpinner(model);
+        spinner.setPreferredSize(new Dimension(100, 25));
+        return spinner;
+    }
+
+    private void getOUList () throws IOException {
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(new OrganisationalUnit());
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = new Client().SendRequest(request);
+        ouList = (List<OrganisationalUnit>) (List<?>) response.getPayloadObject();
+    }
+
+    private void getAssetTypeList () throws IOException {
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(new AssetType());
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = new Client().SendRequest(request);
+        assetsTypeList = (List<AssetType>) (List<?>) response.getPayloadObject();
+    }
+
 }

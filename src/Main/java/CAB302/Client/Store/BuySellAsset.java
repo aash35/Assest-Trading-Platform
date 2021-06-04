@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BuySellAsset extends JPanel {
     private AssetType assetType;
@@ -52,14 +53,12 @@ public class BuySellAsset extends JPanel {
 
     public BuySellAsset(AssetType assetType){
         this.assetType = assetType;
-        Color c = new Purple();
-        mainPanel = createPanel(c);
+        mainPanel = createPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630, 500));
         add(mainPanel);
-        setBackground(c);
 
-        titlePanel = createPanel(c);
+        titlePanel = createPanel();
         titlePanel.setLayout(new FlowLayout());
 
         mainPanel.add(titlePanel, BorderLayout.NORTH);
@@ -99,7 +98,7 @@ public class BuySellAsset extends JPanel {
                 trade.setQuantity((Integer) buyQuantity.getValue());
                 trade.setAssetType(assetType);
                 trade.setPrice((Integer) buyPrice.getValue());
-                trade.setCreatedByUser(RuntimeSettings.CurrentUser);
+                trade.setOrganisationalUnit(RuntimeSettings.CurrentUser.getOrganisationalUnit());
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Buying);
                 trade.setStatus(TradeStatus.InMarket);
@@ -111,12 +110,16 @@ public class BuySellAsset extends JPanel {
                 request.setPayloadObject(trade);
                 request.setRequestPayloadType(RequestPayloadType.Buy);
 
+                PayloadResponse response;
+
                 try {
-                    PayloadResponse response = client.SendRequest(request);
+                    response = client.SendRequest(request);
                 }
                catch(Exception error){
 
                }
+
+                //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
             }
         });
 
@@ -128,7 +131,7 @@ public class BuySellAsset extends JPanel {
                 trade.setQuantity((Integer) sellQuantity.getValue());
                 trade.setAssetType(assetType);
                 trade.setPrice((Integer) sellPrice.getValue());
-                trade.setCreatedByUser(RuntimeSettings.CurrentUser);
+                trade.setOrganisationalUnit(RuntimeSettings.CurrentUser.getOrganisationalUnit());
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Selling);
                 trade.setStatus(TradeStatus.InMarket);
@@ -169,11 +172,11 @@ public class BuySellAsset extends JPanel {
         currentOrderPanel = new JScrollPane(currentOrderTable);
         currentOrderTable.setFillsViewportHeight(true);
 
-        buySellPanel = createPanel(c);
+        buySellPanel = createPanel();
         layoutBuySellPanel();
         mainPanel.add(buySellPanel, BorderLayout.CENTER);
 
-        tablesPanel = createPanel(c);
+        tablesPanel = createPanel();
         tablesPanel.setLayout(new BoxLayout(tablesPanel, BoxLayout.Y_AXIS));
         tablesPanel.setPreferredSize(new Dimension(400,100));
         tablesPanel.add(priceHistoryTag);
@@ -186,12 +189,10 @@ public class BuySellAsset extends JPanel {
 
     /**
      * Creates a JPanel object
-     * @param c the background color of the panel.
      * @return a JPanel object
      */
-    private JPanel createPanel(Color c){
+    private JPanel createPanel(){
         JPanel panel = new JPanel();
-        panel.setBackground(c);
         return panel;
     }
 
@@ -227,14 +228,11 @@ public class BuySellAsset extends JPanel {
     }
 
     private ArrayList<Trade> findFilledTrades(){
-        ArrayList<Trade> filledTrades = new ArrayList<>();
-        for(Trade trade: allTrades){
-            if(trade.getAssetType().getName().equals(this.assetType.getName()) &&
-                    trade.getStatus() == TradeStatus.Filled &&
-                    trade.getTransactionType() == TradeTransactionType.Selling){
-                filledTrades.add(trade);
-            }
-        }
+
+        List<Trade> filledTrades = allTrades.stream().filter(
+                x -> x.getAssetType().id.intValue() == this.assetType.id.intValue() &&
+                x.getStatus() == TradeStatus.Filled &&
+                x.getTransactionType() == TradeTransactionType.Buying).collect(Collectors.toList());
 
         filledTrades.sort(new Comparator<Trade>() {
             @Override
@@ -242,7 +240,8 @@ public class BuySellAsset extends JPanel {
                 return o1.getCreatedDate().compareTo(o2.getCreatedDate());
             }
         });
-        return filledTrades;
+
+        return new ArrayList<Trade>(filledTrades);
     }
 
     private JTable createOrderTable(ArrayList<Trade> currentOrders) {
@@ -250,7 +249,6 @@ public class BuySellAsset extends JPanel {
                 "Quantity",
                 "Price per Unit",
                 "Order Type",
-                "Created By User",
                 "Date Created"};
 
         Object[][] data = new Object[currentOrders.size()][6];
@@ -261,8 +259,7 @@ public class BuySellAsset extends JPanel {
             data[i][1] = order.getQuantity();
             data[i][2] = order.getPrice();
             data[i][3] = order.getTransactionType().toString();
-            data[i][4] = order.getCreatedByUser().getUsername();
-            data[i][5] = order.getCreatedDate();
+            data[i][4] = order.getCreatedDate();
             i++;
         }
         JTable jTable = new JTable(data, columnHeaders);

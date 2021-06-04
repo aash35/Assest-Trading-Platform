@@ -2,6 +2,7 @@ package CAB302.Client;
 
 import CAB302.Common.PayloadRequest;
 import CAB302.Common.PayloadResponse;
+import CAB302.Common.RuntimeSettings;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,7 +14,7 @@ public class Client {
         Socket socket = null;
 
         try {
-            socket = new Socket("127.0.0.1", 8080);
+            socket = new Socket(RuntimeSettings.IP, RuntimeSettings.Port);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
