@@ -112,7 +112,10 @@ public class EditOrganisationalUnit extends JPanel {
                             {
                                 if (changeAmt == 0)
                                 {
-                                    deleteAsset(oUnit, assetType);
+                                    if(!checkTrades(oUnit, assetType))
+                                    {
+                                        deleteAsset(oUnit, assetType);
+                                    }
                                 }
                                 else
                                 {
@@ -141,6 +144,26 @@ public class EditOrganisationalUnit extends JPanel {
                     }
                 });
 
+    }
+
+    private boolean checkTrades(OrganisationalUnit ou, AssetType assetType){
+        Trade type = new Trade();
+
+        type.setAssetType(assetType);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.List);
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        List<Trade> tradesList = (List<Trade>)(List<?>) response.getPayloadObject();
+        return (tradesList.size() != 0);
     }
 
     private void deleteAsset(OrganisationalUnit ou, AssetType assetType){
