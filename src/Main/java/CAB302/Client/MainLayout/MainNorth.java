@@ -23,7 +23,7 @@ public class MainNorth extends JPanel {
         setBackground(new Grey());
         setBorder(BorderFactory.createMatteBorder(2,2,0,2, Color.BLACK));
 
-        name = new JLabel(user.getUsername() +": " + user.getOrganisationalUnit() == null ? "" : user.getOrganisationalUnit().getUnitName());
+        name = new JLabel(user.getUsername() +": " + user.getOrganisationalUnit().getUnitName());
         name.setFont(name.getFont().deriveFont(Font.BOLD));
 
         credits = new JLabel(user.getOrganisationalUnit().getAvailableCredit() +" credits");

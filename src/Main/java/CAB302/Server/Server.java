@@ -353,12 +353,19 @@ class RequestHandler extends Thread {
                 catch (Exception ex) {
                     session.beginTransaction();
                 }
+                session.flush();
+                session.clear();
 
                 session.update(object);
 
                 session.getTransaction().commit();
+                session.refresh(object);
 
-                break;
+                PayloadResponse response = new PayloadResponse();
+
+                response.setPayloadObject(object);
+
+                return response;
 
             case Delete:
                 session = RuntimeSettings.Session;
