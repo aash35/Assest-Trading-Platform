@@ -54,7 +54,7 @@ public class Trade extends BaseObject implements iGet, iList {
     public void setStatus(TradeStatus status) { this.status = status; }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "createdByUserID")
+    @JoinColumn(name = "organisationalUnitID")
     private OrganisationalUnit organisationalUnit;
 
     @Column(name = "organisationalUnitID")
