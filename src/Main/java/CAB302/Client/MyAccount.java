@@ -201,10 +201,13 @@ public class MyAccount extends JPanel {
                     public void actionPerformed(ActionEvent e) {
 
                         char[] charArray = password.getPassword();
+                        
+                        password.setText("");
+                        repeatPassword.setText("");
 
-                        String password = new String(charArray);
+                        String passwordSend = new String(charArray);
 
-                        String hashedPassword = SHA256HashHelper.generateHashedString(password);
+                        String hashedPassword = SHA256HashHelper.generateHashedString(passwordSend);
 
                         selectedUser.setHashedPassword(hashedPassword);
 
@@ -219,9 +222,7 @@ public class MyAccount extends JPanel {
                         } catch (IOException ioException) {
                             ioException.printStackTrace();
                         }
-
                         selectedUser = (CAB302.Common.User)response.getPayloadObject();
-
                         Toast t;
                         if (selectedUser == null) {
                             t = new Toast("Update Failed", 150, 400);
