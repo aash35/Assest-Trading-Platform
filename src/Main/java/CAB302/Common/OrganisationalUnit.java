@@ -69,7 +69,14 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
         CriteriaQuery<OrganisationalUnit> criteria = criteriaBuilder.createQuery(OrganisationalUnit.class);
         Root<OrganisationalUnit> root = criteria.from(OrganisationalUnit.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("unitName"), this.getUnitName()));
+        if (this.getUnitName() == null)
+        {
+            criteria.select(root);
+        }
+        else
+        {
+            criteria.select(root).where(criteriaBuilder.equal(root.get("unitName"), this.getUnitName()));
+        }
 
         Query query = session.createQuery(criteria);
 

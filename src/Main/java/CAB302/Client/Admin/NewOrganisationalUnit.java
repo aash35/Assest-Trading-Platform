@@ -2,6 +2,7 @@ package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.PayloadRequest;
 import CAB302.Common.PayloadResponse;
 
@@ -52,9 +53,9 @@ public class NewOrganisationalUnit extends JPanel {
                             ioException.printStackTrace();
                         }
 
-                        CAB302.Common.OrganisationalUnit ouName = (CAB302.Common.OrganisationalUnit)response.getPayloadObject();
+                        OrganisationalUnit ou = (OrganisationalUnit)response.getPayloadObject();
 
-                        if (ouName == null) {
+                        if (ou == null) {
 
                             request.setRequestPayloadType(RequestPayloadType.Create);
                             try {
