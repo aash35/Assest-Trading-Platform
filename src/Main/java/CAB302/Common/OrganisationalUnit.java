@@ -37,6 +37,12 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
     public List<User> getUsers() { return this.users; }
     public void setUsers(List<User> users) { this.users = users; }
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisationalUnit")
+    private List<Asset> assets = new ArrayList<Asset>();
+
+    public List<Asset> getAssets() { return this.assets; }
+    public void setAssets(List<Asset> assets) { this.assets = assets; }
+
     public OrganisationalUnit() { }
 
     public BaseObject get() {
@@ -69,7 +75,14 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
         CriteriaQuery<OrganisationalUnit> criteria = criteriaBuilder.createQuery(OrganisationalUnit.class);
         Root<OrganisationalUnit> root = criteria.from(OrganisationalUnit.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("unitName"), this.getUnitName()));
+        if (this.getUnitName() == null)
+        {
+            criteria.select(root);
+        }
+        else
+        {
+            criteria.select(root).where(criteriaBuilder.equal(root.get("unitName"), this.getUnitName()));
+        }
 
         Query query = session.createQuery(criteria);
 

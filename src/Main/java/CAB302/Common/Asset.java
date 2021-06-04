@@ -38,16 +38,14 @@ public class Asset extends BaseObject implements iGet, iList {
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "createdByUserID")
-    private User createdByUser;
+    @JoinColumn(name = "organisationalUnitID")
+    private OrganisationalUnit organisationalUnit;
 
-    @Column(name = "createdByUserID")
-    public User getCreatedByUser() {
-        return this.createdByUser;
+    @JoinColumn(name = "organisationalUnitID")
+    public OrganisationalUnit getOrganisationalUnit() {
+        return this.organisationalUnit;
     }
-    public void setCreatedByUserID(User createdByUserID) {
-        this.createdByUser = createdByUserID;
-    }
+    public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) { this.organisationalUnit = organisationalUnit; }
 
     public Asset() { }
 

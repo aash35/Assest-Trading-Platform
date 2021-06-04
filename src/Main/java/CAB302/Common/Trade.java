@@ -65,7 +65,6 @@ public class Trade extends BaseObject implements iGet, iList {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assetTypeID")
-
     private AssetType assetType;
 
     @Column(name = "assetTypeID")

@@ -1,91 +1,188 @@
 package CAB302.Client.Admin;
 
+import CAB302.Client.Client;
+import CAB302.Common.*;
+import CAB302.Common.Enums.AccountTypeRole;
+import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Helpers.SHA256HashHelper;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.List;
+
+import static CAB302.Common.Helpers.SHA256HashHelper.generateHashedString;
 
 public class NewUser extends JPanel {
-    JLabel enterNameLabel = new JLabel("Enter Full Name: ");
-    JTextField enterNameField = new JTextField(20);
+    private JLabel messageStackLabel = new JLabel("");
 
-    JLabel enterUserLabel = new JLabel("Enter Username: ");
-    JTextField enterUserField = new JTextField(20);
+    private JLabel enterUserLabel = new JLabel("Enter Username: ");
+    private JTextField enterUserField = new JTextField(20);
 
-    JLabel enterPassLabel = new JLabel("Enter Password: ");
-    JTextField enterPassField = new JTextField(20);
+    private JLabel enterPassLabel = new JLabel("Enter Password: ");
+    private JTextField enterPassField = new JTextField(20);
 
-    JLabel accountTypeLabel = new JLabel("Account Type: ");
-    JComboBox accountTypeCB;
+    private JLabel accountTypeLabel = new JLabel("Account Type: ");
+    private JComboBox accountTypeCB;
 
-    JLabel ouNameLabel = new JLabel("Organisational Unit: ");
-    JComboBox ouCB;
+    private JLabel ouNameLabel = new JLabel("Organisational Unit: ");
+    private JComboBox ouCB;
 
-    JButton confirmBtn = new JButton("Confirm");
+    private List<OrganisationalUnit> ouList;
+
+    private JButton confirmBtn = new JButton("Confirm");
 
     public NewUser(){
 
-        //Placeholder - NEED TO GET DATA FROM DATABASE//////////////////////
-        String[] accountType = { "Normal", "Admin"};
-        String[] ouString = { "Marketing", "Finance", "Accounting", "Admin"};
-
+        AccountTypeRole[] accountType = AccountTypeRole.values();
         accountTypeCB = new JComboBox(accountType);
-        ouCB = new JComboBox(ouString);
-        //////////////////////////////////////////////////////////////////////
+
+        //Get list of all OrgUnits and add to combobox
+        try {
+            getOUList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String[] organisationalUnits = new String[ouList.size()];
+        for (int i = 0; i < ouList.size(); i++)
+        {
+            organisationalUnits[i] = ouList.get(i).getUnitName();
+        }
+        ouCB = new JComboBox(organisationalUnits);
 
         setLayout(new GridBagLayout());
-        GridBagConstraints gc = new GridBagConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 0;
-        add(enterNameLabel, gc);
+        //Left Column
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(enterUserLabel, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 0;
-        add(enterNameField, gc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(enterPassLabel, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 1;
-        add(enterUserLabel, gc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        add(ouNameLabel, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 1;
-        add(enterUserField, gc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        add(accountTypeLabel, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 2;
-        add(enterPassLabel, gc);
+        //Right Column
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        add(enterUserField, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 2;
-        add(enterPassField, gc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        add(enterPassField, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 3;
-        add(ouNameLabel, gc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        add(ouCB, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 3;
-        add(ouCB, gc);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        add(accountTypeCB, gbc);
 
-        gc.anchor = GridBagConstraints.LINE_END;
-        gc.gridx = 0;
-        gc.gridy = 4;
-        add(accountTypeLabel, gc);
+        confirmBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String username = enterUserField.getText();
+                        String password = SHA256HashHelper.generateHashedString(enterPassField.getText());
+                        OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
+                        AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
 
-        gc.anchor = GridBagConstraints.LINE_START;
-        gc.gridx = 1;
-        gc.gridy = 4;
-        add(accountTypeCB, gc);
+                        User type = new User();
 
-        gc.gridx = 1;
-        gc.gridy = 5;
-        add(confirmBtn, gc);
+                        type.setUsername(username);
+                        type.setHashedPassword(password);
+                        type.setOrganisationalUnit(oUnit);
+                        type.setAccountRoleType(accountType);
+
+                        PayloadRequest request = new PayloadRequest();
+
+                        request.setPayloadObject(type);
+
+                        request.setRequestPayloadType(RequestPayloadType.Get);
+
+                        PayloadResponse response = null;
+                        try {
+                            response = new Client().SendRequest(request);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+
+                        User user = (User)response.getPayloadObject();
+
+                        if (user == null) {
+                            request.setRequestPayloadType(RequestPayloadType.Create);
+                            try {
+                                response = new Client().SendRequest(request);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+
+                            enterUserField.setText("");
+                            enterPassField.setText("");
+
+                            messageStackLabel.setText("Successfully saved");
+
+                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                            gbc.weighty = 5;
+                            gbc.insets = new Insets(20,0,0,0);
+                            gbc.gridx = 1;
+                            gbc.gridy = 5;
+                            add(messageStackLabel, gbc);
+                            remove(confirmBtn);
+
+                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                            gbc.weighty = 5;
+                            gbc.insets = new Insets(20,0,0,0);
+                            gbc.gridx = 1;
+                            gbc.gridy = 6;
+                            add(confirmBtn, gbc);
+                        }
+                        else {
+                            messageStackLabel.setText(String.format("Username (%s) already exists", username));
+
+                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                            gbc.weighty = 5;
+                            gbc.insets = new Insets(20,0,0,0);
+                            gbc.gridx = 1;
+                            gbc.gridy = 5;
+                            add(messageStackLabel, gbc);
+                            remove(confirmBtn);
+
+                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+                            gbc.weighty = 5;
+                            gbc.insets = new Insets(20,0,0,0);
+                            gbc.gridx = 1;
+                            gbc.gridy = 6;
+                            add(confirmBtn, gbc);
+                        }
+                    }
+                });
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        add(confirmBtn, gbc);
+    }
+
+    private void getOUList() throws IOException {
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(new OrganisationalUnit());
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = new Client().SendRequest(request);
+        ouList = (List<OrganisationalUnit>)(List<?>)response.getPayloadObject();
     }
 }

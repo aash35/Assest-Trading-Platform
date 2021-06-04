@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class BuySellAsset extends JPanel {
+    private AssetType assetType;
+
     private JPanel mainPanel;
     private JPanel titlePanel;
     private JPanel buySellPanel;
@@ -43,11 +46,12 @@ public class BuySellAsset extends JPanel {
     private JSpinner sellPrice;
     private JButton sellButton;
 
-    private List<BaseObject> allTrades;
+    private List<Trade> allTrades;
     private JTable currentOrderTable;
     private JTable priceHistoryTable;
 
     public BuySellAsset(AssetType assetType){
+        this.assetType = assetType;
         Color c = new Purple();
         mainPanel = createPanel(c);
         mainPanel.setLayout(new BorderLayout());
@@ -145,7 +149,11 @@ public class BuySellAsset extends JPanel {
             }
         });
 
-        allTrades = getTradeList();
+        try{
+            getTradeList();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
 
         priceHistoryTag = new JLabel(String.format("Price History of %s Sales", assetType.getName()));
         priceHistoryTag.setFont(new Font(buyTag.getFont().getFontName(), Font.PLAIN, 21));
@@ -198,28 +206,31 @@ public class BuySellAsset extends JPanel {
         return  spinner;
     }
     
-    private List<BaseObject> getTradeList(){
-        Trade emptyTrade = new Trade();
-        return emptyTrade.list();
+    private void getTradeList() throws IOException {
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(new Trade());
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = new Client().SendRequest(request);
+        allTrades = (List<Trade>)(List<?>)response.getPayloadObject();
     }
 
     private ArrayList<Trade> findCurrentTrades(){
         ArrayList<Trade> currentTrades = new ArrayList<>();
-        for(BaseObject each: allTrades){
-            Trade trade = (Trade) each;
-            if (trade.getStatus() == TradeStatus.InMarket){
+        for(Trade trade: allTrades){
+            if (trade.getAssetType().getName().equals(this.assetType.getName()) &&
+                    trade.getStatus() == TradeStatus.InMarket){
                 currentTrades.add(trade);
             }
         }
-
         return currentTrades;
     }
 
     private ArrayList<Trade> findFilledTrades(){
         ArrayList<Trade> filledTrades = new ArrayList<>();
-        for(BaseObject each: allTrades){
-            Trade trade = (Trade) each;
-            if(trade.getStatus() == TradeStatus.Filled &&
+        for(Trade trade: allTrades){
+            if(trade.getAssetType().getName().equals(this.assetType.getName()) &&
+                    trade.getStatus() == TradeStatus.Filled &&
                     trade.getTransactionType() == TradeTransactionType.Selling){
                 filledTrades.add(trade);
             }

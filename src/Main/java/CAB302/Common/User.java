@@ -52,12 +52,6 @@ public class User extends BaseObject implements iGet, iList {
     public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) { this.organisationalUnit = organisationalUnit; }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdByUser")
-    private List<Asset> assets = new ArrayList<Asset>();
-
-    public List<Asset> getAssets() { return this.assets; }
-    public void setAssets(List<Asset> assets) { this.assets = assets; }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdByUser")
     private List<Trade> trades = new ArrayList<Trade>();
 
     public List<Trade> getTrades() { return this.trades; }
@@ -96,9 +90,17 @@ public class User extends BaseObject implements iGet, iList {
         CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
         Root<User> root = criteria.from(User.class);
 
-        criteria.select(root).where(
-                criteriaBuilder.equal(root.get("username"), this.getUsername())
-        );
+        if (hashedPassword == null) {
+            criteria.select(root).where(
+                    criteriaBuilder.equal(root.get("username"), this.getUsername())
+            );
+        }
+        else {
+            criteria.select(root).where(
+                    criteriaBuilder.equal(root.get("username"), this.getUsername()),
+                    criteriaBuilder.equal(root.get("hashedPassword"), this.getHashedPassword())
+            );
+        }
 
         Query query = session.createQuery(criteria);
 
