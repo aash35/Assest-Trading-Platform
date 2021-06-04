@@ -220,11 +220,53 @@ class RequestHandler extends Thread {
         switch (requestPayload.getRequestPayloadType()) {
             case Buy:
 
-                break;
+                Trade buyTrade = (Trade)object;
+
+                if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice()) {
+                    Session session = RuntimeSettings.Session;
+
+                    session.save(object);
+
+                    session.getTransaction().commit();
+
+                    buyTrade = (Trade)buyTrade.get();
+
+                    PayloadResponse response = new PayloadResponse();
+
+                    response.setPayloadObject(buyTrade);
+
+                    return response;
+                }
+                else {
+                    return null;
+                }
 
             case Sell:
 
-                break;
+                Trade sellTrade = (Trade)object;
+
+                int assetTypeId = sellTrade.getAssetType().id;
+
+                Asset assetOfType = sellTrade.getCreatedByUser().getAssets().stream().filter(asset -> asset.getAssetType().id == assetTypeId).findFirst().orElse(null);
+
+                if (assetOfType.getQuantity() >= sellTrade.getQuantity()) {
+                    Session session = RuntimeSettings.Session;
+
+                    session.save(object);
+
+                    session.getTransaction().commit();
+
+                    sellTrade = (Trade)sellTrade.get();
+
+                    PayloadResponse response = new PayloadResponse();
+
+                    response.setPayloadObject(sellTrade);
+
+                    return response;
+                }
+                else {
+                    return null;
+                }
 
             case Get:
                 if (object instanceof iGet)
