@@ -110,16 +110,21 @@ public class BuySellAsset extends JPanel {
                 request.setPayloadObject(trade);
                 request.setRequestPayloadType(RequestPayloadType.Buy);
 
-                PayloadResponse response;
-
+                PayloadResponse response = null;
                 try {
                     response = client.SendRequest(request);
                 }
                catch(Exception error){
 
                }
+                if(response == null){
+                    //toast
+                }
+
+
 
                 //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
+
             }
         });
 

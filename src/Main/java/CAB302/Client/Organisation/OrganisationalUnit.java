@@ -26,14 +26,14 @@ public class OrganisationalUnit extends JPanel {
         JLabel title = new JLabel("Organisation Assets");
         title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
 
-        c.anchor = GridBagConstraints.LINE_START;
+        c.gridwidth = 3;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx = 0;
         c.gridy = 0;
         add(title, c);
 
 
 
-        c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 1;
@@ -56,8 +56,14 @@ public class OrganisationalUnit extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        JPanel allPanel = new JPanel();
         JPanel credit = creditPanel();
-        JScrollPane scrollPane = new JScrollPane(credit, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        allPanel.add(credit);
+        for (Asset asset: assetsList) {
+            allPanel.add(createAssets(asset));
+        }
+        JScrollPane scrollPane = new JScrollPane(allPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        //scrollPane.setPreferredSize(new Dimension(650, 110));
         panelOne.add(scrollPane);
 
         return panelOne;
@@ -91,15 +97,15 @@ public class OrganisationalUnit extends JPanel {
         panel.add(creditAmount, constraints);
         return panel;
     }
-    private JPanel createAssets(){
+    private JPanel createAssets(Asset asset){
         GridBagConstraints constraints = new GridBagConstraints();
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBackground(Color.white);
         panel.setBorder(BorderFactory.createLineBorder(Color.BLACK,2));
         panel.setSize(200, 150);
-
-        JLabel creditTitle = new JLabel("Credits");
+        constraints.insets = new Insets(10, 10,0,10);
+        JLabel creditTitle = new JLabel(""+ asset.getAssetType().getName());
         creditTitle.setFont(creditTitle.getFont().deriveFont(Font.BOLD));
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.weightx = 2;
@@ -108,7 +114,7 @@ public class OrganisationalUnit extends JPanel {
         constraints.gridy = 0;
         panel.add(creditTitle, constraints);
 
-        JLabel creditAmount = new JLabel("" +focusUser.getOrganisationalUnit().getAvailableCredit() );
+        JLabel creditAmount = new JLabel("" + asset.getQuantity() );
         creditAmount.setFont(creditAmount.getFont().deriveFont(Font.BOLD, 28));
         constraints.weighty = 2;
         constraints.gridx = 0;
@@ -118,7 +124,6 @@ public class OrganisationalUnit extends JPanel {
     }
 
     private void getAssetsList() throws IOException {
-
         PayloadRequest request = new PayloadRequest();
         Asset newAsset = new Asset();
         newAsset.setOrganisationalUnit(focusUser.getOrganisationalUnit());

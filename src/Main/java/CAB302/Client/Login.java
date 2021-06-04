@@ -58,19 +58,29 @@ public class Login extends JPanel {
                 //need to remove on the way out
                 if (e.getKeyChar()==KeyEvent.VK_ESCAPE) {
 
-                    User adminUser = new User();
+                    User user = new User();
+                    user.setHashedPassword(SHA256HashHelper.generateHashedString("admin"));
+                    user.setUsername("admin");
 
-                    adminUser.setUsername("admin");
-                    adminUser.setAccountRoleType(AccountTypeRole.Administrator);
+                    PayloadRequest request = new PayloadRequest();
 
-                    CAB302.Common.OrganisationalUnit adminUserOrg = new CAB302.Common.OrganisationalUnit();
-                    adminUserOrg.setUnitName("Potatos");
-                    adminUserOrg.setAvailableCredit(50000);
+                    request.setPayloadObject(user);
+                    request.setRequestPayloadType(RequestPayloadType.Get);
 
-                    adminUser.setOrganisationalUnit(adminUserOrg);
-                    RuntimeSettings.CurrentUser = adminUser;
+                    PayloadResponse response = null;
+                    try {
+                        response = new Client().SendRequest(request);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
 
-                    NavigationHelper.mainMenu(frame);
+                    user = (CAB302.Common.User)response.getPayloadObject();
+
+                    if (user != null) {
+                        RuntimeSettings.CurrentUser = user;
+
+                        NavigationHelper.mainMenu(frame);
+                    }
                 }
                 //need to remove on the way out
                 if ((int)e.getKeyChar()==96) {
