@@ -5,19 +5,23 @@ import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.Console;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrganisationalUnit extends JPanel {
-    JPanel assetPanel;
-    JPanel currentTradesPanel;
-    User focusUser;
-    GridBagConstraints c = new GridBagConstraints();
+    private JPanel assetPanel;
+    private JPanel currentTradesPanel;
+    private User focusUser;
+    private GridBagConstraints c = new GridBagConstraints();
     private List<Asset> assetsList;
+    private List<Trade> tradesList;
+    private JTable currentTradesTable;
 
     public OrganisationalUnit(User user) {
         focusUser = user;
@@ -48,17 +52,9 @@ public class OrganisationalUnit extends JPanel {
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 2;
-        //add(currentTradesPanel, c);
-        //addComponentListener(new ResizeListener());
+        add(currentTradesPanel, c);
 
     }
-/*
-    class ResizeListener extends ComponentAdapter {
-        public void componentResized(ComponentEvent e) {
-            System.out.println(e.getComponent().getWidth());
-        }
-    }
-    */
     private JPanel createAssetPanel(){
         JPanel panelOne = new JPanel();
 
@@ -80,7 +76,17 @@ public class OrganisationalUnit extends JPanel {
     }
     private JPanel createCurrentTradesPanel(){
         JPanel panel = new JPanel();
+        try {
+            getTradeList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        currentTradesTable = new JTable(new MyTableModel());
+        currentTradesTable.setFillsViewportHeight(true);
+        currentTradesTable.setRowSelectionAllowed(false);
+        currentTradesTable.setColumnSelectionAllowed(false);
 
+        panel.add(currentTradesTable);
         return panel;
 
     }
@@ -133,7 +139,6 @@ public class OrganisationalUnit extends JPanel {
         return panel;
     }
 
-
     private void getAssetsList() throws IOException {
         PayloadRequest request = new PayloadRequest();
         Asset newAsset = new Asset();
@@ -153,6 +158,49 @@ public class OrganisationalUnit extends JPanel {
         request.setRequestPayloadType(RequestPayloadType.List);
 
         PayloadResponse response = new Client().SendRequest(request);
-        assetsList = (java.util.List<Asset>)(List<?>)response.getPayloadObject();
+        tradesList = (java.util.List<Trade>)(List<?>)response.getPayloadObject();
+    }
+
+    public class MyTableModel extends AbstractTableModel {
+        private String[] columnNames= {"Asset Type",
+                "Quantity",
+                "Price per Unit",
+                "Order Type",
+                "Date Created"};
+
+        private Object[][] data = new Object[tradesList.size()][6];
+        public MyTableModel(){
+            int i = 0;
+            for (Trade order: tradesList){
+                data[i][0] = order.getAssetType().getName();
+                data[i][1] = order.getQuantity();
+                data[i][2] = order.getPrice();
+                data[i][3] = order.getTransactionType().toString();
+                data[i][4] = order.getCreatedDate();
+                i++;
+            }
+        }
+        @Override
+        public int getRowCount() {
+            return data.length;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        public boolean isCellEditable(int row, int column){
+            if (column < 2) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return data[rowIndex][columnIndex];
+        }
     }
 }

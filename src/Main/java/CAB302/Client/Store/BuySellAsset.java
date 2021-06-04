@@ -120,14 +120,6 @@ public class BuySellAsset extends JPanel {
                catch(Exception error){
 
                }
-                if(response == null){
-                    //toast
-                }
-
-
-
-                //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
-
 
                 if (response == null) {
                     Toast t;
