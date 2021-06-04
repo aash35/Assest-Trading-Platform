@@ -225,6 +225,13 @@ class RequestHandler extends Thread {
                 if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice()) {
                     Session session = RuntimeSettings.Session;
 
+                    try {
+                        session.getTransaction();
+                    }
+                    catch (Exception ex) {
+                        session.beginTransaction();
+                    }
+
                     session.save(object);
 
                     session.getTransaction().commit();
@@ -251,6 +258,13 @@ class RequestHandler extends Thread {
 
                 if (assetOfType.getQuantity() >= sellTrade.getQuantity()) {
                     Session session = RuntimeSettings.Session;
+
+                    try {
+                        session.getTransaction();
+                    }
+                    catch (Exception ex) {
+                        session.beginTransaction();
+                    }
 
                     session.save(object);
 
@@ -299,6 +313,13 @@ class RequestHandler extends Thread {
 
                 Session session = RuntimeSettings.Session;
 
+                try {
+                    session.getTransaction();
+                }
+                catch (Exception ex) {
+                    session.beginTransaction();
+                }
+
                 session.save(object);
 
                 session.getTransaction().commit();
@@ -308,6 +329,13 @@ class RequestHandler extends Thread {
             case Update:
                 session = RuntimeSettings.Session;
 
+                try {
+                    session.getTransaction();
+                }
+                catch (Exception ex) {
+                    session.beginTransaction();
+                }
+
                 session.update(object);
 
                 session.getTransaction().commit();
@@ -316,6 +344,13 @@ class RequestHandler extends Thread {
 
             case Delete:
                 session = RuntimeSettings.Session;
+
+                try {
+                    session.getTransaction();
+                }
+                catch (Exception ex) {
+                    session.beginTransaction();
+                }
 
                 session.remove(object);
 
