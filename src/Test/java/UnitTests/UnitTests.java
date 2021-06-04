@@ -60,7 +60,7 @@ public class UnitTests {
         asset = new Asset();
         asset.setAssetType(type);
         asset.setQuantity(50);
-        asset.setCreatedByUserID(user);
+        //asset.setCreatedByUserID(user); TODO: FIX
     }
 
     /**

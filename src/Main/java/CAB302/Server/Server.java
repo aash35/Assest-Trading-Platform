@@ -260,7 +260,7 @@ class RequestHandler extends Thread {
 
                 int assetTypeId = sellTrade.getAssetType().id;
 
-                Asset assetOfType = sellTrade.getCreatedByUser().getAssets().stream().filter(asset -> asset.getAssetType().id == assetTypeId).findFirst().orElse(null);
+                Asset assetOfType = sellTrade.getOrganisationalUnit().getAssets().stream().filter(asset -> asset.getAssetType().id == assetTypeId).findFirst().orElse(null);
 
                 if (assetOfType.getQuantity() >= sellTrade.getQuantity()) {
                     Session session = RuntimeSettings.Session;
