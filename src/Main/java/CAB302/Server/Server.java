@@ -125,6 +125,9 @@ class TradeProcessor extends Thread {
                             session.beginTransaction();
                         }
 
+                        session.flush();
+                        session.clear();
+
                         session.refresh(availableSellTrade);
 
                         if (availableSellTrade.getPrice() <= buyTrade.getPrice()) {
@@ -139,15 +142,6 @@ class TradeProcessor extends Thread {
                             asset.setQuantity(quantityToBuy);
                             asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
 
-                            Trade trade = new Trade();
-                            trade.setQuantity(quantityToBuy);
-                            trade.setAssetType(buyTrade.getAssetType());
-                            trade.setPrice(buyTrade.getPrice());
-                            trade.setStatus(TradeStatus.Filled);
-                            trade.setTransactionType(TradeTransactionType.Buying);
-                            trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-                            trade.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
-
                             if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
                                 availableSellTrade.setStatus(TradeStatus.Filled);
                             }
@@ -161,12 +155,34 @@ class TradeProcessor extends Thread {
                             if (quantityLeftToBuy == 0) {
                                 buyTrade.setStatus(TradeStatus.Filled);
                             }
+                            else {
+                                buyTrade.setQuantity(quantityLeftToBuy);
 
-                            session.save(trade);
+                                Trade trade = new Trade();
+                                trade.setQuantity(quantityToBuy);
+                                trade.setAssetType(buyTrade.getAssetType());
+                                trade.setPrice(buyTrade.getPrice());
+                                trade.setStatus(TradeStatus.Filled);
+                                trade.setTransactionType(TradeTransactionType.Buying);
+                                trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+                                trade.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
+
+                                session.save(trade);
+                            }
+
+                            Integer creditsToAdd = quantityToBuy * buyTrade.getPrice();
+
+                            OrganisationalUnit ou = availableSellTrade.getOrganisationalUnit();
+
+                            Integer newCredit = ou.getAvailableCredit() + creditsToAdd;
+
+                            ou.setAvailableCredit(newCredit);
 
                             session.save(asset);
 
                             session.update(availableSellTrade);
+
+                            session.update(ou);
 
                             session.update(buyTrade);
 
@@ -181,7 +197,7 @@ class TradeProcessor extends Thread {
             }
 
             try {
-                sleep(2000);
+                sleep(60000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
