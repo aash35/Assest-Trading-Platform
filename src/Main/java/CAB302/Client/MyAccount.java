@@ -28,6 +28,8 @@ public class MyAccount extends JPanel {
     JButton changePassword;
     JButton submit;
 
+    JPanel toastPanel = new JPanel();
+
     JLabel passwordLabel;
     JLabel repeatPasswordLabel;
     JPasswordField password = new JPasswordField(10);
@@ -136,6 +138,14 @@ public class MyAccount extends JPanel {
                         gbc.gridx = 0;
                         gbc.gridy = 7;
                         add(errorMessage, gbc);
+
+
+                        gbc.fill = GridBagConstraints.BOTH;
+                        gbc.anchor = GridBagConstraints.PAGE_END;
+                        gbc.gridwidth = 3;
+                        gbc.gridx = 1;
+                        gbc.gridy = 8;
+                        add(toastPanel, gbc);
 
                         password.addKeyListener(new KeyListener() {
                             @Override

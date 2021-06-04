@@ -1,5 +1,6 @@
 package CAB302.Client;
 
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
@@ -22,7 +23,10 @@ public class Login extends JPanel {
 
     JButton loginButton = new JButton("Login");
 
+    JFrame theFrame;
+
     public Login(JFrame frame){
+        theFrame = frame;
 
         setBackground(new Color(243, 244, 246));
         setLayout(new GridBagLayout());
@@ -80,6 +84,10 @@ public class Login extends JPanel {
                         RuntimeSettings.CurrentUser = user;
 
                         NavigationHelper.mainMenu(frame);
+                    } else {
+                        Toast t;
+                        t = new Toast("Login Failed", theFrame);
+                        t.showtoast();
                     }
                 }
                 //need to remove on the way out
@@ -171,6 +179,10 @@ public class Login extends JPanel {
                             RuntimeSettings.CurrentUser = user;
 
                             NavigationHelper.mainMenu(frame);
+                        } else{
+                            Toast t;
+                            t = new Toast("Login Failed", theFrame);
+                            t.showtoast();
                         }
                     }
                 });

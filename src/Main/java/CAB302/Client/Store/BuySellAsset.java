@@ -52,7 +52,7 @@ public class BuySellAsset extends JPanel {
     private JTable currentOrderTable;
     private JTable priceHistoryTable;
 
-    public BuySellAsset(AssetType assetType){
+    public BuySellAsset(AssetType assetType, JPanel panel){
         this.assetType = assetType;
         mainPanel = createPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -132,7 +132,6 @@ public class BuySellAsset extends JPanel {
                 if (response == null) {
                     Toast t;
                     t = new Toast("Credit Error", panel);
-                    mainPanel.add(t);
                     t.showtoast();
                 }
                 else {

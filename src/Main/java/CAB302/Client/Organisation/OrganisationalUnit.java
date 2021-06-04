@@ -49,15 +49,16 @@ public class OrganisationalUnit extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         //add(currentTradesPanel, c);
-        addComponentListener(new ResizeListener());
+        //addComponentListener(new ResizeListener());
 
     }
-
+/*
     class ResizeListener extends ComponentAdapter {
         public void componentResized(ComponentEvent e) {
             System.out.println(e.getComponent().getWidth());
         }
     }
+    */
     private JPanel createAssetPanel(){
         JPanel panelOne = new JPanel();
 
