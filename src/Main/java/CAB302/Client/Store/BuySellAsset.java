@@ -52,14 +52,12 @@ public class BuySellAsset extends JPanel {
 
     public BuySellAsset(AssetType assetType){
         this.assetType = assetType;
-        Color c = new Purple();
-        mainPanel = createPanel(c);
+        mainPanel = createPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630, 500));
         add(mainPanel);
-        setBackground(c);
 
-        titlePanel = createPanel(c);
+        titlePanel = createPanel();
         titlePanel.setLayout(new FlowLayout());
 
         mainPanel.add(titlePanel, BorderLayout.NORTH);
@@ -169,11 +167,11 @@ public class BuySellAsset extends JPanel {
         currentOrderPanel = new JScrollPane(currentOrderTable);
         currentOrderTable.setFillsViewportHeight(true);
 
-        buySellPanel = createPanel(c);
+        buySellPanel = createPanel();
         layoutBuySellPanel();
         mainPanel.add(buySellPanel, BorderLayout.CENTER);
 
-        tablesPanel = createPanel(c);
+        tablesPanel = createPanel();
         tablesPanel.setLayout(new BoxLayout(tablesPanel, BoxLayout.Y_AXIS));
         tablesPanel.setPreferredSize(new Dimension(400,100));
         tablesPanel.add(priceHistoryTag);
@@ -186,12 +184,10 @@ public class BuySellAsset extends JPanel {
 
     /**
      * Creates a JPanel object
-     * @param c the background color of the panel.
      * @return a JPanel object
      */
-    private JPanel createPanel(Color c){
+    private JPanel createPanel(){
         JPanel panel = new JPanel();
-        panel.setBackground(c);
         return panel;
     }
 
