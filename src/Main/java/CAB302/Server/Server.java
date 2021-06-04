@@ -82,7 +82,7 @@ class TradeProcessor extends Thread {
         Session session = RuntimeSettings.Session;
 
         while(true) {
-            System.out.println("Attempting to process trades");
+            /*System.out.println("Attempting to process trades");
 
             Trade buyTradeSelection = new Trade();
             buyTradeSelection.setTransactionType(TradeTransactionType.Buying);
@@ -101,7 +101,7 @@ class TradeProcessor extends Thread {
 
                     session.refresh(buyTrade);
 
-                    /*List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAsset().id == x.getAsset().id).collect(Collectors.toList());
+                    *//*List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAsset().id == x.getAsset().id).collect(Collectors.toList());
 
                     if (availableSellTrades != null) {
 
@@ -158,8 +158,8 @@ class TradeProcessor extends Thread {
                                 }
                             }
                         }
-                    }*/
-                }
+                    }*//*
+                }*/
 
             try {
                 sleep(2000);
