@@ -257,7 +257,7 @@ class RequestHandler extends Thread {
 
                 Trade buyTrade = (Trade)object;
 
-                if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice()) {
+                if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice() * buyTrade.getQuantity()) {
                     Session session = RuntimeSettings.Session;
 
                     try {

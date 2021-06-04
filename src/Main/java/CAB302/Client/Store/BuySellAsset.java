@@ -103,6 +103,8 @@ public class BuySellAsset extends JPanel {
                 trade.setTransactionType(TradeTransactionType.Buying);
                 trade.setStatus(TradeStatus.InMarket);
 
+                int totalCreditToSpend = (Integer) buyQuantity.getValue() * (Integer) buyPrice.getValue();
+
                 Client client = new Client();
 
                 PayloadRequest request = new PayloadRequest();
@@ -110,7 +112,7 @@ public class BuySellAsset extends JPanel {
                 request.setPayloadObject(trade);
                 request.setRequestPayloadType(RequestPayloadType.Buy);
 
-                PayloadResponse response;
+                PayloadResponse response = null;
 
                 try {
                     response = client.SendRequest(request);
@@ -119,7 +121,31 @@ public class BuySellAsset extends JPanel {
 
                }
 
-                //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
+                if (response == null) {
+                    //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT - THROW TOAST
+                }
+                else {
+                    OrganisationalUnit ou = RuntimeSettings.CurrentUser.getOrganisationalUnit();
+
+                    Integer newCredit = ou.getAvailableCredit() - totalCreditToSpend;
+
+                    ou.setAvailableCredit(newCredit);
+
+                    request = new PayloadRequest();
+
+                    request.setPayloadObject(ou);
+                    request.setRequestPayloadType(RequestPayloadType.Update);
+
+                    response = null;
+
+                    try {
+                        response = client.SendRequest(request);
+                    }
+                    catch(Exception error){
+
+                    }
+                }
+
             }
         });
 
