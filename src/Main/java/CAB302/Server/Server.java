@@ -83,6 +83,8 @@ class TradeProcessor extends Thread {
     @Override
     public void run() {
 
+        RuntimeSettings.Session = HibernateUtil.getHibernateSession();
+
         Session session = RuntimeSettings.Session;
 
         while(true) {
@@ -114,16 +116,7 @@ class TradeProcessor extends Thread {
                     sellTradeFinish:
                     for (Trade availableSellTrade : availableSellTrades) {
 
-                        try {
-                            Transaction transaction = session.getTransaction();
-
-                            if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                                session.beginTransaction();
-                            }
-                        }
-                        catch (Exception ex) {
-                            session.beginTransaction();
-                        }
+                        HibernateUtil.openOrGetTransaction();
 
                         session.flush();
                         session.clear();
@@ -187,6 +180,8 @@ class TradeProcessor extends Thread {
                             session.update(buyTrade);
 
                             session.getTransaction().commit();
+
+                            System.out.println("Trade Processed!");
 
                             if (quantityLeftToBuy == 0) {
                                 break sellTradeFinish;
@@ -260,16 +255,7 @@ class RequestHandler extends Thread {
                 if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice() * buyTrade.getQuantity()) {
                     Session session = RuntimeSettings.Session;
 
-                    try {
-                        Transaction transaction = session.getTransaction();
-
-                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                            session.beginTransaction();
-                        }
-                    }
-                    catch (Exception ex) {
-                        session.beginTransaction();
-                    }
+                    HibernateUtil.openOrGetTransaction();
 
                     session.save(object);
 
@@ -298,16 +284,7 @@ class RequestHandler extends Thread {
                 if (assetOfType.getQuantity() >= sellTrade.getQuantity()) {
                     Session session = RuntimeSettings.Session;
 
-                    try {
-                        Transaction transaction = session.getTransaction();
-
-                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                            session.beginTransaction();
-                        }
-                    }
-                    catch (Exception ex) {
-                        session.beginTransaction();
-                    }
+                    HibernateUtil.openOrGetTransaction();
 
                     session.save(object);
 
@@ -356,16 +333,7 @@ class RequestHandler extends Thread {
 
                 Session session = RuntimeSettings.Session;
 
-                try {
-                    Transaction transaction = session.getTransaction();
-
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                        session.beginTransaction();
-                    }
-                }
-                catch (Exception ex) {
-                    session.beginTransaction();
-                }
+                HibernateUtil.openOrGetTransaction();
 
                 session.save(object);
 
@@ -376,18 +344,7 @@ class RequestHandler extends Thread {
             case Update:
                 session = RuntimeSettings.Session;
 
-                try {
-                    Transaction transaction = session.getTransaction();
-
-                    TransactionStatus status = transaction.getStatus();
-
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                        session.beginTransaction();
-                    }
-                }
-                catch (Exception ex) {
-                    session.beginTransaction();
-                }
+                HibernateUtil.openOrGetTransaction();
 
                 session.flush();
                 session.clear();
@@ -406,16 +363,7 @@ class RequestHandler extends Thread {
             case Delete:
                 session = RuntimeSettings.Session;
 
-                try {
-                    Transaction transaction = session.getTransaction();
-
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                        session.beginTransaction();
-                    }
-                }
-                catch (Exception ex) {
-                    session.beginTransaction();
-                }
+                HibernateUtil.openOrGetTransaction();
 
                 session.flush();
                 session.clear();

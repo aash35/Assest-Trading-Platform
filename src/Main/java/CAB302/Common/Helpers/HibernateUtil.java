@@ -1,9 +1,12 @@
 package CAB302.Common.Helpers;
 
+import CAB302.Common.RuntimeSettings;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 public class HibernateUtil {
     public static Session getHibernateSession() {
@@ -14,5 +17,21 @@ public class HibernateUtil {
         Session session = sf.openSession();
 
         return session;
+    }
+
+    public static void openOrGetTransaction() {
+
+        Session session = RuntimeSettings.Session;
+
+        try {
+            Transaction transaction = session.getTransaction();
+
+            if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
+                session.beginTransaction();
+            }
+        }
+        catch (Exception ex) {
+            session.beginTransaction();
+        }
     }
 }
