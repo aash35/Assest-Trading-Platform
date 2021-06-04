@@ -4,7 +4,6 @@ import CAB302.Client.Client;
 import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.AssetType;
-import CAB302.Common.Colors.Purple;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
@@ -54,12 +53,12 @@ public class BuySellAsset extends JPanel {
 
     public BuySellAsset(AssetType assetType, JPanel panel){
         this.assetType = assetType;
-        mainPanel = createPanel();
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630, 500));
         add(mainPanel);
 
-        titlePanel = createPanel();
+        titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
 
         mainPanel.add(titlePanel, BorderLayout.NORTH);
@@ -200,11 +199,11 @@ public class BuySellAsset extends JPanel {
         currentOrderPanel = new JScrollPane(currentOrderTable);
         currentOrderTable.setFillsViewportHeight(true);
 
-        buySellPanel = createPanel();
+        buySellPanel = new JPanel();
         layoutBuySellPanel();
         mainPanel.add(buySellPanel, BorderLayout.CENTER);
 
-        tablesPanel = createPanel();
+        tablesPanel = new JPanel();
         tablesPanel.setLayout(new BoxLayout(tablesPanel, BoxLayout.Y_AXIS));
         tablesPanel.setPreferredSize(new Dimension(400,100));
         tablesPanel.add(priceHistoryTag);
@@ -213,15 +212,6 @@ public class BuySellAsset extends JPanel {
         tablesPanel.add(currentOrderPanel);
 
         mainPanel.add(tablesPanel, BorderLayout.EAST);
-    }
-
-    /**
-     * Creates a JPanel object
-     * @return a JPanel object
-     */
-    private JPanel createPanel(){
-        JPanel panel = new JPanel();
-        return panel;
     }
 
     /**

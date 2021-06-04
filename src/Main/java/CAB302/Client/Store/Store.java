@@ -3,8 +3,6 @@ package CAB302.Client.Store;
 import CAB302.Client.Client;
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
-import CAB302.Common.Colors.Grey;
-import CAB302.Common.Colors.Purple;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.PayloadRequest;
@@ -28,15 +26,15 @@ public class Store extends JPanel {
     public Store(JPanel panel) {
         this.panel = panel;
 
-        mainPanel = createPanel();
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630,500));
         add(mainPanel);
 
-        titlePanel = createPanel();
+        titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
 
-        innerAssetsPanel = createPanel();
+        innerAssetsPanel = new JPanel();
         innerAssetsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         outerAssetsPanel = new JScrollPane(innerAssetsPanel);
@@ -65,15 +63,6 @@ public class Store extends JPanel {
         }
 
         mainPanel.add(outerAssetsPanel, BorderLayout.CENTER);
-    }
-
-    /**
-     * Creates a JPanel object
-     * @return a JPanel object
-     */
-    private JPanel createPanel(){
-        JPanel panel = new JPanel();
-        return panel;
     }
 
     /**
