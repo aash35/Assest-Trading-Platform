@@ -324,7 +324,11 @@ class RequestHandler extends Thread {
                 Session session = RuntimeSettings.Session;
 
                 try {
-                    session.getTransaction();
+                    Transaction transaction = session.getTransaction();
+
+                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                        session.beginTransaction();
+                    }
                 }
                 catch (Exception ex) {
                     session.beginTransaction();
