@@ -146,7 +146,7 @@ class TradeProcessor extends Thread {
                             trade.setStatus(TradeStatus.Filled);
                             trade.setTransactionType(TradeTransactionType.Buying);
                             trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-                            trade.setCreatedByUser(buyTrade.getCreatedByUser());
+                            trade.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
 
                             if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
                                 availableSellTrade.setStatus(TradeStatus.Filled);

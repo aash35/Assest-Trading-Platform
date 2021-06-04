@@ -98,7 +98,7 @@ public class BuySellAsset extends JPanel {
                 trade.setQuantity((Integer) buyQuantity.getValue());
                 trade.setAssetType(assetType);
                 trade.setPrice((Integer) buyPrice.getValue());
-                trade.setCreatedByUser(RuntimeSettings.CurrentUser);
+                trade.setOrganisationalUnit(RuntimeSettings.CurrentUser.getOrganisationalUnit());
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Buying);
                 trade.setStatus(TradeStatus.InMarket);
@@ -131,7 +131,7 @@ public class BuySellAsset extends JPanel {
                 trade.setQuantity((Integer) sellQuantity.getValue());
                 trade.setAssetType(assetType);
                 trade.setPrice((Integer) sellPrice.getValue());
-                trade.setCreatedByUser(RuntimeSettings.CurrentUser);
+                trade.setOrganisationalUnit(RuntimeSettings.CurrentUser.getOrganisationalUnit());
                 trade.setCreatedDate(Timestamp.from(Instant.now()));
                 trade.setTransactionType(TradeTransactionType.Selling);
                 trade.setStatus(TradeStatus.InMarket);
@@ -249,7 +249,6 @@ public class BuySellAsset extends JPanel {
                 "Quantity",
                 "Price per Unit",
                 "Order Type",
-                "Created By User",
                 "Date Created"};
 
         Object[][] data = new Object[currentOrders.size()][6];
@@ -260,8 +259,7 @@ public class BuySellAsset extends JPanel {
             data[i][1] = order.getQuantity();
             data[i][2] = order.getPrice();
             data[i][3] = order.getTransactionType().toString();
-            data[i][4] = order.getCreatedByUser().getUsername();
-            data[i][5] = order.getCreatedDate();
+            data[i][4] = order.getCreatedDate();
             i++;
         }
         JTable jTable = new JTable(data, columnHeaders);

@@ -55,14 +55,11 @@ public class Trade extends BaseObject implements iGet, iList {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "createdByUserID")
-    private User createdByUser;
+    private OrganisationalUnit organisationalUnit;
 
-    @Column(name = "createdByUserID")
-    public User getCreatedByUser() { return this.createdByUser; }
-    public void setCreatedByUser(User createdByUser) { this.createdByUser = createdByUser; }
-
-    public OrganisationalUnit getOrganisationalUnit() { return this.createdByUser.getOrganisationalUnit(); }
-    public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) { this.createdByUser.setOrganisationalUnit(organisationalUnit); }
+    @Column(name = "organisationalUnitID")
+    public OrganisationalUnit getOrganisationalUnit() { return this.organisationalUnit; }
+    public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) { this.organisationalUnit = organisationalUnit; }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assetTypeID")
