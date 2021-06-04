@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BuySellAsset extends JPanel {
     private AssetType assetType;
@@ -111,12 +112,16 @@ public class BuySellAsset extends JPanel {
                 request.setPayloadObject(trade);
                 request.setRequestPayloadType(RequestPayloadType.Buy);
 
+                PayloadResponse response;
+
                 try {
-                    PayloadResponse response = client.SendRequest(request);
+                    response = client.SendRequest(request);
                 }
                catch(Exception error){
 
                }
+
+                //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
             }
         });
 
@@ -227,14 +232,11 @@ public class BuySellAsset extends JPanel {
     }
 
     private ArrayList<Trade> findFilledTrades(){
-        ArrayList<Trade> filledTrades = new ArrayList<>();
-        for(Trade trade: allTrades){
-            if(trade.getAssetType().getName().equals(this.assetType.getName()) &&
-                    trade.getStatus() == TradeStatus.Filled &&
-                    trade.getTransactionType() == TradeTransactionType.Selling){
-                filledTrades.add(trade);
-            }
-        }
+
+        List<Trade> filledTrades = allTrades.stream().filter(
+                x -> x.getAssetType().id.intValue() == this.assetType.id.intValue() &&
+                x.getStatus() == TradeStatus.Filled &&
+                x.getTransactionType() == TradeTransactionType.Buying).collect(Collectors.toList());
 
         filledTrades.sort(new Comparator<Trade>() {
             @Override
@@ -242,7 +244,8 @@ public class BuySellAsset extends JPanel {
                 return o1.getCreatedDate().compareTo(o2.getCreatedDate());
             }
         });
-        return filledTrades;
+
+        return new ArrayList<Trade>(filledTrades);
     }
 
     private JTable createOrderTable(ArrayList<Trade> currentOrders) {

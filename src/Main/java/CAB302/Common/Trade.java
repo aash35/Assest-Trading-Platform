@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.util.List;
@@ -109,12 +110,11 @@ public class Trade extends BaseObject implements iGet, iList {
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        if (this.getAssetType() == null){
-            criteria.select(root);
-        }
-        else{
-            criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
-        }
+        criteria.select(root).where(
+                this.getAssetType() != null ? criteriaBuilder.equal(root.get("assetType"), this.getAssetType()) : criteriaBuilder.and(),
+                this.getTransactionType() != null ? criteriaBuilder.equal(root.get("transactionType"), this.getTransactionType()) : criteriaBuilder.and(),
+                this.getStatus() != null ? criteriaBuilder.equal(root.get("status"), this.getStatus()) : criteriaBuilder.and()
+        );
 
         Query query = session.createQuery(criteria);
 
