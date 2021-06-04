@@ -10,67 +10,57 @@ import java.io.IOException;
 import java.util.List;
 
 public class OrganisationalUnit extends JPanel {
-    GridBagConstraints gbc = new GridBagConstraints();
     JPanel assetPanel;
     JPanel currentTradesPanel;
+    User focusUser;
+    GridBagConstraints c = new GridBagConstraints();
     private List<Asset> assetsList;
 
     public OrganisationalUnit(User user) {
+        focusUser = user;
+        setLayout(new GridBagLayout());
+
         assetPanel = createAssetPanel();
         currentTradesPanel = createCurrentTradesPanel();
 
-        setLayout(new GridBagLayout());
+        JLabel title = new JLabel("Organisation Assets");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridx = 0;
+        c.gridy = 0;
+        add(title, c);
 
 
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(assetPanel);
 
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10, 0, 0, 0);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        add(currentTradesPanel);
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        add(assetPanel, c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(10, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 2;
+        //add(currentTradesPanel, c);
 
 
     }
     private JPanel createAssetPanel(){
-        GridBagConstraints constraintsOne = new GridBagConstraints();
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-
-        JLabel title = new JLabel("Current Assets");
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
-
-        constraintsOne.anchor = GridBagConstraints.LINE_START;
-        constraintsOne.gridx = 0;
-        constraintsOne.gridy = 0;
-        panel.add(title);
-
-
-        JScrollPane scrollPane = new JScrollPane();
+        JPanel panelOne = new JPanel();
 
         try {
             getAssetsList();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        JPanel credit = creditPanel();
+        JScrollPane scrollPane = new JScrollPane(credit, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        panelOne.add(scrollPane);
 
-        scrollPane.add(creditPanel());
-
-
-        constraintsOne.fill = GridBagConstraints.HORIZONTAL;
-        constraintsOne.anchor = GridBagConstraints.LINE_START;
-        constraintsOne.gridx = 0;
-        constraintsOne.gridy = 1;
-        JLabel test = new JLabel("Current Assets");
-        test.setFont(title.getFont().deriveFont(Font.BOLD, 28));
-        //panel.add(scrollPane);
-        panel.add(test);
-
-        return panel;
+        return panelOne;
     }
     private JPanel createCurrentTradesPanel(){
         JPanel panel = new JPanel();
@@ -82,25 +72,57 @@ public class OrganisationalUnit extends JPanel {
         GridBagConstraints constraints = new GridBagConstraints();
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
+        panel.setBackground(Color.white);
         panel.setBorder(BorderFactory.createLineBorder(Color.BLACK,2));
         panel.setSize(200, 150);
 
         JLabel creditTitle = new JLabel("Credits");
         creditTitle.setFont(creditTitle.getFont().deriveFont(Font.BOLD));
         constraints.anchor = GridBagConstraints.CENTER;
+        constraints.insets = new Insets(10, 10,0,10);
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.weightx = 2;
-        panel.add(creditTitle);
+        panel.add(creditTitle, constraints);
 
+        JLabel creditAmount = new JLabel("" +focusUser.getOrganisationalUnit().getAvailableCredit() );
+        creditAmount.setFont(creditAmount.getFont().deriveFont(Font.BOLD, 28));
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        panel.add(creditAmount, constraints);
+        return panel;
+    }
+    private JPanel createAssets(){
+        GridBagConstraints constraints = new GridBagConstraints();
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBackground(Color.white);
+        panel.setBorder(BorderFactory.createLineBorder(Color.BLACK,2));
+        panel.setSize(200, 150);
+
+        JLabel creditTitle = new JLabel("Credits");
+        creditTitle.setFont(creditTitle.getFont().deriveFont(Font.BOLD));
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.weightx = 2;
+        constraints.weighty = 2;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        panel.add(creditTitle, constraints);
+
+        JLabel creditAmount = new JLabel("" +focusUser.getOrganisationalUnit().getAvailableCredit() );
+        creditAmount.setFont(creditAmount.getFont().deriveFont(Font.BOLD, 28));
+        constraints.weighty = 2;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        panel.add(creditAmount, constraints);
         return panel;
     }
 
     private void getAssetsList() throws IOException {
 
         PayloadRequest request = new PayloadRequest();
-
-        request.setPayloadObject(new Asset());
+        Asset newAsset = new Asset();
+        newAsset.setOrganisationalUnit(focusUser.getOrganisationalUnit());
+        request.setPayloadObject(newAsset);
         request.setRequestPayloadType(RequestPayloadType.List);
 
         PayloadResponse response = new Client().SendRequest(request);
