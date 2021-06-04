@@ -96,9 +96,17 @@ public class User extends BaseObject implements iGet, iList {
         CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
         Root<User> root = criteria.from(User.class);
 
-        criteria.select(root).where(
-                criteriaBuilder.equal(root.get("username"), this.getUsername())
-        );
+        if (hashedPassword == null) {
+            criteria.select(root).where(
+                    criteriaBuilder.equal(root.get("username"), this.getUsername())
+            );
+        }
+        else {
+            criteria.select(root).where(
+                    criteriaBuilder.equal(root.get("username"), this.getUsername()),
+                    criteriaBuilder.equal(root.get("hashedPassword"), this.getHashedPassword())
+            );
+        }
 
         Query query = session.createQuery(criteria);
 

@@ -4,6 +4,7 @@ import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Helpers.SHA256HashHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -95,7 +96,7 @@ public class NewUser extends JPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String username = enterUserField.getText();
-                        String password = generateHashedString(enterPassField.getText());
+                        String password = SHA256HashHelper.generateHashedString(enterPassField.getText());
                         OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
                         AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
 
