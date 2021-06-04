@@ -5,6 +5,8 @@ import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Interfaces.*;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -72,9 +74,10 @@ public class Trade extends BaseObject implements iGet, iList {
     public Trade() { }
 
     public BaseObject get() {
-        Session session = HibernateUtil.getHibernateSession();
 
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
+
+        HibernateUtil.openOrGetTransaction();
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
@@ -93,15 +96,14 @@ public class Trade extends BaseObject implements iGet, iList {
 
         }
 
-        session.close();
-
         return trade;
     }
 
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
 
-        session.beginTransaction();
+        Session session = RuntimeSettings.Session;
+
+        HibernateUtil.openOrGetTransaction();
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
@@ -110,7 +112,8 @@ public class Trade extends BaseObject implements iGet, iList {
         criteria.select(root).where(
                 this.getAssetType() != null ? criteriaBuilder.equal(root.get("assetType"), this.getAssetType()) : criteriaBuilder.and(),
                 this.getTransactionType() != null ? criteriaBuilder.equal(root.get("transactionType"), this.getTransactionType()) : criteriaBuilder.and(),
-                this.getStatus() != null ? criteriaBuilder.equal(root.get("status"), this.getStatus()) : criteriaBuilder.and()
+                this.getStatus() != null ? criteriaBuilder.equal(root.get("status"), this.getStatus()) : criteriaBuilder.and(),
+                this.getOrganisationalUnit() != null ? criteriaBuilder.equal(root.get("organisationalUnit"), this.getOrganisationalUnit()) : criteriaBuilder.and()
         );
 
         Query query = session.createQuery(criteria);
@@ -123,8 +126,6 @@ public class Trade extends BaseObject implements iGet, iList {
         catch (Exception ex) {
 
         }
-
-        session.close();
 
         return trades;
     }

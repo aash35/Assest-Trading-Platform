@@ -14,6 +14,8 @@
         <property name="show_sql">false</property>
         <property name="format_sql">true</property>
         <property name="hbm2ddl.auto">update</property>
+        <property name="release_mode">after_statement</property>
+        <property name="auto_close_session">true</property>
 
         <mapping class="CAB302.Common.BaseObject"/>
         <mapping class="CAB302.Common.Asset"/>

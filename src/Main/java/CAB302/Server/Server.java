@@ -83,6 +83,8 @@ class TradeProcessor extends Thread {
     @Override
     public void run() {
 
+        RuntimeSettings.Session = HibernateUtil.getHibernateSession();
+
         Session session = RuntimeSettings.Session;
 
         while(true) {
@@ -114,16 +116,10 @@ class TradeProcessor extends Thread {
                     sellTradeFinish:
                     for (Trade availableSellTrade : availableSellTrades) {
 
-                        try {
-                            Transaction transaction = session.getTransaction();
+                        HibernateUtil.openOrGetTransaction();
 
-                            if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                                session.beginTransaction();
-                            }
-                        }
-                        catch (Exception ex) {
-                            session.beginTransaction();
-                        }
+                        session.flush();
+                        session.clear();
 
                         session.refresh(availableSellTrade);
 
@@ -139,15 +135,6 @@ class TradeProcessor extends Thread {
                             asset.setQuantity(quantityToBuy);
                             asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
 
-                            Trade trade = new Trade();
-                            trade.setQuantity(quantityToBuy);
-                            trade.setAssetType(buyTrade.getAssetType());
-                            trade.setPrice(buyTrade.getPrice());
-                            trade.setStatus(TradeStatus.Filled);
-                            trade.setTransactionType(TradeTransactionType.Buying);
-                            trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-                            trade.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
-
                             if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
                                 availableSellTrade.setStatus(TradeStatus.Filled);
                             }
@@ -161,16 +148,40 @@ class TradeProcessor extends Thread {
                             if (quantityLeftToBuy == 0) {
                                 buyTrade.setStatus(TradeStatus.Filled);
                             }
+                            else {
+                                buyTrade.setQuantity(quantityLeftToBuy);
 
-                            session.save(trade);
+                                Trade trade = new Trade();
+                                trade.setQuantity(quantityToBuy);
+                                trade.setAssetType(buyTrade.getAssetType());
+                                trade.setPrice(buyTrade.getPrice());
+                                trade.setStatus(TradeStatus.Filled);
+                                trade.setTransactionType(TradeTransactionType.Buying);
+                                trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+                                trade.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
+
+                                session.save(trade);
+                            }
+
+                            Integer creditsToAdd = quantityToBuy * buyTrade.getPrice();
+
+                            OrganisationalUnit ou = availableSellTrade.getOrganisationalUnit();
+
+                            Integer newCredit = ou.getAvailableCredit() + creditsToAdd;
+
+                            ou.setAvailableCredit(newCredit);
 
                             session.save(asset);
 
                             session.update(availableSellTrade);
 
+                            session.update(ou);
+
                             session.update(buyTrade);
 
                             session.getTransaction().commit();
+
+                            System.out.println("Trade Processed!");
 
                             if (quantityLeftToBuy == 0) {
                                 break sellTradeFinish;
@@ -181,7 +192,7 @@ class TradeProcessor extends Thread {
             }
 
             try {
-                sleep(2000);
+                sleep(60000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -241,19 +252,10 @@ class RequestHandler extends Thread {
 
                 Trade buyTrade = (Trade)object;
 
-                if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice()) {
+                if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice() * buyTrade.getQuantity()) {
                     Session session = RuntimeSettings.Session;
 
-                    try {
-                        Transaction transaction = session.getTransaction();
-
-                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                            session.beginTransaction();
-                        }
-                    }
-                    catch (Exception ex) {
-                        session.beginTransaction();
-                    }
+                    HibernateUtil.openOrGetTransaction();
 
                     session.save(object);
 
@@ -282,16 +284,7 @@ class RequestHandler extends Thread {
                 if (assetOfType.getQuantity() >= sellTrade.getQuantity()) {
                     Session session = RuntimeSettings.Session;
 
-                    try {
-                        Transaction transaction = session.getTransaction();
-
-                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                            session.beginTransaction();
-                        }
-                    }
-                    catch (Exception ex) {
-                        session.beginTransaction();
-                    }
+                    HibernateUtil.openOrGetTransaction();
 
                     session.save(object);
 
@@ -340,16 +333,7 @@ class RequestHandler extends Thread {
 
                 Session session = RuntimeSettings.Session;
 
-                try {
-                    Transaction transaction = session.getTransaction();
-
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                        session.beginTransaction();
-                    }
-                }
-                catch (Exception ex) {
-                    session.beginTransaction();
-                }
+                HibernateUtil.openOrGetTransaction();
 
                 session.save(object);
 
@@ -360,18 +344,7 @@ class RequestHandler extends Thread {
             case Update:
                 session = RuntimeSettings.Session;
 
-                try {
-                    Transaction transaction = session.getTransaction();
-
-                    TransactionStatus status = transaction.getStatus();
-
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                        session.beginTransaction();
-                    }
-                }
-                catch (Exception ex) {
-                    session.beginTransaction();
-                }
+                HibernateUtil.openOrGetTransaction();
 
                 session.flush();
                 session.clear();
@@ -390,16 +363,7 @@ class RequestHandler extends Thread {
             case Delete:
                 session = RuntimeSettings.Session;
 
-                try {
-                    Transaction transaction = session.getTransaction();
-
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
-                        session.beginTransaction();
-                    }
-                }
-                catch (Exception ex) {
-                    session.beginTransaction();
-                }
+                HibernateUtil.openOrGetTransaction();
 
                 session.flush();
                 session.clear();
