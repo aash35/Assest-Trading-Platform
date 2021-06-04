@@ -201,7 +201,7 @@ public class MyAccount extends JPanel {
                     public void actionPerformed(ActionEvent e) {
 
                         char[] charArray = password.getPassword();
-                        
+
                         password.setText("");
                         repeatPassword.setText("");
 

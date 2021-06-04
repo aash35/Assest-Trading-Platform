@@ -2,6 +2,7 @@ package CAB302.Client.MainLayout;
 
 import CAB302.Client.*;
 import CAB302.Client.Admin.Administration;
+import CAB302.Client.Organisation.OrganisationalUnit;
 import CAB302.Client.Store.Store;
 import CAB302.Common.Colors.Grey;
 import CAB302.Common.Enums.AccountTypeRole;
@@ -42,7 +43,7 @@ public class MainWest extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new OrganisationalUnit());
+                        NavigationHelper.changePanel(panel, new OrganisationalUnit(user));
                     }
                 });
 
