@@ -230,7 +230,7 @@ class RequestHandler extends Thread {
                     try {
                         Transaction transaction = session.getTransaction();
 
-                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
                             session.beginTransaction();
                         }
                     }
@@ -268,7 +268,7 @@ class RequestHandler extends Thread {
                     try {
                         Transaction transaction = session.getTransaction();
 
-                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
                             session.beginTransaction();
                         }
                     }
@@ -326,7 +326,7 @@ class RequestHandler extends Thread {
                 try {
                     Transaction transaction = session.getTransaction();
 
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
                         session.beginTransaction();
                     }
                 }
@@ -346,13 +346,16 @@ class RequestHandler extends Thread {
                 try {
                     Transaction transaction = session.getTransaction();
 
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                    TransactionStatus status = transaction.getStatus();
+
+                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
                         session.beginTransaction();
                     }
                 }
                 catch (Exception ex) {
                     session.beginTransaction();
                 }
+
                 session.flush();
                 session.clear();
 
@@ -373,7 +376,7 @@ class RequestHandler extends Thread {
                 try {
                     Transaction transaction = session.getTransaction();
 
-                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE || transaction.getStatus() == TransactionStatus.COMMITTED) {
                         session.beginTransaction();
                     }
                 }
@@ -381,11 +384,18 @@ class RequestHandler extends Thread {
                     session.beginTransaction();
                 }
 
-                session.remove(object);
+                session.flush();
+                session.clear();
+
+                session.delete(object);
 
                 session.getTransaction().commit();
 
-                break;
+                response = new PayloadResponse();
+
+                response.setPayloadObject(object);
+
+                return response;
         }
 
         return null;
