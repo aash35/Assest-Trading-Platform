@@ -113,10 +113,6 @@ public class BuySellAsset extends JPanel {
                 request.setRequestPayloadType(RequestPayloadType.Buy);
 
                 PayloadResponse response = null;
-<<<<<<< HEAD
-=======
-
->>>>>>> 237357ff43a1f4d89b5616f93fca7edb817d337e
                 try {
                     response = client.SendRequest(request);
                 }
@@ -129,9 +125,7 @@ public class BuySellAsset extends JPanel {
 
 
 
-<<<<<<< HEAD
                 //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
-=======
                 if (response == null) {
                     //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT - THROW TOAST
                 }
@@ -156,7 +150,6 @@ public class BuySellAsset extends JPanel {
 
                     }
                 }
->>>>>>> 237357ff43a1f4d89b5616f93fca7edb817d337e
 
             }
         });
