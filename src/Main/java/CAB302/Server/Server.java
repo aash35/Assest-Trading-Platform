@@ -6,6 +6,8 @@ import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Interfaces.*;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -226,7 +228,11 @@ class RequestHandler extends Thread {
                     Session session = RuntimeSettings.Session;
 
                     try {
-                        session.getTransaction();
+                        Transaction transaction = session.getTransaction();
+
+                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                            session.beginTransaction();
+                        }
                     }
                     catch (Exception ex) {
                         session.beginTransaction();
@@ -260,7 +266,11 @@ class RequestHandler extends Thread {
                     Session session = RuntimeSettings.Session;
 
                     try {
-                        session.getTransaction();
+                        Transaction transaction = session.getTransaction();
+
+                        if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                            session.beginTransaction();
+                        }
                     }
                     catch (Exception ex) {
                         session.beginTransaction();
@@ -330,7 +340,11 @@ class RequestHandler extends Thread {
                 session = RuntimeSettings.Session;
 
                 try {
-                    session.getTransaction();
+                    Transaction transaction = session.getTransaction();
+
+                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                        session.beginTransaction();
+                    }
                 }
                 catch (Exception ex) {
                     session.beginTransaction();
@@ -346,7 +360,11 @@ class RequestHandler extends Thread {
                 session = RuntimeSettings.Session;
 
                 try {
-                    session.getTransaction();
+                    Transaction transaction = session.getTransaction();
+
+                    if (transaction.getStatus() == TransactionStatus.NOT_ACTIVE) {
+                        session.beginTransaction();
+                    }
                 }
                 catch (Exception ex) {
                     session.beginTransaction();

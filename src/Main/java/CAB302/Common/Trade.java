@@ -17,9 +17,10 @@ import java.util.List;
 @Table(name = "Trade")
 public class Trade extends BaseObject implements iGet, iList {
 
+    @Column(name = "transactionTypeID")
+    @Enumerated(EnumType.ORDINAL)
     private TradeTransactionType transactionType;
 
-    @Enumerated(EnumType.ORDINAL)
     @Column(name = "transactionTypeID")
     public TradeTransactionType getTransactionType() { return this.transactionType; }
     public void setTransactionType(TradeTransactionType transactionType) { this.transactionType = transactionType; }
@@ -36,12 +37,14 @@ public class Trade extends BaseObject implements iGet, iList {
     public int getPrice() { return this.price; }
     public void setPrice(int price) { this.price = price; }
 
+    @Column(name = "createdDate")
     private Timestamp createdDate;
 
     @Column(name = "createdDate")
     public Timestamp getCreatedDate() { return createdDate; }
     public void setCreatedDate(Timestamp createdDate) { this.createdDate = createdDate; }
 
+    @Column(name = "statusID")
     private TradeStatus status;
 
     @Enumerated(EnumType.ORDINAL)
