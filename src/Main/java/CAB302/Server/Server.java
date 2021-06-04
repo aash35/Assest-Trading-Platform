@@ -355,10 +355,14 @@ class RequestHandler extends Thread {
                 }
                 session.flush();
                 session.clear();
+
                 session.update(object);
 
                 session.getTransaction().commit();
                 session.refresh(object);
+                
+                session.flush();
+                session.clear();
 
                 PayloadResponse response = new PayloadResponse();
 
