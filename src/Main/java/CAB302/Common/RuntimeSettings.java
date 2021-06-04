@@ -6,4 +6,8 @@ public class RuntimeSettings {
     public static User CurrentUser;
 
     public static org.hibernate.Session Session;
+
+    public static String IP;
+
+    public static Integer Port;
 }

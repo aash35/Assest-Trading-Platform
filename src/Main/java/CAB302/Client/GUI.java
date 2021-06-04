@@ -23,6 +23,8 @@ public class GUI extends JFrame {
 
     public GUI() throws Exception {
 
+        ClientSettings clientSettings = new ClientSettings();
+
         Logger log = Logger.getLogger("org.hibernate");
         log.setLevel(Level.WARNING);
 

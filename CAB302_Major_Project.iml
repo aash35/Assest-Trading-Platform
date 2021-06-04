@@ -28,6 +28,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/Test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/${project.build.directory}/classes" />
       <excludeFolder url="file://$MODULE_DIR$/${project.build.directory}/test-classes" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
