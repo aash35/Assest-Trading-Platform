@@ -18,6 +18,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class acts as the server side thread of the application.
+ */
 public class Server extends Thread {
 
     private ServerSocket serverSocket;
@@ -26,11 +29,18 @@ public class Server extends Thread {
 
     private boolean running = false;
 
+    /**
+     * Constructs a server object listening on a given port.
+     * @param port the port the server will be active on.
+     */
     public Server(int port)
     {
         this.port = port;
     }
 
+    /**
+     * Method opens a Hibernate session and opens a new server socket on the instance's port.
+     */
     public void startServer()
     {
         try
@@ -46,12 +56,19 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * Interrupts and stops the instance's processes.
+     */
     public void stopServer()
     {
         running = false;
         this.interrupt();
     }
 
+    /**
+     * Waits for an incoming communication from the client side application, then constructs a request handler
+     * when a new connection to the client is established.
+     */
     @Override
     public void run()
     {
@@ -79,8 +96,14 @@ public class Server extends Thread {
     }
 }
 
+/**
+ * Class regularly checks the database for compatible trades.
+ */
 class TradeProcessor extends Thread {
 
+    /**
+     * Runs an infinite loop of checking the database for compatible trades at regular intervals.
+     */
     @Override
     public void run() {
 
@@ -210,14 +233,26 @@ class TradeProcessor extends Thread {
     }
 }
 
+/**
+ * Class is called when a new communication from the client is received by the server. Contains methods to
+ * receive and process requests from the client.
+ */
 class RequestHandler extends Thread {
 
     private Socket socket;
 
+    /**
+     * Constructs a request handler for a given client communication.
+     * @param socket the client connection.
+     */
     RequestHandler(Socket socket) {
         this.socket = socket;
     }
 
+    /**
+     * The request handler will read in the client object stream then call the processData method, before
+     * sending a response to the client and closing the connection.
+     */
     @Override
     public void run() {
         try {
@@ -246,6 +281,13 @@ class RequestHandler extends Thread {
         }
     }
 
+    /**
+     * Method processes the request received from the client and interfaces with the database. The actions taken
+     * are determined by the request contents.
+     * @param requestPayload the request received from the client.
+     * @return a response to be sent to the client.
+     * @throws IOException
+     */
     protected PayloadResponse processData(PayloadRequest requestPayload) throws IOException {
 
         //close the connection if we don't like the result or the checksum is empty

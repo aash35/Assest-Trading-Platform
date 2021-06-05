@@ -7,10 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Class initialises the server settings in the RuntimeSettings class.
+ */
 public class ServerSettings {
 
     InputStream inputStream;
 
+    /**
+     * Construct the server settings object and set the appropriate variables in the runtime settings.
+     */
     public ServerSettings() {
 
         try {
