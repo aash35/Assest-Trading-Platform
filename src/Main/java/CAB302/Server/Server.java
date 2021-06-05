@@ -126,112 +126,115 @@ class TradeProcessor extends Thread {
             List<Trade> buyTrades = (List<Trade>)(List<?>)buyTradeSelection.list();
             List<Trade> sellTrades = (List<Trade>)(List<?>)sellTradeSelection.list();
 
-            buyTrades.sort(Comparator.comparingDouble(Trade::getPrice));
+            if (buyTrades != null) {
 
-            for (Trade buyTrade : buyTrades) {
+                buyTrades.sort(Comparator.comparingDouble(Trade::getPrice));
 
-                session.refresh(buyTrade);
+                for (Trade buyTrade : buyTrades) {
 
-                List<Trade> availableSellTrades = sellTrades != null ? sellTrades.stream().filter(x -> x.getAssetType().id == buyTrade.getAssetType().id).collect(Collectors.toList()) : null;
+                    session.refresh(buyTrade);
 
-                if (availableSellTrades != null) {
+                    List<Trade> availableSellTrades = sellTrades != null ? sellTrades.stream().filter(x -> x.getAssetType().id == buyTrade.getAssetType().id).collect(Collectors.toList()) : null;
 
-                    int quantityLeftToBuy = buyTrade.getQuantity();
+                    if (availableSellTrades != null) {
 
-                    sellTradeFinish:
-                    for (Trade availableSellTrade : availableSellTrades) {
+                        int quantityLeftToBuy = buyTrade.getQuantity();
 
-                        HibernateUtil.openOrGetTransaction();
+                        sellTradeFinish:
+                        for (Trade availableSellTrade : availableSellTrades) {
 
-                        session.refresh(availableSellTrade);
+                            HibernateUtil.openOrGetTransaction();
 
-                        if (availableSellTrade.getPrice() <= buyTrade.getPrice()) {
-                            int quantityToBuy = buyTrade.getQuantity();
+                            session.refresh(availableSellTrade);
 
-                            if (buyTrade.getQuantity() > availableSellTrade.getQuantity()) {
-                                quantityToBuy = availableSellTrade.getQuantity();
-                            }
+                            if (availableSellTrade.getPrice() <= buyTrade.getPrice()) {
+                                int quantityToBuy = buyTrade.getQuantity();
 
-                            Asset asset = new Asset();
-                            asset.setAssetType(availableSellTrade.getAssetType());
+                                if (buyTrade.getQuantity() > availableSellTrade.getQuantity()) {
+                                    quantityToBuy = availableSellTrade.getQuantity();
+                                }
 
-                            asset = (Asset)asset.get();
-
-                            if (asset == null) {
+                                Asset asset = new Asset();
                                 asset.setAssetType(availableSellTrade.getAssetType());
 
-                                session.save(asset);
-                            }
-                            else {
-                                asset.setAssetType(availableSellTrade.getAssetType());
+                                asset = (Asset) asset.get();
 
-                                asset.setQuantity(asset.getQuantity() + quantityToBuy);
-                                asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
+                                if (asset == null) {
+                                    asset.setAssetType(availableSellTrade.getAssetType());
 
-                                session.update(asset);
-                            }
+                                    session.save(asset);
+                                } else {
+                                    asset.setAssetType(availableSellTrade.getAssetType());
+
+                                    asset.setQuantity(asset.getQuantity() + quantityToBuy);
+                                    asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
+
+                                    session.clear();
+
+                                    session.update(asset);
+                                }
 
 
-                            if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
-                                availableSellTrade.setStatus(TradeStatus.Filled);
-                            }
+                                if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
+                                    availableSellTrade.setStatus(TradeStatus.Filled);
+                                }
 
-                            Integer newQty = availableSellTrade.getQuantity() - quantityToBuy;
+                                Integer newQty = availableSellTrade.getQuantity() - quantityToBuy;
 
-                            availableSellTrade.setQuantity(newQty);
+                                availableSellTrade.setQuantity(newQty);
 
-                            quantityLeftToBuy -= quantityToBuy;
+                                quantityLeftToBuy -= quantityToBuy;
 
-                            if (quantityLeftToBuy == 0) {
-                                buyTrade.setStatus(TradeStatus.Filled);
-                            }
-                            else {
-                                buyTrade.setQuantity(quantityLeftToBuy);
+                                if (quantityLeftToBuy == 0) {
+                                    buyTrade.setStatus(TradeStatus.Filled);
+                                } else {
+                                    buyTrade.setQuantity(quantityLeftToBuy);
 
-                                Trade trade = new Trade();
-                                trade.setQuantity(quantityToBuy);
-                                trade.setAssetType(buyTrade.getAssetType());
-                                trade.setPrice(buyTrade.getPrice());
-                                trade.setStatus(TradeStatus.Filled);
-                                trade.setTransactionType(TradeTransactionType.Buying);
-                                trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-                                trade.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
+                                    Trade trade = new Trade();
+                                    trade.setQuantity(quantityToBuy);
+                                    trade.setAssetType(buyTrade.getAssetType());
+                                    trade.setPrice(buyTrade.getPrice());
+                                    trade.setStatus(TradeStatus.Filled);
+                                    trade.setTransactionType(TradeTransactionType.Buying);
+                                    trade.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+                                    trade.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
 
-                                session.save(trade);
-                            }
+                                    session.save(trade);
+                                }
 
-                            Integer creditsToAdd = quantityToBuy * buyTrade.getPrice();
+                                Integer creditsToAdd = quantityToBuy * buyTrade.getPrice();
 
-                            OrganisationalUnit ou = availableSellTrade.getOrganisationalUnit();
+                                OrganisationalUnit ou = availableSellTrade.getOrganisationalUnit();
 
-                            Integer newCredit = ou.getAvailableCredit() + creditsToAdd;
+                                Integer newCredit = ou.getAvailableCredit() + creditsToAdd;
 
-                            ou.setAvailableCredit(newCredit);
+                                ou.setAvailableCredit(newCredit);
 
-                            session.update(availableSellTrade);
+                                session.update(availableSellTrade);
 
-                            session.update(ou);
+                                session.update(ou);
 
-                            session.update(buyTrade);
+                                session.update(buyTrade);
 
-                            session.getTransaction().commit();
+                                session.getTransaction().commit();
 
-                            System.out.println("Trade Processed!");
+                                System.out.println("Trade Processed!");
 
-                            Notification notificationSell = new Notification();
-                            notificationSell.setNotificationMessage("Sold " + availableSellTrade.getAssetType().getName());
-                            notificationSell.setOuID(availableSellTrade.getOrganisationalUnit().id);
+                                Notification notificationSell = new Notification();
+                                notificationSell.setNotificationMessage("Sold " + availableSellTrade.getAssetType().getName());
+                                notificationSell.setOuID(availableSellTrade.getOrganisationalUnit().id);
 
-                            RuntimeSettings.notifications.add(notificationSell);
+                                RuntimeSettings.notifications.add(notificationSell);
 
-                            Notification notificationBuy = new Notification();
-                            notificationBuy.setNotificationMessage("Bought " + availableSellTrade.getAssetType().getName());
-                            notificationBuy.setOuID(availableSellTrade.getOrganisationalUnit().id);
+                                Notification notificationBuy = new Notification();
+                                notificationBuy.setNotificationMessage("Bought " + availableSellTrade.getAssetType().getName());
+                                notificationBuy.setOuID(availableSellTrade.getOrganisationalUnit().id);
 
-                            RuntimeSettings.notifications.add(notificationBuy);
+                                RuntimeSettings.notifications.add(notificationBuy);
 
-                            if (quantityLeftToBuy == 0) {
-                                //break sellTradeFinish;
+                                if (quantityLeftToBuy == 0) {
+                                    //break sellTradeFinish;
+                                }
                             }
                         }
                     }
