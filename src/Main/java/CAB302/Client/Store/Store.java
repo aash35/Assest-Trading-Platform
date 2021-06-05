@@ -2,11 +2,11 @@ package CAB302.Client.Store;
 
 import CAB302.Client.Client;
 import CAB302.Common.AssetType;
-import CAB302.Common.BaseObject;
+import CAB302.Common.ServerPackages.BaseObject;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
-import CAB302.Common.PayloadRequest;
-import CAB302.Common.PayloadResponse;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;

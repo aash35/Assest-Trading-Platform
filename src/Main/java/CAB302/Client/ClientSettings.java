@@ -1,6 +1,6 @@
 package CAB302.Client;
 
-import CAB302.Common.RuntimeSettings;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

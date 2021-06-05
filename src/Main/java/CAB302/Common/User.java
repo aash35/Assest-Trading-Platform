@@ -1,19 +1,15 @@
 package CAB302.Common;
 
 import CAB302.Common.Enums.AccountTypeRole;
-import CAB302.Common.Helpers.HibernateUtil;
-import com.fasterxml.jackson.annotation.*;
+import CAB302.Common.ServerPackages.BaseObject;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.*;
 
 import javax.persistence.*;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 import CAB302.Common.Interfaces.*;
 

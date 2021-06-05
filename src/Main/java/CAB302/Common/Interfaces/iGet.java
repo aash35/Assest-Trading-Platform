@@ -1,6 +1,6 @@
 package CAB302.Common.Interfaces;
 
-import CAB302.Common.BaseObject;
+import CAB302.Common.ServerPackages.BaseObject;
 
 /**
  * Interface implemented by the Common classes, contains the get() method.

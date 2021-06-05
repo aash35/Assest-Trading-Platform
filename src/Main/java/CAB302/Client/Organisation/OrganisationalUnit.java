@@ -1,24 +1,20 @@
 package CAB302.Client.Organisation;
 
-import CAB302.Client.Admin.EditOrganisationalUnit;
 import CAB302.Client.Client;
 import CAB302.Client.Helper.ButtonColumn;
-import CAB302.Client.Store.BuySellAsset;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Helpers.NavigationHelper;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.io.Console;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
