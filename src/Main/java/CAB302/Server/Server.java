@@ -155,12 +155,22 @@ class TradeProcessor extends Thread {
                             Asset asset = new Asset();
                             asset.setAssetType(availableSellTrade.getAssetType());
 
-                            if (asset.get() == null) {
+                            asset = (Asset)asset.get();
+
+                            if (asset == null) {
                                 asset.setAssetType(availableSellTrade.getAssetType());
+
+                                session.save(asset);
+                            }
+                            else {
+                                asset.setAssetType(availableSellTrade.getAssetType());
+
+                                asset.setQuantity(asset.getQuantity() + quantityToBuy);
+                                asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
+
+                                session.update(asset);
                             }
 
-                            asset.setQuantity(quantityToBuy);
-                            asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
 
                             if ((availableSellTrade.getQuantity() - quantityToBuy) == 0) {
                                 availableSellTrade.setStatus(TradeStatus.Filled);
@@ -197,8 +207,6 @@ class TradeProcessor extends Thread {
                             Integer newCredit = ou.getAvailableCredit() + creditsToAdd;
 
                             ou.setAvailableCredit(newCredit);
-
-                            session.save(asset);
 
                             session.update(availableSellTrade);
 

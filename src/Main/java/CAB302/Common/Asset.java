@@ -94,7 +94,8 @@ public class Asset extends BaseObject implements iGet, iList {
      * @return a list of object matching the search criteria, or null if none exists.
      */
     public List<BaseObject> list() {
-        Session session = RuntimeSettings.Session;
+        Session session = HibernateUtil.getHibernateSession();
+        HibernateUtil.openOrGetTransaction();
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Asset> criteria = criteriaBuilder.createQuery(Asset.class);
