@@ -178,7 +178,7 @@ public class BuySellAsset extends JPanel {
                 PayloadRequest request = new PayloadRequest();
 
                 request.setPayloadObject(trade);
-                request.setRequestPayloadType(RequestPayloadType.Sell);
+                request.setRequestPayloadType(RequestPayloadType.Buy);
 
                 PayloadResponse response = null;
 
@@ -205,7 +205,7 @@ public class BuySellAsset extends JPanel {
                     catch(Exception error){
 
                     }
-                    Asset selectedAsset = (CAB302.Common.Asset)response.getPayloadObject();
+                    Asset selectedAsset = (CAB302.Common.Asset)responseOne.getPayloadObject();
 
                     if (selectedAsset != null) {
                         selectedAsset.setQuantity(selectedAsset.getQuantity() - (Integer) sellQuantity.getValue());

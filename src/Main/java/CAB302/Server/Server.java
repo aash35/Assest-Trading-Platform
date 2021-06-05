@@ -5,6 +5,7 @@ import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Interfaces.*;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
@@ -257,9 +258,11 @@ class RequestHandler extends Thread {
         //need to add validation of the checksum
         var object = requestPayload.getPayloadObject();
 
+        RuntimeSettings.Session.clear();
+
         switch (requestPayload.getRequestPayloadType()) {
             case Buy:
-
+            case Sell:
                 Trade buyTrade = (Trade)object;
 
                 if (buyTrade.getOrganisationalUnit().getAvailableCredit() >= buyTrade.getPrice() * buyTrade.getQuantity()) {
@@ -271,40 +274,9 @@ class RequestHandler extends Thread {
 
                     session.getTransaction().commit();
 
-                    buyTrade = (Trade)buyTrade.get();
-
                     PayloadResponse response = new PayloadResponse();
 
                     response.setPayloadObject(buyTrade);
-
-                    return response;
-                }
-                else {
-                    return null;
-                }
-
-            case Sell:
-
-                Trade sellTrade = (Trade)object;
-
-                int assetTypeId = sellTrade.getAssetType().id;
-
-                Asset assetOfType = sellTrade.getOrganisationalUnit().getAssets().stream().filter(asset -> asset.getAssetType().id == assetTypeId).findFirst().orElse(null);
-
-                if (assetOfType.getQuantity() >= sellTrade.getQuantity()) {
-                    Session session = RuntimeSettings.Session;
-
-                    HibernateUtil.openOrGetTransaction();
-
-                    session.save(object);
-
-                    session.getTransaction().commit();
-
-                    sellTrade = (Trade)sellTrade.get();
-
-                    PayloadResponse response = new PayloadResponse();
-
-                    response.setPayloadObject(sellTrade);
 
                     return response;
                 }
