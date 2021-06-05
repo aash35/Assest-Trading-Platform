@@ -28,18 +28,29 @@ public class NavigationHelper {
 
             int width = mainLayout.getWidth();
 
+            int height = mainLayout.getHeight();
+
             JScrollPane scrollPane = mainLayout.centerPanel.ouFrame.scrollPane;
+
+            JScrollPane tradePane = mainLayout.centerPanel.ouFrame.currentTradesPanelOne;
+
+            int topScrollPaneHeight = scrollPane.getHeight();
+
+            int finalHeight = height - topScrollPaneHeight;
 
             scrollPane.setPreferredSize(new Dimension(width - 150, 110));
 
+            tradePane.setPreferredSize(new Dimension(600, finalHeight - 150));
+
             scrollPane.invalidate();
+            tradePane.invalidate();
 
             scrollPane.repaint();
+            tradePane.repaint();
         }
     }
 
     public static void frameWindowStateChanged(WindowEvent e){
-
 
         GUI gui = (GUI)e.getComponent();
 
@@ -49,6 +60,7 @@ public class NavigationHelper {
 
 
         int width = 0;
+        int height = 0;
 
         int sidePanelWidth = 0;
 
@@ -75,6 +87,8 @@ public class NavigationHelper {
             sidePanelWidth = mainLayout.westPanel.getWidth();
         }
 
+        height = mainLayout.getHeight();
+
         JScrollPane scrollPane = mainLayout.centerPanel.ouFrame.scrollPane;
 
 
@@ -96,6 +110,7 @@ public class NavigationHelper {
             }
         });
     }
+
     public static void changePanel(JPanel panel, JPanel changeTo){
         panel.removeAll();
         panel.add(changeTo);

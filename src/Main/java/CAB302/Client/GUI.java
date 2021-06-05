@@ -116,6 +116,8 @@ public class GUI extends JFrame {
 
         setPreferredSize(new Dimension(800, 600));
 
+        setMinimumSize(new Dimension(800, 600));
+
         //Panel to hold the button
         JPanel buttonPanel = new JPanel();
         //Button
