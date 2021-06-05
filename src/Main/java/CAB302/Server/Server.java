@@ -194,7 +194,7 @@ class TradeProcessor extends Thread {
                             RuntimeSettings.notifications.add(notificationBuy);
 
                             if (quantityLeftToBuy == 0) {
-                                break sellTradeFinish;
+                                //break sellTradeFinish;
                             }
                         }
                     }
@@ -202,7 +202,7 @@ class TradeProcessor extends Thread {
             }
 
             try {
-                sleep(60000);
+                Thread.sleep(120000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
