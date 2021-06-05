@@ -21,8 +21,6 @@ import java.util.List;
  * Class creates the new user page of the application GUI.
  */
 public class NewUser extends JPanel {
-    private JLabel messageStackLabel = new JLabel("");
-
     private JLabel enterUserLabel = new JLabel("Enter Username: ");
     private JTextField enterUserField = new JTextField(20);
 
@@ -38,7 +36,7 @@ public class NewUser extends JPanel {
     private List<OrganisationalUnit> ouList;
 
     private JButton confirmBtn = new JButton("Confirm");
-    JPanel focusPanel;
+    private JPanel focusPanel;
     /**
      * Constructs the application page to create a new user.
      */
@@ -99,6 +97,9 @@ public class NewUser extends JPanel {
         gbc.gridy = 4;
         add(accountTypeCB, gbc);
 
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        add(confirmBtn, gbc);
         confirmBtn.addActionListener(
                 new ActionListener() {
                     @Override
@@ -109,8 +110,9 @@ public class NewUser extends JPanel {
                         AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
 
                         User userCheck = new User();
-                        User user = new User();
                         userCheck.setUsername(username);
+
+                        User user = new User();
                         user.setUsername(username);
                         user.setHashedPassword(password);
                         user.setOrganisationalUnit(oUnit);
@@ -139,9 +141,10 @@ public class NewUser extends JPanel {
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }
+
                             if (response != null){
                                 Toast t;
-                                t = new Toast("New User Add", focusPanel);
+                                t = new Toast("New User Added", focusPanel);
                                 t.showtoast();
                                 NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
                             }
@@ -155,9 +158,6 @@ public class NewUser extends JPanel {
                         }
                     }
                 });
-        gbc.gridx = 1;
-        gbc.gridy = 5;
-        add(confirmBtn, gbc);
     }
 
     private void getOUList() throws IOException {

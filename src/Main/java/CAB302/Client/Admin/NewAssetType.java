@@ -1,7 +1,9 @@
 package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
 
@@ -19,8 +21,6 @@ import java.io.IOException;
 public class NewAssetType extends JPanel{
     GridBagConstraints gbc = new GridBagConstraints();
 
-    JLabel messageStackLabel = new JLabel("");
-
     JLabel nameLabel = new JLabel("Name:");
     JTextField nameField = new JTextField(10);
 
@@ -28,14 +28,15 @@ public class NewAssetType extends JPanel{
     JTextField descriptionField = new JTextField(10);
 
     JButton confirmButton = new JButton("Confirm");
+    private JPanel focusPanel;
 
     /**
      * Constructs the application page to create a new asset type.
      */
-    public NewAssetType() {
+    public NewAssetType(JPanel panel) {
+        focusPanel = panel;
 
         setLayout(new GridBagLayout());
-        //gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
@@ -86,6 +87,9 @@ public class NewAssetType extends JPanel{
         gbc.gridy = 1;
         add(descriptionField, gbc);
 
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        add(confirmButton, gbc);
         confirmButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -113,62 +117,28 @@ public class NewAssetType extends JPanel{
                         CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
 
                         if (assetType == null) {
-
                             request.setRequestPayloadType(RequestPayloadType.Create);
                             try {
                                 response = new Client().SendRequest(request);
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }
+                            if (response != null){
+                                Toast t;
+                                t = new Toast("New Asset Type Added", focusPanel);
+                                t.showtoast();
+                                NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                            }
 
-                            nameField.setText("");
-                            descriptionField.setText("");
-
-                            messageStackLabel.setText("Successfully saved");
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 2;
-                            add(messageStackLabel, gbc);
-                            remove(confirmButton);
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 3;
-                            add(confirmButton, gbc);
                         }
                         else {
-                            messageStackLabel.setText(String.format("Asset Type (%s) already exists", name));
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 2;
-                            add(messageStackLabel, gbc);
-                            remove(confirmButton);
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 3;
-                            add(confirmButton, gbc);
+                            Toast t;
+                            t = new Toast("AssetType already exists", focusPanel);
+                            t.showtoast();
+                            nameField.setText("");
+                            descriptionField.setText("");
                         }
                     }
                 });
-
-        // Last Row
-        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-        gbc.weighty = 5;
-        gbc.insets = new Insets(20,0,0,0);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        add(confirmButton, gbc);
-
     }
 }

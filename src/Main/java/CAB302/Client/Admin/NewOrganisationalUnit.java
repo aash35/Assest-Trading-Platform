@@ -1,7 +1,9 @@
 package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
@@ -16,15 +18,16 @@ import java.io.IOException;
  * Class creates the new organisational unit page of the application GUI.
  */
 public class NewOrganisationalUnit extends JPanel {
-    JLabel messageStackLabel = new JLabel("");
     JLabel OUnameLabel = new JLabel("Enter Organisational Unit Name: ");
     JTextField OUnameField = new JTextField(20);
     JButton confirmBtn = new JButton("Confirm");
+    private JPanel focusPanel;
 
     /**
      * Constructs the application page to create a new organisational unit.
      */
-    public NewOrganisationalUnit(){
+    public NewOrganisationalUnit(JPanel panel){
+        focusPanel = panel;
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -37,6 +40,9 @@ public class NewOrganisationalUnit extends JPanel {
         gbc.gridy = 1;
         add(OUnameField, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(confirmBtn, gbc);
         confirmBtn.addActionListener(
                 new ActionListener() {
                     @Override
@@ -62,7 +68,6 @@ public class NewOrganisationalUnit extends JPanel {
                         OrganisationalUnit ou = (OrganisationalUnit)response.getPayloadObject();
 
                         if (ou == null) {
-
                             request.setRequestPayloadType(RequestPayloadType.Create);
                             try {
                                 response = new Client().SendRequest(request);
@@ -70,48 +75,20 @@ public class NewOrganisationalUnit extends JPanel {
                                 ioException.printStackTrace();
                             }
 
-                            OUnameField.setText("");
-
-                            messageStackLabel.setText("Successfully saved");
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 2;
-                            add(messageStackLabel, gbc);
-                            remove(confirmBtn);
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 3;
-                            add(confirmBtn, gbc);
+                            if (response != null){
+                                Toast t;
+                                t = new Toast("New Organisational Unit Added", focusPanel);
+                                t.showtoast();
+                                NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                            }
                         }
                         else {
-                            messageStackLabel.setText(String.format("Organisational Unit (%s) already exists", name));
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 2;
-                            add(messageStackLabel, gbc);
-                            remove(confirmBtn);
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 3;
-                            add(confirmBtn, gbc);
+                            Toast t;
+                            t = new Toast("Organisational Unit already exists", focusPanel);
+                            t.showtoast();
+                            OUnameField.setText("");
                         }
                     }
                 });
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(confirmBtn, gbc);
     }
 }

@@ -1,9 +1,11 @@
 package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
 
@@ -18,8 +20,6 @@ import java.util.List;
  * Class creates the edit organisational unit page of the application GUI.
  */
 public class EditOrganisationalUnit extends JPanel {
-    private JLabel messageStackLabel = new JLabel("");
-
     private JLabel assetNameLabel = new JLabel("Select Asset: ");
     private JComboBox assetCB;
 
@@ -30,6 +30,7 @@ public class EditOrganisationalUnit extends JPanel {
     private JSpinner changeAmtField = createSpinner();
 
     private JButton confirmBtn = new JButton("Confirm");
+    private JPanel focusPanel;
 
     private List<OrganisationalUnit> ouList;
     private List<AssetType> assetsTypeList;
@@ -38,7 +39,8 @@ public class EditOrganisationalUnit extends JPanel {
     /**
      * Constructs the application page to edit organisational units.
      */
-    public EditOrganisationalUnit() {
+    public EditOrganisationalUnit(JPanel panel) {
+        focusPanel = panel;
 
         //Get list of all OrgUnits and add to combobox
         try {
@@ -108,49 +110,35 @@ public class EditOrganisationalUnit extends JPanel {
                         OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
                         Integer changeAmt = (Integer) changeAmtField.getValue();
 
-                        AssetType assetType;
+                        PayloadResponse response = null;
                         if (assetCB.getSelectedIndex() == 0) {
-                            editCredits(oUnit, changeAmt);
+                            response = editCredits(oUnit, changeAmt);
                         } else {
-                            assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
-
+                            AssetType assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
                             Asset asset = getAsset(oUnit, assetType);
-
                             if (asset == null)
                             {
                                 if (changeAmt != 0){
-                                    createAsset(oUnit, assetType, changeAmt);
+                                    response = createAsset(oUnit, assetType, changeAmt);
                                 }
                             }
                             else
                             {
                                 if (checkTrades(oUnit, assetType)){
-                                    editDeleteAssets(asset, changeAmt, false);
+                                    response = editDeleteAssets(asset, changeAmt, false);
                                 }
                                 else
                                 {
-                                    editDeleteAssets(asset, changeAmt, true);
+                                    response = editDeleteAssets(asset, changeAmt, true);
                                 }
-
-
                             }
                         }
-                        messageStackLabel.setText("Successfully saved");
-
-                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                        gbc.weighty = 5;
-                        gbc.insets = new Insets(20, 0, 0, 0);
-                        gbc.gridx = 1;
-                        gbc.gridy = 3;
-                        add(messageStackLabel, gbc);
-                        remove(confirmBtn);
-
-                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                        gbc.weighty = 5;
-                        gbc.insets = new Insets(20, 0, 0, 0);
-                        gbc.gridx = 1;
-                        gbc.gridy = 4;
-                        add(confirmBtn, gbc);
+                        if (response != null){
+                            Toast t;
+                            t = new Toast("Asset Successfully Changed", focusPanel);
+                            t.showtoast();
+                            NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                        }
                     }
                 });
 
@@ -186,7 +174,7 @@ public class EditOrganisationalUnit extends JPanel {
     }
 
 
-    private void createAsset(OrganisationalUnit ou, AssetType assetType, int changeAmt){
+    private PayloadResponse createAsset(OrganisationalUnit ou, AssetType assetType, int changeAmt){
         Asset type = new Asset();
         type.setQuantity(changeAmt);
         type.setAssetType(assetType);
@@ -203,6 +191,7 @@ public class EditOrganisationalUnit extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
     private Asset getAsset(OrganisationalUnit ou, AssetType assetType) {
@@ -225,7 +214,7 @@ public class EditOrganisationalUnit extends JPanel {
         return (Asset)response.getPayloadObject();
     }
 
-    private void editDeleteAssets (Asset asset, int changeAmt, boolean tradeExists){
+    private PayloadResponse editDeleteAssets (Asset asset, int changeAmt, boolean tradeExists){
         asset.setQuantity(changeAmt);
 
         PayloadRequest request = new PayloadRequest();
@@ -246,9 +235,10 @@ public class EditOrganisationalUnit extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
-    private void editCredits(OrganisationalUnit ou, int changeAmt){
+    private PayloadResponse editCredits(OrganisationalUnit ou, int changeAmt){
         ou.setAvailableCredit(changeAmt);
 
         PayloadRequest request = new PayloadRequest();
@@ -263,6 +253,7 @@ public class EditOrganisationalUnit extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
     private JSpinner createSpinner () {

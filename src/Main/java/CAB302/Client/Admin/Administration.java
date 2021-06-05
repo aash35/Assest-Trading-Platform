@@ -22,7 +22,7 @@ public class Administration extends JPanel {
     private JButton createAssetTypeBtn = new JButton("Create Asset Types");
     private JButton createUserBtn = new JButton("Create New Users");
     private JButton mainMenuButton = new JButton("Main Menu");
-    JPanel focusPanel;
+    private JPanel focusPanel;
     /**
      * Constructs the application administration page.
      * @param panel the container of the panel, passed to the NavigationHelper.changePanel method.
@@ -64,7 +64,7 @@ public class Administration extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new NewOrganisationalUnit());
+                        NavigationHelper.changePanel(panel, new NewOrganisationalUnit(focusPanel));
                     }
                 });
         innerPanel.add(createOrganisationalUnitBtn, gbc);
@@ -76,7 +76,7 @@ public class Administration extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new EditOrganisationalUnit());
+                        NavigationHelper.changePanel(panel, new EditOrganisationalUnit(focusPanel));
                     }
                 });
         innerPanel.add(editOrganisationalUnitsBtn, gbc);
@@ -88,7 +88,7 @@ public class Administration extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new NewAssetType());
+                        NavigationHelper.changePanel(panel, new NewAssetType(focusPanel));
                     }
                 });
         innerPanel.add(createAssetTypeBtn, gbc);
