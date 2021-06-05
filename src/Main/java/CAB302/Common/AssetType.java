@@ -77,7 +77,7 @@ public class AssetType extends BaseObject implements iGet, iList {
 
     /**
      * Used by the server side of the application to retrieve a list of objects from the database.If the instance's
-     * name is not null, the database will select where the names match and, if the instance's name is null, the
+     * name is not null, the database will select where the names match. If the instance's name is null, the
      * database will select all objects in the table.
      * @return a list of object matching the search criteria, or null if none exists.
      */
