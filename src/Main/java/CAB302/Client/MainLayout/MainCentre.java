@@ -14,7 +14,7 @@ public class MainCentre extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.black, 2));
         //setBackground(new LightBlue());
 
-        ouFrame = new OrganisationalUnit(user);
+        ouFrame = new OrganisationalUnit(user, this);
 
         add(ouFrame);
     }

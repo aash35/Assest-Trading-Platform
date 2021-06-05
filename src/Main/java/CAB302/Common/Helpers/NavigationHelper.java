@@ -58,9 +58,10 @@ public class NavigationHelper {
 
         MainLayout mainLayout = (MainLayout)rootPane.getContentPane();
 
-
         int width = 0;
         int height = 0;
+
+        int finalHeight = 0;
 
         int sidePanelWidth = 0;
 
@@ -70,10 +71,22 @@ public class NavigationHelper {
             interruptedException.printStackTrace();
         }
 
+        JScrollPane scrollPane = mainLayout.centerPanel.ouFrame.scrollPane;
+
+        int topScrollPaneHeight = scrollPane.getHeight();
+
         if ((e.getNewState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
+            mainLayout.invalidate();
+
+            mainLayout.repaint();
+
             Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
             width = (int)size.getWidth();
+
+            height = (int)size.getHeight();
+
+            finalHeight = height - topScrollPaneHeight - 50;
 
             sidePanelWidth = mainLayout.westPanel.getWidth();
         }
@@ -82,21 +95,26 @@ public class NavigationHelper {
 
             mainLayout.repaint();
 
-            width = mainLayout.getWidth();
+            width = e.getWindow().getWidth();
+
+            height = e.getWindow().getHeight();
+
+            finalHeight = height - topScrollPaneHeight;
 
             sidePanelWidth = mainLayout.westPanel.getWidth();
         }
 
-        height = mainLayout.getHeight();
-
-        JScrollPane scrollPane = mainLayout.centerPanel.ouFrame.scrollPane;
-
+        JScrollPane tradePane = mainLayout.centerPanel.ouFrame.currentTradesPanelOne;
 
         scrollPane.setPreferredSize(new Dimension(width - sidePanelWidth, 110));
 
+        tradePane.setPreferredSize(new Dimension(600, finalHeight - 150));
+
         scrollPane.invalidate();
+        tradePane.invalidate();
 
         scrollPane.repaint();
+        tradePane.repaint();
     }
 
     public static void mainMenu(JFrame frame) {
