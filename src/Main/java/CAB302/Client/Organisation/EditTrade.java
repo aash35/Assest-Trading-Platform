@@ -116,9 +116,17 @@ public class EditTrade extends JPanel {
         }
 
         int quantityDiff = oldQuantity - newQuantity;
+        if (quantityDiff == 0)
+        {
+            quantityDiff = 1;
+        }
         if (tradeType == TradeTransactionType.Buying)
         {
             int priceDiff = oldPrice - newPrice;
+            if (priceDiff == 0)
+            {
+                priceDiff = 1;
+            }
             int creditDiff = quantityDiff * priceDiff;
             int changeAmt = ou.getAvailableCredit() + creditDiff;
             if (changeAmt >= 0)
