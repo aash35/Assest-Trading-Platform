@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
  */
 public class MainNorth extends JPanel {
     JLabel name;
-    JLabel credits;
+    //JLabel credits;
     JButton logoutButton;
     GridBagConstraints gbc = new GridBagConstraints();
 
@@ -35,8 +35,8 @@ public class MainNorth extends JPanel {
         name = new JLabel(user.getUsername() +": " + user.getOrganisationalUnit().getUnitName());
         name.setFont(name.getFont().deriveFont(Font.BOLD));
 
-        credits = new JLabel(user.getOrganisationalUnit().getAvailableCredit() +" credits");
-        credits.setFont(credits.getFont().deriveFont(Font.BOLD));
+        //credits = new JLabel(user.getOrganisationalUnit().getAvailableCredit() +" credits");
+        //credits.setFont(credits.getFont().deriveFont(Font.BOLD));
 
         gbc.weightx = 0.8;
         gbc.anchor = GridBagConstraints.LINE_START;
@@ -46,11 +46,11 @@ public class MainNorth extends JPanel {
         add(name, gbc);
 
 
-        gbc.weightx = 1;
+        /*gbc.weightx = 1;
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 1;
         gbc.gridy = 0;
-        add(credits, gbc);
+        add(credits, gbc);*/
 
         gbc.weightx = 0.01;
         gbc.gridx = 2;

@@ -128,13 +128,7 @@ public class Trade extends BaseObject implements iGet, iList {
      * @return a list of object matching the search criteria, or null if none exists.
      */
     public List<BaseObject> list() {
-
-        Session session = RuntimeSettings.Session;
-
-        HibernateUtil.openOrGetTransaction();
-        
-        session.flush();
-        session.clear();
+        Session session = HibernateUtil.getHibernateSession();
 
         HibernateUtil.openOrGetTransaction();
 
