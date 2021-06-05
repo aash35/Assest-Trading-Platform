@@ -1,14 +1,15 @@
 package CAB302.Common.Helpers;
 
 import CAB302.Client.*;
+import CAB302.Client.MainLayout.MainCentre;
 import CAB302.Client.MainLayout.MainLayout;
+import CAB302.Client.Organisation.OrganisationalUnit;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 
 public class NavigationHelper {
     public static void logout(JFrame frame) {
@@ -115,9 +116,11 @@ public class NavigationHelper {
 
         scrollPane.repaint();
         tradePane.repaint();
+
     }
 
     public static void mainMenu(JFrame frame) {
+
         frame.setContentPane(new MainLayout(frame));
         frame.revalidate();
 
@@ -130,8 +133,37 @@ public class NavigationHelper {
     }
 
     public static void changePanel(JPanel panel, JPanel changeTo){
+
         panel.removeAll();
         panel.add(changeTo);
+
+        if (changeTo instanceof OrganisationalUnit) {
+
+            int width = panel.getWidth();
+
+            int height = panel.getHeight();
+
+            OrganisationalUnit ouFrame = (OrganisationalUnit)changeTo;
+
+            JScrollPane scrollPane = ouFrame.scrollPane;
+
+            JScrollPane tradePane = ouFrame.currentTradesPanelOne;
+
+            int topScrollPaneHeight = scrollPane.getHeight();
+
+            int finalHeight = height - topScrollPaneHeight;
+
+            scrollPane.setPreferredSize(new Dimension(width - 150, 110));
+
+            tradePane.setPreferredSize(new Dimension(600, finalHeight - 150));
+
+            scrollPane.invalidate();
+            tradePane.invalidate();
+
+            scrollPane.repaint();
+            tradePane.repaint();
+        }
+
         panel.revalidate();
         panel.repaint();
     }
