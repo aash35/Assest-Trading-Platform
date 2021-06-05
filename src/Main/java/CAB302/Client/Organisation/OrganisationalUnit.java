@@ -23,6 +23,8 @@ public class OrganisationalUnit extends JPanel {
     private List<Trade> tradesList;
     private JTable currentTradesTable;
 
+    public JScrollPane scrollPane;
+
     public OrganisationalUnit(User user) {
         focusUser = user;
         setLayout(new GridBagLayout());
@@ -69,7 +71,7 @@ public class OrganisationalUnit extends JPanel {
         for (Asset asset: assetsList) {
             allPanel.add(createAssets(asset));
         }
-        JScrollPane scrollPane = new JScrollPane(allPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane = new JScrollPane(allPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setPreferredSize(new Dimension(650, 110));
         panelOne.add(scrollPane);
         return panelOne;

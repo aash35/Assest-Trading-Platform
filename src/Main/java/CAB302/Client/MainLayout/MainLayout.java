@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class MainLayout extends JPanel {
     JPanel northPanel;
-    JPanel centerPanel;
+    public MainCentre centerPanel;
     JPanel westPanel;
 
     public MainLayout(JFrame frame) {
@@ -17,8 +17,6 @@ public class MainLayout extends JPanel {
         northPanel = new MainNorth(user, frame);
         centerPanel = new MainCentre(user);
         westPanel = new MainWest(user, centerPanel);
-
-
 
         setLayout(new BorderLayout());
 

@@ -7,9 +7,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainCentre extends JPanel {
+
+    public OrganisationalUnit ouFrame;
+
     public MainCentre(User user) {
         setBorder(BorderFactory.createLineBorder(Color.black, 2));
         //setBackground(new LightBlue());
-        add(new OrganisationalUnit(user));
+
+        ouFrame = new OrganisationalUnit(user);
+
+        add(ouFrame);
     }
 }
