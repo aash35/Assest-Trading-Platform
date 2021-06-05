@@ -43,6 +43,7 @@ public class NewUser extends JPanel {
     private JButton confirmBtn = new JButton("Confirm");
     /**
      * Constructs the application page to create a new user.
+     * @param panel container panel for the page.
      */
     public NewUser(JPanel panel){
         AccountTypeRole[] accountType = AccountTypeRole.values();
