@@ -1,5 +1,6 @@
 package CAB302.Client.Organisation;
 
+import CAB302.Client.Admin.EditOrganisationalUnit;
 import CAB302.Client.Client;
 import CAB302.Client.Helper.ButtonColumn;
 import CAB302.Client.Store.BuySellAsset;
@@ -31,8 +32,10 @@ public class OrganisationalUnit extends JPanel {
     public JScrollPane currentTradesPanelOne;
 
     public JScrollPane scrollPane;
+    public JPanel focusPanel;
 
-    public OrganisationalUnit(User user) {
+    public OrganisationalUnit(User user, JPanel panel) {
+        focusPanel = panel;
         focusUser = user;
         setLayout(new GridBagLayout());
 
@@ -102,14 +105,16 @@ public class OrganisationalUnit extends JPanel {
                 JTable table = (JTable)e.getSource();
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Trade order =  tradesList.get(modelRow);
-
             }
         };
         Action edit = new AbstractAction()
         {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("TEST");
+                JTable table = (JTable)e.getSource();
+                int modelRow = Integer.valueOf( e.getActionCommand() );
+                Trade order =  tradesList.get(modelRow);
+                NavigationHelper.changePanel(panel, new EditTrade(order));
             }
         };
         currentTradesTable = new JTable(new MyTableModel());
