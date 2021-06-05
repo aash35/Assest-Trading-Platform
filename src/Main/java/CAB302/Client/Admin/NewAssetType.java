@@ -19,44 +19,64 @@ import java.io.IOException;
  * Class creates the new asset type page of the application GUI.
  */
 public class NewAssetType extends JPanel{
+    private JPanel focusPanel;
+    private JPanel titlePanel;
+    private JPanel mainPanel;
+    private JPanel innerPanel;
+
     GridBagConstraints gbc = new GridBagConstraints();
 
-    JLabel nameLabel = new JLabel("Name:");
-    JTextField nameField = new JTextField(10);
+    JLabel nameLabel = new JLabel("Asset Type Name:");
+    JTextField nameField = new JTextField(20);
 
     JLabel descriptionLabel = new JLabel("Description:");
-    JTextField descriptionField = new JTextField(10);
+    JTextField descriptionField = new JTextField(20);
 
     JButton confirmButton = new JButton("Confirm");
-    private JPanel focusPanel;
 
     /**
      * Constructs the application page to create a new asset type.
      */
     public NewAssetType(JPanel panel) {
+        //GUI stuff
         focusPanel = panel;
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(630,500));
+        add(mainPanel);
 
-        setLayout(new GridBagLayout());
+        titlePanel = new JPanel();
+        titlePanel.setLayout(new FlowLayout());
+
+        JLabel title = new JLabel("Create New Asset Type");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
+        titlePanel.add(title);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        innerPanel = new JPanel();
+        mainPanel.add(innerPanel, BorderLayout.CENTER);
+
+        innerPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
         // First Column
         gbc.anchor = GridBagConstraints.LINE_END;
-
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(nameLabel, gbc);
+        innerPanel.add(nameLabel, gbc);
 
-        gbc.insets = new Insets(10,0,0,0);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(descriptionLabel, gbc);
+        innerPanel.add(descriptionLabel, gbc);
 
         // Second Column
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 1;
         gbc.gridy = 0;
-        add(nameField, gbc);
+        innerPanel.add(nameField, gbc);
 
         nameField.addKeyListener(new KeyListener() {
             @Override
@@ -82,14 +102,17 @@ public class NewAssetType extends JPanel{
             }
         });
 
-        gbc.insets = new Insets(0,0,0,0);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        add(descriptionField, gbc);
+        innerPanel.add(descriptionField, gbc);
 
-        gbc.gridx = 1;
+        //Middle
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
         gbc.gridy = 2;
-        add(confirmButton, gbc);
+        innerPanel.add(confirmButton, gbc);
+
         confirmButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -97,43 +120,55 @@ public class NewAssetType extends JPanel{
                         String name = nameField.getText();
                         String description = descriptionField.getText();
 
-                        CAB302.Common.AssetType type = new CAB302.Common.AssetType();
+                        if (name.length() > 0 && description.length() > 0)
+                        {
+                            CAB302.Common.AssetType type = new CAB302.Common.AssetType();
 
-                        type.setName(name);
-                        type.setDescription(description);
+                            type.setName(name);
+                            type.setDescription(description);
 
-                        PayloadRequest request = new PayloadRequest();
+                            PayloadRequest request = new PayloadRequest();
 
-                        request.setPayloadObject(type);
-                        request.setRequestPayloadType(RequestPayloadType.Get);
+                            request.setPayloadObject(type);
+                            request.setRequestPayloadType(RequestPayloadType.Get);
 
-                        PayloadResponse response = null;
-                        try {
-                            response = new Client().SendRequest(request);
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-
-                        CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
-
-                        if (assetType == null) {
-                            request.setRequestPayloadType(RequestPayloadType.Create);
+                            PayloadResponse response = null;
                             try {
                                 response = new Client().SendRequest(request);
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }
-                            if (response != null){
-                                Toast t;
-                                t = new Toast("New Asset Type Added", focusPanel);
-                                t.showtoast();
-                                NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
-                            }
 
+                            CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
+
+                            if (assetType == null)
+                            {
+                                request.setRequestPayloadType(RequestPayloadType.Create);
+                                try {
+                                    response = new Client().SendRequest(request);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                if (response != null){
+                                    Toast t;
+                                    t = new Toast("New Asset Type Added", focusPanel);
+                                    t.showtoast();
+                                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                                }
+                            }
+                            else
+                            {
+                                Toast t;
+                                t = new Toast("Asset Type already exists", focusPanel);
+                                t.showtoast();
+                                nameField.setText("");
+                                descriptionField.setText("");
+                            }
                         }
-                        else {
+                        else
+                        {
                             Toast t;
-                            t = new Toast("AssetType already exists", focusPanel);
+                            t = new Toast("Please enter a value in all fields", focusPanel);
                             t.showtoast();
                             nameField.setText("");
                             descriptionField.setText("");

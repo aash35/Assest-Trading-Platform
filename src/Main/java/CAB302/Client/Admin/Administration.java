@@ -19,9 +19,8 @@ public class Administration extends JPanel {
 
     private JButton createOrganisationalUnitBtn = new JButton("Create New Organisational Unit");
     private JButton editOrganisationalUnitsBtn = new JButton("Edit Organisational Units");
-    private JButton createAssetTypeBtn = new JButton("Create Asset Types");
+    private JButton createAssetTypeBtn = new JButton("Create New Asset Types");
     private JButton createUserBtn = new JButton("Create New Users");
-    private JButton mainMenuButton = new JButton("Main Menu");
     private JPanel focusPanel;
     /**
      * Constructs the application administration page.
@@ -29,6 +28,7 @@ public class Administration extends JPanel {
      */
     public Administration(JPanel panel) {
         focusPanel = panel;
+
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630,500));
@@ -47,7 +47,6 @@ public class Administration extends JPanel {
         innerPanel.setLayout(new GridLayout(2,2, gap, gap));
         mainPanel.add(innerPanel, BorderLayout.CENTER);
 
-        //gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
@@ -104,6 +103,5 @@ public class Administration extends JPanel {
                     }
                 });
         innerPanel.add(createUserBtn, gbc);
-
     }
 }

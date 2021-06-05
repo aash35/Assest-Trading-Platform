@@ -21,11 +21,16 @@ import java.util.List;
  * Class creates the new user page of the application GUI.
  */
 public class NewUser extends JPanel {
-    private JLabel enterUserLabel = new JLabel("Enter Username: ");
+    private JPanel focusPanel;
+    private JPanel titlePanel;
+    private JPanel mainPanel;
+    private JPanel innerPanel;
+
+    private JLabel enterUserLabel = new JLabel("Username: ");
     private JTextField enterUserField = new JTextField(20);
 
-    private JLabel enterPassLabel = new JLabel("Enter Password: ");
-    private JTextField enterPassField = new JTextField(20);
+    private JLabel enterPassLabel = new JLabel("Password: ");
+    private JPasswordField enterPassField = new JPasswordField(20);
 
     private JLabel accountTypeLabel = new JLabel("Account Type: ");
     private JComboBox accountTypeCB;
@@ -36,12 +41,10 @@ public class NewUser extends JPanel {
     private List<OrganisationalUnit> ouList;
 
     private JButton confirmBtn = new JButton("Confirm");
-    private JPanel focusPanel;
     /**
      * Constructs the application page to create a new user.
      */
     public NewUser(JPanel panel){
-        focusPanel = panel;
         AccountTypeRole[] accountType = AccountTypeRole.values();
         accountTypeCB = new JComboBox(accountType);
 
@@ -58,108 +61,152 @@ public class NewUser extends JPanel {
         }
         ouCB = new JComboBox(organisationalUnits);
 
-        setLayout(new GridBagLayout());
+        //GUI stuff
+        focusPanel = panel;
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(630,500));
+        add(mainPanel);
+
+        titlePanel = new JPanel();
+        titlePanel.setLayout(new FlowLayout());
+
+        JLabel title = new JLabel("Create New User");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
+        titlePanel.add(title);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        innerPanel = new JPanel();
+        mainPanel.add(innerPanel, BorderLayout.CENTER);
+
+        innerPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.weightx = 1;
+        gbc.weighty = 1;
 
         //Left Column
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(enterUserLabel, gbc);
+        innerPanel.add(enterUserLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        add(enterPassLabel, gbc);
+        innerPanel.add(enterPassLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        add(ouNameLabel, gbc);
+        innerPanel.add(ouNameLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
-        add(accountTypeLabel, gbc);
+        innerPanel.add(accountTypeLabel, gbc);
 
         //Right Column
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 1;
         gbc.gridy = 1;
-        add(enterUserField, gbc);
+        innerPanel.add(enterUserField, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 2;
-        add(enterPassField, gbc);
+        innerPanel.add(enterPassField, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 3;
-        add(ouCB, gbc);
+        innerPanel.add(ouCB, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 4;
-        add(accountTypeCB, gbc);
+        innerPanel.add(accountTypeCB, gbc);
 
-        gbc.gridx = 1;
+        //Middle
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
         gbc.gridy = 5;
-        add(confirmBtn, gbc);
+        innerPanel.add(confirmBtn, gbc);
+
         confirmBtn.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String username = enterUserField.getText();
-                        String password = SHA256HashHelper.generateHashedString(enterPassField.getText());
-                        OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
-                        AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
+                        String password = new String(enterPassField.getPassword());
 
-                        User userCheck = new User();
-                        userCheck.setUsername(username);
+                        if (username.length() > 0 && password.length() > 0)
+                        {
+                            String hashedPass = SHA256HashHelper.generateHashedString(password);
+                            OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
+                            AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
 
-                        User user = new User();
-                        user.setUsername(username);
-                        user.setHashedPassword(password);
-                        user.setOrganisationalUnit(oUnit);
-                        user.setAccountRoleType(accountType);
+                            User userCheck = new User();
+                            userCheck.setUsername(username);
 
-                        PayloadRequest request = new PayloadRequest();
+                            User user = new User();
+                            user.setUsername(username);
+                            user.setHashedPassword(hashedPass);
+                            user.setOrganisationalUnit(oUnit);
+                            user.setAccountRoleType(accountType);
 
-                        request.setPayloadObject(userCheck);
+                            PayloadRequest request = new PayloadRequest();
 
-                        request.setRequestPayloadType(RequestPayloadType.Get);
+                            request.setPayloadObject(userCheck);
 
-                        PayloadResponse response = null;
-                        try {
-                            response = new Client().SendRequest(request);
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-                        userCheck = (User)response.getPayloadObject();
+                            request.setRequestPayloadType(RequestPayloadType.Get);
 
-                        if(userCheck == null) {
-                            request = new PayloadRequest();
-                            request.setPayloadObject(user);
-                            request.setRequestPayloadType(RequestPayloadType.Create);
+                            PayloadResponse response = null;
                             try {
                                 response = new Client().SendRequest(request);
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }
+                            userCheck = (User)response.getPayloadObject();
 
-                            if (response != null){
+                            if(userCheck == null) {
+                                request = new PayloadRequest();
+                                request.setPayloadObject(user);
+                                request.setRequestPayloadType(RequestPayloadType.Create);
+                                try {
+                                    response = new Client().SendRequest(request);
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+
+                                if (response != null){
+                                    Toast t;
+                                    t = new Toast("New User Added", focusPanel);
+                                    t.showtoast();
+                                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                                }
+                            }
+                            else {
                                 Toast t;
-                                t = new Toast("New User Added", focusPanel);
+                                t = new Toast("User already exists", focusPanel);
                                 t.showtoast();
-                                NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                                enterUserField.setText("");
+                                enterPassField.setText("");
                             }
                         }
-                        else {
+                        else
+                        {
                             Toast t;
-                            t = new Toast("User already exists", focusPanel);
+                            t = new Toast("Please enter values in all fields", focusPanel);
                             t.showtoast();
                             enterUserField.setText("");
                             enterPassField.setText("");
                         }
+
+
                     }
                 });
     }
 
+    /**
+     * Retrieves the list of Organisational Units from the database,
+     * then assigns it to the ouList property.
+     */
     private void getOUList() throws IOException {
 
         PayloadRequest request = new PayloadRequest();

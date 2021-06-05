@@ -57,8 +57,6 @@ public class OrganisationalUnit extends JPanel {
         c.gridy = 0;
         add(title, c);
 
-
-
         c.fill = GridBagConstraints.CENTER;
         c.gridwidth = 2;
         c.gridx = 0;
@@ -169,7 +167,7 @@ public class OrganisationalUnit extends JPanel {
                 JTable table = (JTable)e.getSource();
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Trade order =  tradesList.get(modelRow);
-                NavigationHelper.changePanel(panel, new EditTrade(order));
+                NavigationHelper.changePanel(panel, new EditTrade(order, focusUser, focusPanel));
             }
         };
         currentTradesTable = new JTable(new MyTableModel());
@@ -370,6 +368,12 @@ public class OrganisationalUnit extends JPanel {
             return data[rowIndex][columnIndex];
         }
     }
+
+    /**
+     * Deletes the specified trade
+     * @param trade The trade to be deleted.
+     * @return a response on if the method was successful or not.
+     */
     private PayloadResponse deleteTrade(Trade trade)
     {
         CAB302.Common.OrganisationalUnit ou = trade.getOrganisationalUnit();
@@ -399,6 +403,13 @@ public class OrganisationalUnit extends JPanel {
         }
         return response;
     }
+
+    /**
+     * Edits a specified Organisational Units Credits
+     * @param ou the organisational unit being edited.
+     * @param changeAmt the amount that the credits will be changed to.
+     * @return a response on if the method was successful or not.
+     */
     private PayloadResponse editCredits(CAB302.Common.OrganisationalUnit ou, int changeAmt){
         ou.setAvailableCredit(changeAmt);
 
@@ -416,6 +427,13 @@ public class OrganisationalUnit extends JPanel {
         }
         return response;
     }
+
+    /**
+     * Edits a specified Organisational Units Assets
+     * @param asset the asset being edited.
+     * @param changeAmt the amount that the asset will be changed to.
+     * @return a response on if the method was successful or not.
+     */
     private PayloadResponse editAssets (Asset asset, int changeAmt){
         asset.setQuantity(changeAmt);
 
@@ -432,6 +450,14 @@ public class OrganisationalUnit extends JPanel {
         }
         return response;
     }
+
+    /**
+     * Retrieves an asset of a specified Asset Type
+     * from a specified Organisational Unit from the database,
+     * @param ou The Organisational Unit to be checked.
+     * @param assetType The asset type that is being searched for.
+     * @return the asset if it is found or null.
+     */
     private Asset getAsset(CAB302.Common.OrganisationalUnit ou, AssetType assetType) {
         Asset type = new Asset();
 

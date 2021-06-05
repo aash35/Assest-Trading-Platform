@@ -1,9 +1,12 @@
 package CAB302.Client.Organisation;
 
+import CAB302.Client.Admin.Administration;
 import CAB302.Client.Client;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeTransactionType;
+import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
@@ -14,10 +17,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+/**
+ * Class creates the edit trade page of the application GUI.
+ */
 public class EditTrade extends JPanel {
+    private JPanel focusPanel;
+    private User focusUser;
     private GridBagConstraints gbc = new GridBagConstraints();
-
-    private JLabel messageStackLabel = new JLabel("");
 
     private JLabel title;
 
@@ -29,17 +35,29 @@ public class EditTrade extends JPanel {
 
     private JButton confirmButton = new JButton("Confirm");
 
-    public EditTrade(Trade trade){
-
+    /**
+     * Constructs the application page to edit a trade.
+     * @param trade the trade being edited.
+     */
+    public EditTrade(Trade trade, User user, JPanel panel){
+        focusPanel = panel;
+        focusUser = user;
         title = new JLabel("Edit Trade - "+ trade.getTransactionType() + " - " + (String)trade.getAssetType().getName());
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 20));
         setLayout(new GridBagLayout());
-        //gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
+        //Middle
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(title, gbc);
+
         // First Column
         gbc.anchor = GridBagConstraints.LINE_END;
-
+        gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(editQuantityLabel, gbc);
@@ -52,19 +70,21 @@ public class EditTrade extends JPanel {
         // Second Column
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        add(title, gbc);
-
-        gbc.gridx = 1;
         gbc.gridy = 1;
         editQuantityField.setValue(trade.getQuantity());
         add(editQuantityField, gbc);
 
-        gbc.insets = new Insets(0,0,0,0);
         gbc.gridx = 1;
         gbc.gridy = 2;
         editPriceField.setValue(trade.getPrice());
         add(editPriceField, gbc);
+
+        //Middle
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        add(confirmButton, gbc);
 
         confirmButton.addActionListener(
                 new ActionListener() {
@@ -75,40 +95,32 @@ public class EditTrade extends JPanel {
                         Integer newPrice = (Integer) editPriceField.getValue();
 
                         //Edit Org Assets
-                        editOrg(trade, newQuantity, newPrice);
+                        PayloadResponse response = editOrg(trade, newQuantity, newPrice, focusPanel);
 
-                        //Edit Trade in Database
-                        editTrade(trade, newQuantity, newPrice);
+                        if (response != null){
+                            //Edit Trade in Database
+                            response = editTrade(trade, newQuantity, newPrice);
+                        }
 
-                        messageStackLabel.setText("Successfully saved");
-
-                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                        gbc.weighty = 5;
-                        gbc.insets = new Insets(20,0,0,0);
-                        gbc.gridx = 1;
-                        gbc.gridy = 2;
-                        add(messageStackLabel, gbc);
-                        remove(confirmButton);
-
-                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                        gbc.weighty = 5;
-                        gbc.insets = new Insets(20,0,0,0);
-                        gbc.gridx = 1;
-                        gbc.gridy = 3;
-                        add(confirmButton, gbc);
+                        if (response != null){
+                            Toast t;
+                            t = new Toast("Trade Successfully Changed", focusPanel);
+                            t.showtoast();
+                            NavigationHelper.changePanel(focusPanel, new CAB302.Client.Organisation.OrganisationalUnit(focusUser, focusPanel));
+                        }
                     }
                 });
-
-        // Last Row
-        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-        gbc.weighty = 5;
-        gbc.insets = new Insets(20,0,0,0);
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        add(confirmButton, gbc);
     }
 
-    private void editOrg(Trade trade, int newQuantity, int newPrice){
+    /**
+     * Edits a specified Organisational Units Assets based on
+     * the change in quantity and price of a trade.
+     * @param trade the trade being edited.
+     * @param newQuantity the amount that the asset will be changed to
+     * @param newPrice the amount that the asset will be changed to.
+     * @param focusPanel helps display notification messages.
+     */
+    private PayloadResponse editOrg(Trade trade, int newQuantity, int newPrice, JPanel focusPanel){
         TradeTransactionType tradeType = trade.getTransactionType();
         int oldQuantity = trade.getQuantity();
         int oldPrice = trade.getPrice();
@@ -119,6 +131,7 @@ public class EditTrade extends JPanel {
             assetType = trade.getAssetType();
         }
 
+        PayloadResponse response = null;
 
         if (tradeType == TradeTransactionType.Buying)
         {
@@ -128,11 +141,13 @@ public class EditTrade extends JPanel {
             int changeAmt = ou.getAvailableCredit() + priceDifference;
             if (changeAmt >= 0)
             {
-                editCredits(ou, changeAmt);
+                response = editCredits(ou, changeAmt);
             }
             else
             {
-                //Toast that says error, not enough credits
+                Toast t;
+                t = new Toast("Error: Not enough credits", focusPanel);
+                t.showtoast();
             }
         }
         else
@@ -140,11 +155,28 @@ public class EditTrade extends JPanel {
             int quantityDiff = oldQuantity - newQuantity;
             Asset asset = getAsset(ou, assetType);
             int changeAmt = asset.getQuantity() + quantityDiff;
-            editAssets(asset, changeAmt);
+            if (changeAmt >= 0)
+            {
+                response = editAssets(asset, changeAmt);
+            }
+            else
+            {
+                String string = String.format("Error: Not enough %s to sell", trade.getAssetType().getName());
+                Toast t;
+                t = new Toast(string, focusPanel);
+                t.showtoast();
+            }
         }
+        return response;
     }
 
-    private void editAssets (Asset asset, int changeAmt){
+    /**
+     * Edits a specified Organisational Units Assets
+     * @param asset the asset being edited.
+     * @param changeAmt the amount that the asset will be changed to.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse editAssets (Asset asset, int changeAmt){
         asset.setQuantity(changeAmt);
 
         PayloadRequest request = new PayloadRequest();
@@ -158,8 +190,16 @@ public class EditTrade extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
+    /**
+     * Retrieves an asset of a specified Asset Type
+     * from a specified Organisational Unit from the database,
+     * @param ou The Organisational Unit to be checked.
+     * @param assetType The asset type that is being searched for.
+     * @return the asset if it is found or null.
+     */
     private Asset getAsset(OrganisationalUnit ou, AssetType assetType) {
         Asset type = new Asset();
 
@@ -180,7 +220,13 @@ public class EditTrade extends JPanel {
         return (Asset)response.getPayloadObject();
     }
 
-    private void editCredits(OrganisationalUnit ou, int changeAmt){
+    /**
+     * Edits a specified Organisational Units Credits
+     * @param ou the organisational unit being edited.
+     * @param changeAmt the amount that the credits will be changed to.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse editCredits(OrganisationalUnit ou, int changeAmt){
         ou.setAvailableCredit(changeAmt);
 
         PayloadRequest request = new PayloadRequest();
@@ -195,9 +241,17 @@ public class EditTrade extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
-    private void editTrade(Trade trade, int newQuantity, int newPrice){
+    /**
+     * Edits the specified trade to its new quantity and price
+     * @param trade The Organisational Unit to be checked.
+     * @param newQuantity The quantity the trade is changed to.
+     * @param newPrice The price the trade is changed to.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse editTrade(Trade trade, int newQuantity, int newPrice){
         trade.setQuantity(newQuantity);
         trade.setPrice(newPrice);
 
@@ -213,8 +267,13 @@ public class EditTrade extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
+    /**
+     * Creates an integer spinnerbox with a minimum value of 0 and no max value.
+     * @return a JSpinner object
+     */
     private JSpinner createSpinner () {
         SpinnerModel model = new SpinnerNumberModel(1, 1, null, 1);
         JSpinner spinner = new JSpinner(model);
