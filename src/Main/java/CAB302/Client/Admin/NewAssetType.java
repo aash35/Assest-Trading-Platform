@@ -13,6 +13,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
+/**
+ * Class creates the new asset type page of the application GUI.
+ */
 public class NewAssetType extends JPanel{
     GridBagConstraints gbc = new GridBagConstraints();
 
@@ -26,6 +29,9 @@ public class NewAssetType extends JPanel{
 
     JButton confirmButton = new JButton("Confirm");
 
+    /**
+     * Constructs the application page to create a new asset type.
+     */
     public NewAssetType() {
 
         setLayout(new GridBagLayout());

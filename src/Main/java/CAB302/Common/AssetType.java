@@ -11,6 +11,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.*;
 
+/**
+ * This class stores an asset type, with a name and description.
+ */
 @Entity
 @Table(name = "AssetType")
 public class AssetType extends BaseObject implements iGet, iList {
@@ -39,8 +42,16 @@ public class AssetType extends BaseObject implements iGet, iList {
     public List<Trade> getTrades() { return this.trades; }
     public void setTrades(List<Trade> trades) { this.trades = trades; }
 
+    /**
+     * Construct and empty asset type object.
+     */
     public AssetType() { }
 
+    /**
+     * Used by the server side of the application to retrieve an object from the database. If the instance's name
+     * is not null, the database will select where the names match.
+     * @return an object from the database that matches the select criteria, or null if none exists.
+     */
     public BaseObject get() {
         Session session = RuntimeSettings.Session;
 
@@ -64,6 +75,12 @@ public class AssetType extends BaseObject implements iGet, iList {
         return assetType;
     }
 
+    /**
+     * Used by the server side of the application to retrieve a list of objects from the database.If the instance's
+     * name is not null, the database will select where the names match. If the instance's name is null, the
+     * database will select all objects in the table.
+     * @return a list of object matching the search criteria, or null if none exists.
+     */
     public List<BaseObject> list() {
         Session session = RuntimeSettings.Session;
 

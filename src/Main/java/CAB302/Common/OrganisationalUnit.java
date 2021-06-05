@@ -13,6 +13,9 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class stores a organisational unit, with a name and quantity of available credits.
+ */
 @Entity
 @Table(name = "OrganisationalUnit")
 public class OrganisationalUnit extends BaseObject implements iGet, iList {
@@ -49,8 +52,16 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
     public List<Trade> getTrades() { return this.trades; }
     public void setTrades(List<Trade> trades) { this.trades = trades; }
 
+    /**
+     * Constructs an empty organisational unit object.
+     */
     public OrganisationalUnit() { }
 
+    /**
+     * Used by the server side of the application to retrieve an object from the database. The database will select
+     * where the asset types match.
+     * @return an object from the database that matches the select criteria, or null if none exists.
+     */
     public BaseObject get() {
         Session session = RuntimeSettings.Session;
 
@@ -74,6 +85,12 @@ public class OrganisationalUnit extends BaseObject implements iGet, iList {
         return ou;
     }
 
+    /**
+     * Used by the server side of the application to retrieve a list of objects from the database. If the instance's
+     * name is not null, the database will select where the names match. If the instance's name is null, the database
+     * will select all objects in the table.
+     * @return a list of object matching the search criteria, or null if none exists.
+     */
     public List<BaseObject> list() {
         Session session = RuntimeSettings.Session;
 

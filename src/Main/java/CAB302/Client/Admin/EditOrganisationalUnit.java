@@ -12,6 +12,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Class creates the edit organisational unit page of the application GUI.
+ */
 public class EditOrganisationalUnit extends JPanel {
     private JLabel messageStackLabel = new JLabel("");
 
@@ -30,6 +33,9 @@ public class EditOrganisationalUnit extends JPanel {
     private List<AssetType> assetsTypeList;
     private List<Asset> assets;
 
+    /**
+     * Constructs the application page to edit organisational units.
+     */
     public EditOrganisationalUnit() {
 
         //Get list of all OrgUnits and add to combobox

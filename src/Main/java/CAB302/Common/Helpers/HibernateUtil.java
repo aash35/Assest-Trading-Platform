@@ -8,7 +8,15 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
+/**
+ * Contains methods for utilising Hibernate.
+ */
 public class HibernateUtil {
+
+    /**
+     * Method creates a new Hibernate session.
+     * @return a Hibernate session.
+     */
     public static Session getHibernateSession() {
 
         SessionFactory sf = new Configuration()
@@ -19,6 +27,9 @@ public class HibernateUtil {
         return session;
     }
 
+    /**
+     * Method either retrieves a transaction if one exists in the Hibernate session or opens a transaction otherwise.
+     */
     public static void openOrGetTransaction() {
 
         Session session = RuntimeSettings.Session;

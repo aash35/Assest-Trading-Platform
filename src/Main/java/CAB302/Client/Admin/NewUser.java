@@ -15,6 +15,9 @@ import java.util.List;
 
 import static CAB302.Common.Helpers.SHA256HashHelper.generateHashedString;
 
+/**
+ * Class creates the new user page of the application GUI.
+ */
 public class NewUser extends JPanel {
     private JLabel messageStackLabel = new JLabel("");
 
@@ -34,6 +37,9 @@ public class NewUser extends JPanel {
 
     private JButton confirmBtn = new JButton("Confirm");
 
+    /**
+     * Constructs the application page to create a new user.
+     */
     public NewUser(){
 
         AccountTypeRole[] accountType = AccountTypeRole.values();
