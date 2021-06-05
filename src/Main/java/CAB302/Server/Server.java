@@ -155,7 +155,9 @@ class TradeProcessor extends Thread {
                             Asset asset = new Asset();
                             asset.setAssetType(availableSellTrade.getAssetType());
 
-                            if (asset.get() == null) {
+                            asset = (Asset)asset.get();
+
+                            if (asset == null) {
                                 asset.setAssetType(availableSellTrade.getAssetType());
 
                                 session.save(asset);
@@ -163,7 +165,7 @@ class TradeProcessor extends Thread {
                             else {
                                 asset.setAssetType(availableSellTrade.getAssetType());
 
-                                asset.setQuantity(quantityToBuy);
+                                asset.setQuantity(asset.getQuantity() + quantityToBuy);
                                 asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
 
                                 session.update(asset);
