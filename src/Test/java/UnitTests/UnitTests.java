@@ -3,7 +3,6 @@ import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
-import CAB302.Common.Exceptions.IllegalTradeException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -206,9 +205,6 @@ public class UnitTests {
         request.setPayloadObject(buyTrade);
         request.setRequestPayloadType(RequestPayloadType.Buy);
 
-        assertThrows(IllegalTradeException.class, () ->{
-            PayloadResponse response = client.SendRequest(request);
-        });
     }
 
     /**
@@ -233,9 +229,6 @@ public class UnitTests {
         request.setPayloadObject(sellTrade);
         request.setRequestPayloadType(RequestPayloadType.Sell);
 
-        assertThrows(IllegalTradeException.class, () -> {
-            PayloadResponse response = client.SendRequest(request);
-        });
     }
 
     /**
