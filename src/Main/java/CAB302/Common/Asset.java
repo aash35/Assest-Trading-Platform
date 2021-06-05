@@ -56,7 +56,10 @@ public class Asset extends BaseObject implements iGet, iList {
         CriteriaQuery<Asset> criteria = criteriaBuilder.createQuery(Asset.class);
         Root<Asset> root = criteria.from(Asset.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
+        criteria.select(root).where(
+                this.getAssetType() != null ? criteriaBuilder.equal(root.get("assetType"), this.getAssetType()) : criteriaBuilder.and(),
+                this.getOrganisationalUnit() != null ? criteriaBuilder.equal(root.get("organisationalUnit"), this.getOrganisationalUnit()) : criteriaBuilder.and()
+        );
 
         Query query = session.createQuery(criteria);
 

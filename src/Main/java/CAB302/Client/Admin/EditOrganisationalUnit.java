@@ -105,14 +105,8 @@ public class EditOrganisationalUnit extends JPanel {
                             editCredits(oUnit, changeAmt);
                         } else {
                             assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
-                            getAsset(oUnit, assetType);
 
-                            Asset asset = null;
-
-                            if (assets.size() > 0)
-                            {
-                                asset = assets.get(0);
-                            }
+                            Asset asset = getAsset(oUnit, assetType);
 
                             if (asset == null)
                             {
@@ -219,7 +213,7 @@ public class EditOrganisationalUnit extends JPanel {
         }
     }
 
-    private void getAsset(OrganisationalUnit ou, AssetType assetType) {
+    private Asset getAsset(OrganisationalUnit ou, AssetType assetType) {
         Asset type = new Asset();
 
         type.setOrganisationalUnit(ou);
@@ -228,7 +222,7 @@ public class EditOrganisationalUnit extends JPanel {
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(type);
-        request.setRequestPayloadType(RequestPayloadType.List);
+        request.setRequestPayloadType(RequestPayloadType.Get);
         PayloadResponse response = null;
         try {
             response = new Client().SendRequest(request);
@@ -236,7 +230,7 @@ public class EditOrganisationalUnit extends JPanel {
             ioException.printStackTrace();
         }
 
-        assets = (List<Asset>) (List<?>) response.getPayloadObject();
+        return (Asset)response.getPayloadObject();
     }
 
     private void editAssets (Asset asset, int changeAmt){
