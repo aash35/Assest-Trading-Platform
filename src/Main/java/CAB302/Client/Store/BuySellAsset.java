@@ -7,6 +7,7 @@ import CAB302.Common.Colors.Purple;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
+import CAB302.Common.Helpers.NavigationHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +52,10 @@ public class BuySellAsset extends JPanel {
     private JTable currentOrderTable;
     private JTable priceHistoryTable;
 
-    public BuySellAsset(AssetType assetType){
+    private JPanel storePanel;
+
+    public BuySellAsset(JPanel panel, AssetType assetType){
+        storePanel = panel;
         this.assetType = assetType;
         mainPanel = createPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -123,8 +127,6 @@ public class BuySellAsset extends JPanel {
                     //toast
                 }
 
-
-
                 //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT
                 if (response == null) {
                     //TODO: DEAL WITH NULL RESPONSE WHICH MEANS NOT ENOUGH CREDIT - THROW TOAST
@@ -149,8 +151,14 @@ public class BuySellAsset extends JPanel {
                     catch(Exception error){
 
                     }
-                }
 
+                    if (response != null) {
+                        sellPrice.setValue(1);
+                        sellQuantity.setValue(1);
+
+                        refresh();
+                    }
+                }
             }
         });
 
@@ -174,11 +182,20 @@ public class BuySellAsset extends JPanel {
                 request.setPayloadObject(trade);
                 request.setRequestPayloadType(RequestPayloadType.Buy);
 
+                PayloadResponse response = null;
+
                 try {
-                    PayloadResponse response = client.SendRequest(request);
+                    response = client.SendRequest(request);
                 }
                 catch(Exception error){
 
+                }
+
+                if (response != null) {
+                    sellPrice.setValue(1);
+                    sellQuantity.setValue(1);
+
+                    refresh();
                 }
             }
         });
@@ -236,6 +253,10 @@ public class BuySellAsset extends JPanel {
         JSpinner spinner = new JSpinner(model);
         spinner.setPreferredSize(new Dimension(100, 30));
         return  spinner;
+    }
+
+    private void refresh() {
+        NavigationHelper.changePanel(storePanel, new BuySellAsset(storePanel, assetType));
     }
     
     private void getTradeList() throws IOException {
