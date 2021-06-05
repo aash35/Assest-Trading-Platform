@@ -178,7 +178,7 @@ public class BuySellAsset extends JPanel {
                 PayloadRequest request = new PayloadRequest();
 
                 request.setPayloadObject(trade);
-                request.setRequestPayloadType(RequestPayloadType.Buy);
+                request.setRequestPayloadType(RequestPayloadType.Sell);
 
                 PayloadResponse response = null;
 
