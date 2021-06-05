@@ -23,8 +23,15 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Class initialises the client side GUI.
+ */
 public class GUI extends JFrame {
 
+    /**
+     * Method creates a new GUI frame and displays the login page.
+     * @throws Exception
+     */
     public GUI() throws Exception {
 
         ClientSettings clientSettings = new ClientSettings();
@@ -32,14 +39,25 @@ public class GUI extends JFrame {
         Logger log = Logger.getLogger("org.hibernate");
         log.setLevel(Level.SEVERE);
 
+        /**
+         * Nested class allows the creation of notification toasts on separate threads from the main GUI.
+         */
         class NotificationThread extends Thread {
 
             private JFrame frame;
 
+            /**
+             * Construct a new notification thread connected to a given frame.
+             * @param frame The frame the notification toast will be displayed in.
+             */
             public NotificationThread(JFrame frame) {
                 this.frame = frame;
             }
 
+            /**
+             * Initialises an infinite loop to allow the notification thread to respond to user inputs
+             * and display a toast notification when needed.
+             */
             @Override
             public void run() {
                 while (true) {

@@ -15,7 +15,7 @@ public class ServerSettings {
     InputStream inputStream;
 
     /**
-     * Construct the server settings object and set the appropriate variables in the runtime settings.
+     * Construct the server settings and set the appropriate variables in the runtime settings.
      */
     public ServerSettings() {
 

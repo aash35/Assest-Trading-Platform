@@ -12,6 +12,9 @@ import java.awt.event.*;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * Class constructs and displays the login screen of the GUI.
+ */
 public class Login extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
 
@@ -25,6 +28,10 @@ public class Login extends JPanel {
 
     JFrame theFrame;
 
+    /**
+     * Construct the GUI login page.
+     * @param frame the frame to display the login page in.
+     */
     public Login(JFrame frame){
         theFrame = frame;
 
