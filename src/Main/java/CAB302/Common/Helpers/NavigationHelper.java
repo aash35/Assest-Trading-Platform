@@ -51,18 +51,35 @@ public class NavigationHelper {
 
         int width = 0;
 
+        int sidePanelWidth = 0;
+
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+
         if ((e.getNewState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
             Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 
             width = (int)size.getWidth();
+
+            sidePanelWidth = mainLayout.westPanel.getWidth();
         }
         else {
+            mainLayout.invalidate();
+
+            mainLayout.repaint();
+
             width = mainLayout.getWidth();
+
+            sidePanelWidth = mainLayout.westPanel.getWidth();
         }
 
         JScrollPane scrollPane = mainLayout.centerPanel.ouFrame.scrollPane;
 
-        scrollPane.setPreferredSize(new Dimension(width - 150, 110));
+
+        scrollPane.setPreferredSize(new Dimension(width - sidePanelWidth, 110));
 
         scrollPane.invalidate();
 

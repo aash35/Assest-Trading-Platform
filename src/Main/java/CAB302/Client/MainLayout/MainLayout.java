@@ -9,7 +9,7 @@ import java.awt.*;
 public class MainLayout extends JPanel {
     JPanel northPanel;
     public MainCentre centerPanel;
-    JPanel westPanel;
+    public JPanel westPanel;
 
     public MainLayout(JFrame frame) {
 
