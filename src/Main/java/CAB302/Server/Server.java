@@ -108,7 +108,7 @@ class TradeProcessor extends Thread {
 
                 session.refresh(buyTrade);
 
-                List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAssetType().id == buyTrade.getAssetType().id).collect(Collectors.toList());
+                List<Trade> availableSellTrades = sellTrades != null ? sellTrades.stream().filter(x -> x.getAssetType().id == buyTrade.getAssetType().id).collect(Collectors.toList()) : null;
 
                 if (availableSellTrades != null) {
 
