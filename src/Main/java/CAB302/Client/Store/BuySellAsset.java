@@ -123,7 +123,7 @@ public class BuySellAsset extends JPanel {
                catch(Exception error){
 
                }
-                
+
                 if (response == null) {
                     Toast t;
                     t = new Toast("Credit Error", panel);

@@ -89,11 +89,7 @@ public class Store extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-<<<<<<< HEAD
                 NavigationHelper.changePanel(panel, new BuySellAsset(panel, assetType));
-=======
-                NavigationHelper.changePanel(panel, new BuySellAsset(assetType, panel));
->>>>>>> ebda36de16ef8e4696bde133fc75560e7f7e12e9
             }
         });
         button.setPreferredSize(new Dimension(140,50));
