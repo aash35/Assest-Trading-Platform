@@ -3,6 +3,10 @@ package CAB302.Common;
 import CAB302.Common.Enums.RequestPayloadType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Class is required for the client to send objects to the server. Contains a payload type description, a payload object
+ * being sent to the server, a description of the payload object type and a checksum.
+ */
 public class PayloadRequest extends RequestBaseObject {
 
     private String checksum;
