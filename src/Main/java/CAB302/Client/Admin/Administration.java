@@ -8,15 +8,40 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Administration extends JPanel {
-    GridBagConstraints gbc = new GridBagConstraints();
+    private JPanel titlePanel;
+    private JPanel mainPanel;
+    private JPanel innerPanel;
 
-    JButton createOrganisationalUnitBtn = new JButton("Create New Organisational Unit");
-    JButton editOrganisationalUnitsBtn = new JButton("Edit Organisational Units");
-    JButton createAssetTypeBtn = new JButton("Create Asset Types");
-    JButton createUserBtn = new JButton("Create New Users");
-    JButton mainMenuButton = new JButton("Main Menu");
+    private GridBagConstraints gbc = new GridBagConstraints();
+
+    private JButton createOrganisationalUnitBtn = new JButton("Create New Organisational Unit");
+    private JButton editOrganisationalUnitsBtn = new JButton("Edit Organisational Units");
+    private JButton createAssetTypeBtn = new JButton("Create Asset Types");
+    private JButton createUserBtn = new JButton("Create New Users");
+    private JButton mainMenuButton = new JButton("Main Menu");
 
     public Administration(JPanel panel) {
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(630,500));
+        add(mainPanel);
+
+        titlePanel = new JPanel();
+        titlePanel.setLayout(new FlowLayout());
+
+        JLabel title = new JLabel("Admin");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
+        titlePanel.add(title);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        innerPanel = new JPanel();
+        int gap =  50;
+        innerPanel.setLayout(new GridLayout(2,2, gap, gap));
+        mainPanel.add(innerPanel, BorderLayout.CENTER);
+
+        //gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
 
         setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.BOTH;
@@ -25,7 +50,7 @@ public class Administration extends JPanel {
         gbc.insets = new Insets(0, 0, 0, 0);
 
         //Create Organisational Unit
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         gbc.gridy = 2;
         createOrganisationalUnitBtn.addActionListener(
                 new ActionListener() {
@@ -34,12 +59,11 @@ public class Administration extends JPanel {
                         NavigationHelper.changePanel(panel, new NewOrganisationalUnit());
                     }
                 });
-        add(createOrganisationalUnitBtn, gbc);
+        innerPanel.add(createOrganisationalUnitBtn, gbc);
 
         //Edit Organisational Unit
-        gbc.gridx = 2;
+        gbc.gridx = 1;
         gbc.gridy = 2;
-        add(editOrganisationalUnitsBtn, gbc);
         editOrganisationalUnitsBtn.addActionListener(
                 new ActionListener() {
                     @Override
@@ -47,9 +71,10 @@ public class Administration extends JPanel {
                         NavigationHelper.changePanel(panel, new EditOrganisationalUnit());
                     }
                 });
+        innerPanel.add(editOrganisationalUnitsBtn, gbc);
 
         //Create Asset
-        gbc.gridx = 3;
+        gbc.gridx = 2;
         gbc.gridy = 2;
         createAssetTypeBtn.addActionListener(
                 new ActionListener() {
@@ -58,10 +83,10 @@ public class Administration extends JPanel {
                         NavigationHelper.changePanel(panel, new NewAssetType());
                     }
                 });
-        add(createAssetTypeBtn, gbc);
+        innerPanel.add(createAssetTypeBtn, gbc);
 
         //Create User
-        gbc.gridx = 4;
+        gbc.gridx = 3;
         gbc.gridy = 2;
         createUserBtn.addActionListener(
                 new ActionListener() {
@@ -70,18 +95,7 @@ public class Administration extends JPanel {
                         NavigationHelper.changePanel(panel, new NewUser());
                     }
                 });
-        add(createUserBtn, gbc);
-
-        /*gbc.gridx = 2;
-        gbc.gridy = 2;
-        mainMenuButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        //NavigationHelper.mainMenu(frame);
-                    }
-                });
-        add(mainMenuButton, gbc);*/
+        innerPanel.add(createUserBtn, gbc);
 
     }
 }
