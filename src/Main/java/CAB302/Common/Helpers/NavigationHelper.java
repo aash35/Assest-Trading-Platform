@@ -10,7 +10,14 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 
+/**
+ * Class contains method that handle the GUI navigation between pages.
+ */
 public class NavigationHelper {
+    /**
+     * Method called when the application user presses the logout button. Returns the user to the login screen.
+     * @param frame the GUI container frame.
+     */
     public static void logout(JFrame frame) {
         frame.setContentPane(new Login(frame));
 
@@ -96,6 +103,12 @@ public class NavigationHelper {
             }
         });
     }
+
+    /**
+     * Used to change the GUI content panel when navigating the GUI.
+     * @param panel the GUI content panel.
+     * @param changeTo the content panel that is being navigated to.
+     */
     public static void changePanel(JPanel panel, JPanel changeTo){
         panel.removeAll();
         panel.add(changeTo);
