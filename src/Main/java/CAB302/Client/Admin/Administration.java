@@ -7,6 +7,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Class creates the administration page of the application GUI.
+ */
 public class Administration extends JPanel {
     private JPanel titlePanel;
     private JPanel mainPanel;
@@ -20,6 +23,10 @@ public class Administration extends JPanel {
     private JButton createUserBtn = new JButton("Create New Users");
     private JButton mainMenuButton = new JButton("Main Menu");
 
+    /**
+     * Constructs the application administration page.
+     * @param panel the container of the panel, passed to the NavigationHelper.changePanel method.
+     */
     public Administration(JPanel panel) {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());

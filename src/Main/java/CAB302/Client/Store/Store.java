@@ -15,6 +15,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Class creates the store page of the application GUI
+ */
 public class Store extends JPanel {
     private JPanel mainPanel;
     private JPanel titlePanel;
@@ -23,6 +26,11 @@ public class Store extends JPanel {
     private List<AssetType> assetsList;
     private JPanel panel;
 
+    /**
+     * Constructs the application store page which displays a scrollable panel containing a button for each
+     * asset type in the store.
+     * @param panel the container for the store page, is passed to the NavigationHelper.changePanel method.
+     */
     public Store(JPanel panel) {
         this.panel = panel;
 
