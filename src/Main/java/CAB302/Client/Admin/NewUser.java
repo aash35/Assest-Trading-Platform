@@ -1,9 +1,11 @@
 package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
@@ -36,12 +38,12 @@ public class NewUser extends JPanel {
     private List<OrganisationalUnit> ouList;
 
     private JButton confirmBtn = new JButton("Confirm");
-
+    JPanel focusPanel;
     /**
      * Constructs the application page to create a new user.
      */
-    public NewUser(){
-
+    public NewUser(JPanel panel){
+        focusPanel = panel;
         AccountTypeRole[] accountType = AccountTypeRole.values();
         accountTypeCB = new JComboBox(accountType);
 
@@ -106,16 +108,17 @@ public class NewUser extends JPanel {
                         OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
                         AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
 
-                        User type = new User();
-
-                        type.setUsername(username);
-                        type.setHashedPassword(password);
-                        type.setOrganisationalUnit(oUnit);
-                        type.setAccountRoleType(accountType);
+                        User userCheck = new User();
+                        User user = new User();
+                        userCheck.setUsername(username);
+                        user.setUsername(username);
+                        user.setHashedPassword(password);
+                        user.setOrganisationalUnit(oUnit);
+                        user.setAccountRoleType(accountType);
 
                         PayloadRequest request = new PayloadRequest();
 
-                        request.setPayloadObject(type);
+                        request.setPayloadObject(userCheck);
 
                         request.setRequestPayloadType(RequestPayloadType.Get);
 
@@ -125,54 +128,30 @@ public class NewUser extends JPanel {
                         } catch (IOException ioException) {
                             ioException.printStackTrace();
                         }
+                        userCheck = (User)response.getPayloadObject();
 
-                        User user = (User)response.getPayloadObject();
-
-                        if (user == null) {
+                        if(userCheck == null) {
+                            request = new PayloadRequest();
+                            request.setPayloadObject(user);
                             request.setRequestPayloadType(RequestPayloadType.Create);
                             try {
                                 response = new Client().SendRequest(request);
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }
-
-                            enterUserField.setText("");
-                            enterPassField.setText("");
-
-                            messageStackLabel.setText("Successfully saved");
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 5;
-                            add(messageStackLabel, gbc);
-                            remove(confirmBtn);
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 6;
-                            add(confirmBtn, gbc);
+                            if (response != null){
+                                Toast t;
+                                t = new Toast("New User Add", focusPanel);
+                                t.showtoast();
+                                NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                            }
                         }
                         else {
-                            messageStackLabel.setText(String.format("Username (%s) already exists", username));
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 5;
-                            add(messageStackLabel, gbc);
-                            remove(confirmBtn);
-
-                            gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                            gbc.weighty = 5;
-                            gbc.insets = new Insets(20,0,0,0);
-                            gbc.gridx = 1;
-                            gbc.gridy = 6;
-                            add(confirmBtn, gbc);
+                            Toast t;
+                            t = new Toast("User already exists", focusPanel);
+                            t.showtoast();
+                            enterUserField.setText("");
+                            enterPassField.setText("");
                         }
                     }
                 });
