@@ -4,6 +4,8 @@ import CAB302.Common.RuntimeSettings;
 import CAB302.Common.User;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import java.awt.*;
 
 public class MainLayout extends JPanel {
