@@ -59,7 +59,7 @@ public class Asset extends BaseObject implements iGet, iList {
      * Used by the server side of the application to retrieve an object from the database. If the instance's asset type
      * is not null, the database will select where the asset types match and, if the instance's organisation unit ID
      * isn't null, the database will select where the organisational unit IDs match.
-     * @return an object from the database that matches the select criteria.
+     * @return an object from the database that matches the select criteria, or null if none exists.
      */
     public BaseObject get() {
         Session session = RuntimeSettings.Session;
@@ -91,7 +91,7 @@ public class Asset extends BaseObject implements iGet, iList {
      * Used by the server side of the application to retrieve a list of objects from the database.If the instance's
      * asset type is not null, the database will select where the asset types match and, if the instance's organisation
      * unit ID isn't null, the database will select where the organisational unit IDs match.
-     * @return a list of object matching the search criteria.
+     * @return a list of object matching the search criteria, or null if none exists.
      */
     public List<BaseObject> list() {
         Session session = RuntimeSettings.Session;
