@@ -190,11 +190,50 @@ public class BuySellAsset extends JPanel {
                 }
 
                 if (response != null) {
-                    sellPrice.setValue(1);
-                    sellQuantity.setValue(1);
+                    Asset orgAsset = new Asset();
+                    orgAsset.setAssetType(assetType);
+                    orgAsset.setOrganisationalUnit(RuntimeSettings.CurrentUser.getOrganisationalUnit());
 
+                    request.setPayloadObject(orgAsset);
+                    request.setRequestPayloadType(RequestPayloadType.Get);
+
+                    PayloadResponse responseOne = null;
+
+                    try {
+                        responseOne = client.SendRequest(request);
+                    }
+                    catch(Exception error){
+
+                    }
+                    Asset selectedAsset = (CAB302.Common.Asset)response.getPayloadObject();
+
+                    if (responseOne != null) {
+                        Asset orgAssetTwo = new Asset();
+                        orgAssetTwo.setAssetType(assetType);
+                        orgAssetTwo.setOrganisationalUnit(RuntimeSettings.CurrentUser.getOrganisationalUnit());
+                        orgAssetTwo.setQuantity(selectedAsset.getQuantity() - (Integer) sellQuantity.getValue());
+
+                        request.setPayloadObject(orgAssetTwo);
+                        request.setRequestPayloadType(RequestPayloadType.Update);
+
+                        PayloadResponse responseTwo = null;
+
+                        try {
+                            responseTwo = client.SendRequest(request);
+                        }
+                        catch(Exception error){
+
+                        }
+                        if (responseTwo != null) {
+                            Toast t;
+                            t = new Toast("Sell Trade Added to Market", storePanel);
+                            t.showtoast();
+                        }
+                    }
                     refresh();
                 }
+                sellPrice.setValue(1);
+                sellQuantity.setValue(1);
             }
         });
 
