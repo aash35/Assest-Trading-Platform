@@ -11,6 +11,9 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class stores an asset, with a quantity, asset type and the organisational unit that owns the asset.
+ */
 @Entity
 @Table(name = "Asset")
 public class Asset extends BaseObject implements iGet, iList {
@@ -47,8 +50,17 @@ public class Asset extends BaseObject implements iGet, iList {
     }
     public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) { this.organisationalUnit = organisationalUnit; }
 
+    /**
+     * Construct an empty asset object.
+     */
     public Asset() { }
 
+    /**
+     * Used by the server side of the application to retrieve an object from the database. If the instance's asset type
+     * is not null, the database will select where the asset types match and, if the instance's organisation unit ID
+     * isn't null, the database will select where the organisational unit IDs match.
+     * @return an object from the database that matches the select criteria.
+     */
     public BaseObject get() {
         Session session = RuntimeSettings.Session;
 
@@ -75,6 +87,12 @@ public class Asset extends BaseObject implements iGet, iList {
         return asset;
     }
 
+    /**
+     * Used by the server side of the application to retrieve a list of objects from the database.If the instance's
+     * asset type is not null, the database will select where the asset types match and, if the instance's organisation
+     * unit ID isn't null, the database will select where the organisational unit IDs match.
+     * @return a list of object matching the search criteria.
+     */
     public List<BaseObject> list() {
         Session session = RuntimeSettings.Session;
 
