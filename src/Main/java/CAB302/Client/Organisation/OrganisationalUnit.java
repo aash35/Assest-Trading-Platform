@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class creates the organisational unit page of the application GUI.
+ */
 public class OrganisationalUnit extends JPanel {
     private JPanel assetPanel;
     private JPanel currentTradesPanel;
@@ -32,6 +35,10 @@ public class OrganisationalUnit extends JPanel {
 
     public JScrollPane scrollPane;
 
+    /**
+     * Constructs the application page for the organisational unit the currently logged in user belongs to.
+     * @param user the currently logged in user.
+     */
     public OrganisationalUnit(User user) {
         focusUser = user;
         setLayout(new GridBagLayout());
@@ -64,6 +71,11 @@ public class OrganisationalUnit extends JPanel {
         add(currentTradesPanel, c);
 
     }
+
+    /**
+     * Constructs a panel to display the assets owned by the organisational unit.
+     * @return the assets panel.
+     */
     private JPanel createAssetPanel(){
         JPanel panelOne = new JPanel();
 
@@ -83,6 +95,11 @@ public class OrganisationalUnit extends JPanel {
         panelOne.add(scrollPane);
         return panelOne;
     }
+
+    /**
+     * Constructs a panel to display the currently active trades owned by the organisational unit.
+     * @return the current trades panel
+     */
     private JPanel createCurrentTradesPanel(){
         JPanel panel = new JPanel();
         try {
@@ -127,7 +144,10 @@ public class OrganisationalUnit extends JPanel {
         return panel;
     }
 
-
+    /**
+     * Constructs a panel to display the organisational unit's available credits.
+     * @return the organisational unit credit panel.
+     */
     private JPanel creditPanel(){
         GridBagConstraints constraints = new GridBagConstraints();
         JPanel panel = new JPanel();
@@ -152,6 +172,11 @@ public class OrganisationalUnit extends JPanel {
         return panel;
     }
 
+    /**
+     * Constructs a panel to display the information relating to a given asset.
+     * @param asset the asset to be displayed.
+     * @return the asset panel.
+     */
     private JPanel createAssets(Asset asset){
         GridBagConstraints constraints = new GridBagConstraints();
         JPanel panel = new JPanel();
@@ -178,6 +203,10 @@ public class OrganisationalUnit extends JPanel {
         return panel;
     }
 
+    /**
+     * Sends a request to the server to return the assets owned by the organisational unit.
+     * @throws IOException
+     */
     private void getAssetsList() throws IOException {
         PayloadRequest request = new PayloadRequest();
         Asset newAsset = new Asset();
@@ -189,6 +218,10 @@ public class OrganisationalUnit extends JPanel {
         assetsList = (java.util.List<Asset>)(List<?>)response.getPayloadObject();
     }
 
+    /**
+     * Sends a request to the server to return the trades owned by the organisational unit.
+     * @throws IOException
+     */
     private void getTradeList() throws IOException {
         PayloadRequest request = new PayloadRequest();
         Trade newTrade = new Trade();
@@ -201,6 +234,9 @@ public class OrganisationalUnit extends JPanel {
         tradesList = (java.util.List<Trade>)(List<?>)response.getPayloadObject();
     }
 
+    /**
+     * Nested class describes the layout of the current trades table.
+     */
     public class MyTableModel extends AbstractTableModel {
         private String[] columnNames= {"",
                 "",
@@ -212,6 +248,9 @@ public class OrganisationalUnit extends JPanel {
 
         private Object[][] data = new Object[tradesList.size()][8];
 
+        /**
+         * Constructs the table data.
+         */
         public MyTableModel(){
             int i = 0;
             for (Trade order: tradesList){
@@ -226,20 +265,41 @@ public class OrganisationalUnit extends JPanel {
                 i++;
             }
         }
+
+        /**
+         * Gets the name of the column header.
+         * @param column index of the column.
+         * @return the column header.
+         */
         @Override
         public String getColumnName(int column) {
             return columnNames[column];
         }
+
+        /**
+         * Gets the number of rows.
+         * @return the number of rows.
+         */
         @Override
         public int getRowCount() {
             return data.length;
         }
 
+        /**
+         * Gets the number of columns.
+         * @return the number of columns.
+         */
         @Override
         public int getColumnCount() {
             return columnNames.length;
         }
 
+        /**
+         * Checks if a given cell in the table is editable.
+         * @param row the index of the row.
+         * @param column the index of the columns.
+         * @return true if the cell is editable, false otherwise.
+         */
         public boolean isCellEditable(int row, int column){
             if (column >= 2) {
                 return false;
@@ -248,6 +308,12 @@ public class OrganisationalUnit extends JPanel {
             }
         }
 
+        /**
+         * Gets the value of a given cell.
+         * @param rowIndex the index of the row.
+         * @param columnIndex the index of the column.
+         * @return the object in the cell.
+         */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             return data[rowIndex][columnIndex];

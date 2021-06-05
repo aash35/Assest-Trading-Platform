@@ -12,12 +12,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+/**
+ * Class creates the new organisational unit page of the application GUI.
+ */
 public class NewOrganisationalUnit extends JPanel {
     JLabel messageStackLabel = new JLabel("");
     JLabel OUnameLabel = new JLabel("Enter Organisational Unit Name: ");
     JTextField OUnameField = new JTextField(20);
     JButton confirmBtn = new JButton("Confirm");
 
+    /**
+     * Constructs the application page to create a new organisational unit.
+     */
     public NewOrganisationalUnit(){
 
         setLayout(new GridBagLayout());

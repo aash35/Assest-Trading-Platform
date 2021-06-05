@@ -21,6 +21,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class creates the place order page of the application GUI.
+ */
 public class BuySellAsset extends JPanel {
     private AssetType assetType;
 
@@ -54,6 +57,11 @@ public class BuySellAsset extends JPanel {
 
     private JPanel storePanel;
 
+    /**
+     * Constructs the application page which allows a user to create trades for a selected asset type.
+     * @param panel the container for the order page.
+     * @param assetType the asset type that was selected in the store page.
+     */
     public BuySellAsset(JPanel panel, AssetType assetType){
         storePanel = panel;
         this.assetType = assetType;
@@ -244,10 +252,17 @@ public class BuySellAsset extends JPanel {
         return  spinner;
     }
 
+    /**
+     * Refreshes the current order page.
+     */
     private void refresh() {
         NavigationHelper.changePanel(storePanel, new BuySellAsset(storePanel, assetType));
     }
-    
+
+    /**
+     * Sends a request to the server to return a list of all the trades stored in the database.
+     * @throws IOException
+     */
     private void getTradeList() throws IOException {
         PayloadRequest request = new PayloadRequest();
         request.setPayloadObject(new Trade());
@@ -257,6 +272,11 @@ public class BuySellAsset extends JPanel {
         allTrades = (List<Trade>)(List<?>)response.getPayloadObject();
     }
 
+    /**
+     * Filters a list of trades to find those that match this instance's name and that are currently available
+     * in the market.
+     * @return all current trades matching this instance.
+     */
     private ArrayList<Trade> findCurrentTrades(){
         ArrayList<Trade> currentTrades = new ArrayList<>();
         for(Trade trade: allTrades){
@@ -268,6 +288,10 @@ public class BuySellAsset extends JPanel {
         return currentTrades;
     }
 
+    /**
+     * Filters a list of trades to find those that match this instance's name and that have been completed.
+     * @return
+     */
     private ArrayList<Trade> findFilledTrades(){
 
         List<Trade> filledTrades = allTrades.stream().filter(
@@ -285,6 +309,11 @@ public class BuySellAsset extends JPanel {
         return new ArrayList<Trade>(filledTrades);
     }
 
+    /**
+     * Constructs a table of trades.
+     * @param currentOrders the list of trades to be displayed in the table.
+     * @return a table of trades.
+     */
     private JTable createOrderTable(ArrayList<Trade> currentOrders) {
         String[] columnHeaders = {"Asset Type",
                 "Quantity",

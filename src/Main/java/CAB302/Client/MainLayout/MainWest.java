@@ -14,6 +14,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Class creates the west panel of the application GUI.
+ */
 public class MainWest extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
 
@@ -25,7 +28,13 @@ public class MainWest extends JPanel {
 
     JButton adminButton = new JButton("Administration");
 
-
+    /**
+     * Constructs the panel to be used as the west panel of the GUI, which holds the application
+     * navigation buttons.
+     * @param user the currently logged in user
+     * @param panel the center panel of the application GUI, passed to the NavigationHelper.changePanel
+     *              method.
+     */
     public MainWest(User user, JPanel panel) {
         setLayout(new GridBagLayout());
         setBackground(new Grey());
