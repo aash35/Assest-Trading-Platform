@@ -65,7 +65,7 @@ public class Server extends Thread {
                 System.out.println("Listening for a connection");
 
                 TradeProcessor tradeProcessor = new TradeProcessor();
-                //tradeProcessor.start();
+                tradeProcessor.start();
 
                 Socket socket = serverSocket.accept();
 
@@ -131,6 +131,11 @@ class TradeProcessor extends Thread {
 
                             Asset asset = new Asset();
                             asset.setAssetType(availableSellTrade.getAssetType());
+
+                            if (asset.get() == null) {
+                                asset.setAssetType(availableSellTrade.getAssetType());
+                            }
+
                             asset.setQuantity(quantityToBuy);
                             asset.setOrganisationalUnit(buyTrade.getOrganisationalUnit());
 
