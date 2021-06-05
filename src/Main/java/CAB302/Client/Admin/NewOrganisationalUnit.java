@@ -28,6 +28,7 @@ public class NewOrganisationalUnit extends JPanel {
 
     /**
      * Constructs the application page to create a new organisational unit.
+     * @param panel the container for the page.
      */
     public NewOrganisationalUnit(JPanel panel){
         //GUI stuff
