@@ -1,8 +1,10 @@
 package CAB302.Client;
 
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.Enums.*;
 import CAB302.Common.Helpers.HibernateUtil;
+import com.fasterxml.jackson.core.util.RequestPayload;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -16,6 +18,8 @@ import javax.persistence.criteria.Root;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +30,58 @@ public class GUI extends JFrame {
         ClientSettings clientSettings = new ClientSettings();
 
         Logger log = Logger.getLogger("org.hibernate");
-        log.setLevel(Level.WARNING);
+        log.setLevel(Level.SEVERE);
+
+        class NotificationThread extends Thread {
+
+            private JFrame frame;
+
+            public NotificationThread(JFrame frame) {
+                this.frame = frame;
+            }
+
+            @Override
+            public void run() {
+                while (true) {
+
+                    if (RuntimeSettings.CurrentUser != null) {
+                        PayloadRequest request = new PayloadRequest();
+
+                        request.setRequestPayloadType(RequestPayloadType.Notification);
+                        request.setPayloadObject(RuntimeSettings.CurrentUser);
+
+                        PayloadResponse response = null;
+
+                        try {
+                            response = new Client().SendRequest(request);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (response != null && response.getPayloadObject() != null) {
+
+                            ArrayList<String> notifications = (ArrayList<String>)response.getPayloadObject();
+
+                            for (String notification : notifications) {
+                                Toast t;
+                                t = new Toast(notification, this.frame);
+                                t.showtoast();
+                            }
+                        }
+                    }
+
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        NotificationThread notificationThread = new NotificationThread(this);
+
+        notificationThread.start();
 
         //Sets the Look and Feel to Nimbus or SystemLookAndFeel if nimbus isn't found
         try {
@@ -83,4 +138,7 @@ public class GUI extends JFrame {
 
         setVisible(true);
     }
+
+
+
 }

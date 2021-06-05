@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +64,7 @@ public class Server extends Thread {
                 System.out.println("Listening for a connection");
 
                 TradeProcessor tradeProcessor = new TradeProcessor();
-                //tradeProcessor.start();
+                tradeProcessor.start();
 
                 Socket socket = serverSocket.accept();
 
@@ -107,7 +108,7 @@ class TradeProcessor extends Thread {
 
                 session.refresh(buyTrade);
 
-                List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAssetType().id == x.getAssetType().id).collect(Collectors.toList());
+                List<Trade> availableSellTrades = sellTrades.stream().filter(x -> x.getAssetType().id == buyTrade.getAssetType().id).collect(Collectors.toList());
 
                 if (availableSellTrades != null) {
 
@@ -117,9 +118,6 @@ class TradeProcessor extends Thread {
                     for (Trade availableSellTrade : availableSellTrades) {
 
                         HibernateUtil.openOrGetTransaction();
-
-                        session.flush();
-                        session.clear();
 
                         session.refresh(availableSellTrade);
 
@@ -182,6 +180,18 @@ class TradeProcessor extends Thread {
                             session.getTransaction().commit();
 
                             System.out.println("Trade Processed!");
+
+                            Notification notificationSell = new Notification();
+                            notificationSell.setNotificationMessage("Sold " + availableSellTrade.getAssetType().getName());
+                            notificationSell.setOuID(availableSellTrade.getOrganisationalUnit().id);
+
+                            RuntimeSettings.notifications.add(notificationSell);
+
+                            Notification notificationBuy = new Notification();
+                            notificationBuy.setNotificationMessage("Bought " + availableSellTrade.getAssetType().getName());
+                            notificationBuy.setOuID(availableSellTrade.getOrganisationalUnit().id);
+
+                            RuntimeSettings.notifications.add(notificationBuy);
 
                             if (quantityLeftToBuy == 0) {
                                 break sellTradeFinish;
@@ -377,6 +387,28 @@ class RequestHandler extends Thread {
                 response.setPayloadObject(object);
 
                 return response;
+
+            case Notification:
+
+                if (object instanceof User) {
+                    List<Notification> notifications = RuntimeSettings.notifications.stream().filter(x -> x.getOuID() == ((User)object).id).collect(Collectors.toList());
+
+                    response = new PayloadResponse();
+
+                    List<String> notificationMessages = new ArrayList<String>();
+
+                    for (Notification notificationMessage : notifications) {
+                        notificationMessages.add(notificationMessage.getNotificationMessage());
+
+                        RuntimeSettings.notifications.remove(notificationMessage);
+                    }
+
+                    response.setPayloadObject(notificationMessages);
+
+                    return response;
+                }
+
+                return null;
         }
 
         return null;

@@ -7,5 +7,6 @@ public enum RequestPayloadType {
     List,
     Get,
     Buy,
-    Sell
+    Sell,
+    Notification
 }

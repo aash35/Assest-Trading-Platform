@@ -110,24 +110,29 @@ public class Toast extends JFrame {
     // function to pop up the toast
     public void showtoast()
     {
-        try {
-            w.setOpacity(1);
-            w.setVisible(true);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
 
-            // wait for some time
-            Thread.sleep(2000);
+                    w.setOpacity(1);
+                    w.setVisible(true);
 
-            // make the message disappear  slowly
-            for (double d = 1.0; d > 0.2; d -= 0.1) {
-                Thread.sleep(100);
-                w.setOpacity((float)d);
+                    // wait for some time
+                    Thread.sleep(2000);
+
+                    // make the message disappear  slowly
+                    for (double d = 1.0; d > 0.2; d -= 0.1) {
+                        Thread.sleep(100);
+                        w.setOpacity((float) d);
+                    }
+
+                    // set the visibility to false
+                    w.setVisible(false);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
-
-            // set the visibility to false
-            w.setVisible(false);
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        }.start();
     }
 }
