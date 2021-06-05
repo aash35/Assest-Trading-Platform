@@ -117,8 +117,13 @@ public class EditOrganisationalUnit extends JPanel {
                             else
                             {
                                 if (checkTrades(oUnit, assetType)){
-                                    editDeleteAssets(asset, changeAmt);
+                                    editDeleteAssets(asset, changeAmt, false);
                                 }
+                                else
+                                {
+                                    editDeleteAssets(asset, changeAmt, true);
+                                }
+
 
                             }
                         }
@@ -212,16 +217,13 @@ public class EditOrganisationalUnit extends JPanel {
         return (Asset)response.getPayloadObject();
     }
 
-    private void editDeleteAssets (Asset asset, int changeAmt){
-        if (changeAmt !=0)
-        {
-            asset.setQuantity(changeAmt);
-        }
+    private void editDeleteAssets (Asset asset, int changeAmt, boolean tradeExists){
+        asset.setQuantity(changeAmt);
 
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(asset);
-        if (changeAmt == 0)
+        if (changeAmt == 0 && !tradeExists)
         {
             request.setRequestPayloadType(RequestPayloadType.Delete);
         }
