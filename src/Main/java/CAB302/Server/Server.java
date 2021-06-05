@@ -379,7 +379,11 @@ class RequestHandler extends Thread {
 
                 session.getTransaction().commit();
 
-                break;
+                PayloadResponse responseOne = new PayloadResponse();
+
+                responseOne.setPayloadObject(object);
+
+                return responseOne;
 
             case Update:
                 session = RuntimeSettings.Session;
