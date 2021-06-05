@@ -132,9 +132,9 @@ public class EditTrade extends JPanel {
         }
         else
         {
-
             Asset asset = getAsset(ou, assetType);
-
+            int changeAmt = asset.getQuantity() + quantityDiff;
+            editAssets(asset, changeAmt);
         }
     }
 
