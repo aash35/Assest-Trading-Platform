@@ -116,15 +116,8 @@ public class EditOrganisationalUnit extends JPanel {
                             }
                             else
                             {
-                                if (!checkTrades(oUnit, assetType)){
-                                    if (changeAmt == 0)
-                                    {
-                                        deleteAsset(asset);
-                                    }
-                                    else
-                                    {
-                                        editAssets(asset, changeAmt);
-                                    }
+                                if (checkTrades(oUnit, assetType)){
+                                    editDeleteAssets(asset, changeAmt);
                                 }
 
                             }
@@ -166,7 +159,7 @@ public class EditOrganisationalUnit extends JPanel {
 
         List<Trade> tradesList = (List<Trade>)(List<?>) response.getPayloadObject();
         boolean exists = false;
-        TradeStatus waer = tradesList.get(1).getStatus();
+
         for (int i = 0; i < tradesList.size(); i++)
         {
             if ((tradesList.get(i).getOrganisationalUnit().getUnitName() == ou.getUnitName())
@@ -176,23 +169,9 @@ public class EditOrganisationalUnit extends JPanel {
                 exists = true;
             }
         }
-
         return exists;
     }
 
-    private void deleteAsset(Asset asset){
-        PayloadRequest request = new PayloadRequest();
-
-        request.setPayloadObject(asset);
-        request.setRequestPayloadType(RequestPayloadType.Delete);
-
-        PayloadResponse response = null;
-        try {
-            response = new Client().SendRequest(request);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-    }
 
     private void createAsset(OrganisationalUnit ou, AssetType assetType, int changeAmt){
         Asset type = new Asset();
@@ -233,16 +212,25 @@ public class EditOrganisationalUnit extends JPanel {
         return (Asset)response.getPayloadObject();
     }
 
-    private void editAssets (Asset asset, int changeAmt){
-        asset.setQuantity(changeAmt);
+    private void editDeleteAssets (Asset asset, int changeAmt){
+        if (changeAmt !=0)
+        {
+            asset.setQuantity(changeAmt);
+        }
 
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(asset);
+        if (changeAmt == 0)
+        {
+            request.setRequestPayloadType(RequestPayloadType.Delete);
+        }
+        else
+        {
+            request.setRequestPayloadType(RequestPayloadType.Update);
+        }
 
         PayloadResponse response = null;
-
-        request.setRequestPayloadType(RequestPayloadType.Update);
         try {
             response = new Client().SendRequest(request);
         } catch (IOException ioException) {
