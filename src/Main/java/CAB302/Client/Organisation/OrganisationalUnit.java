@@ -85,6 +85,7 @@ public class OrganisationalUnit extends JPanel {
             }
         }
         scrollPane = new JScrollPane(allPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
         scrollPane.setPreferredSize(new Dimension(650, 110));
         panelOne.add(scrollPane);
         return panelOne;
