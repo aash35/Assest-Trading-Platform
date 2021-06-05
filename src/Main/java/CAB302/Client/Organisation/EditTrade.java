@@ -122,7 +122,7 @@ public class EditTrade extends JPanel {
 
         if (tradeType == TradeTransactionType.Buying)
         {
-            int oldTotal = trade.getQuantity() * trade.getPrice();
+            int oldTotal = oldQuantity * oldPrice;
             int newTotal = newQuantity * newPrice;
             int priceDifference = oldTotal - newTotal;
             int changeAmt = ou.getAvailableCredit() + priceDifference;
@@ -140,25 +140,6 @@ public class EditTrade extends JPanel {
             int quantityDiff = oldQuantity - newQuantity;
             Asset asset = getAsset(ou, assetType);
             int changeAmt = asset.getQuantity() + quantityDiff;
-            editAssets(asset, changeAmt);
-        }
-    }
-
-    private void deleteTrade(Trade trade)
-    {
-        OrganisationalUnit ou = trade.getOrganisationalUnit();
-        if(trade.getTransactionType() == TradeTransactionType.Buying)
-        {
-            int creditRefund = trade.getPrice() * trade.getQuantity();
-            int changeAmount = trade.getOrganisationalUnit().getAvailableCredit() + creditRefund;
-            editCredits(ou, changeAmount);
-        }
-        else
-        {
-            AssetType assetType = trade.getAssetType();
-            Asset asset = getAsset(ou, assetType);
-            int assetRefund = trade.getQuantity();
-            int changeAmt = asset.getQuantity() + assetRefund;
             editAssets(asset, changeAmt);
         }
     }
