@@ -18,11 +18,8 @@ public class Administration extends JPanel {
 
     public Administration(JPanel panel) {
 
-        setBackground(new Color(243, 244, 246));
         setLayout(new GridBagLayout());
-        //gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.5;
-        gbc.weighty = 0.5;
+        gbc.fill = GridBagConstraints.BOTH;
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 0, 0);

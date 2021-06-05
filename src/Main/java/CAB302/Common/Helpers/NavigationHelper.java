@@ -41,7 +41,6 @@ public class NavigationHelper {
     public static void frameWindowStateChanged(WindowEvent e){
 
 
-
         GUI gui = (GUI)e.getComponent();
 
         var rootPane = gui.getRootPane();

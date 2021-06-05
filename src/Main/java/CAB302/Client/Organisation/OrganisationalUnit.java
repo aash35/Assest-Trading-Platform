@@ -1,14 +1,20 @@
 package CAB302.Client.Organisation;
 
 import CAB302.Client.Client;
+import CAB302.Client.Helper.ButtonColumn;
+import CAB302.Client.Store.BuySellAsset;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Helpers.NavigationHelper;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +28,7 @@ public class OrganisationalUnit extends JPanel {
     private List<Asset> assetsList;
     private List<Trade> tradesList;
     private JTable currentTradesTable;
+    private JScrollPane currentTradesPanelOne;
 
     public JScrollPane scrollPane;
 
@@ -50,7 +57,7 @@ public class OrganisationalUnit extends JPanel {
         add(assetPanel, c);
 
         c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.BOTH;
+        c.fill = GridBagConstraints.VERTICAL;
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 2;
@@ -83,15 +90,44 @@ public class OrganisationalUnit extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        Action delete = new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTable table = (JTable)e.getSource();
+                int modelRow = Integer.valueOf( e.getActionCommand() );
+                Trade order =  tradesList.get(modelRow);
+
+            }
+        };
+        Action edit = new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("TEST");
+            }
+        };
         currentTradesTable = new JTable(new MyTableModel());
-        currentTradesTable.setFillsViewportHeight(true);
-        currentTradesTable.setRowSelectionAllowed(false);
-        currentTradesTable.setColumnSelectionAllowed(false);
+        currentTradesTable.setRowHeight(30);
 
-        panel.add(currentTradesTable);
+        ButtonColumn buttonColumnEdit = new ButtonColumn(currentTradesTable, edit, 0);
+        buttonColumnEdit.setMnemonic(KeyEvent.VK_D);
+
+        ButtonColumn buttonColumnDelete = new ButtonColumn(currentTradesTable, delete, 1);
+        buttonColumnDelete.setMnemonic(KeyEvent.VK_D);
+
+
+        currentTradesPanelOne = new JScrollPane(currentTradesTable);
+        //currentTradesTable.setFillsViewportHeight(true);
+
+
+        panel.add(currentTradesPanelOne);
         return panel;
-
     }
+
+
     private JPanel creditPanel(){
         GridBagConstraints constraints = new GridBagConstraints();
         JPanel panel = new JPanel();
@@ -115,6 +151,7 @@ public class OrganisationalUnit extends JPanel {
         panel.add(creditAmount, constraints);
         return panel;
     }
+
     private JPanel createAssets(Asset asset){
         GridBagConstraints constraints = new GridBagConstraints();
         JPanel panel = new JPanel();
@@ -156,6 +193,7 @@ public class OrganisationalUnit extends JPanel {
         PayloadRequest request = new PayloadRequest();
         Trade newTrade = new Trade();
         newTrade.setOrganisationalUnit(focusUser.getOrganisationalUnit());
+        newTrade.setStatus(TradeStatus.InMarket);
         request.setPayloadObject(newTrade);
         request.setRequestPayloadType(RequestPayloadType.List);
 
@@ -164,23 +202,33 @@ public class OrganisationalUnit extends JPanel {
     }
 
     public class MyTableModel extends AbstractTableModel {
-        private String[] columnNames= {"Asset Type",
+        private String[] columnNames= {"",
+                "",
+                "Asset Type",
                 "Quantity",
                 "Price per Unit",
                 "Order Type",
                 "Date Created"};
 
-        private Object[][] data = new Object[tradesList.size()][6];
+        private Object[][] data = new Object[tradesList.size()][8];
+
         public MyTableModel(){
             int i = 0;
             for (Trade order: tradesList){
-                data[i][0] = order.getAssetType().getName();
-                data[i][1] = order.getQuantity();
-                data[i][2] = order.getPrice();
-                data[i][3] = order.getTransactionType().toString();
-                data[i][4] = order.getCreatedDate();
+
+                data[i][0] = "Edit";
+                data[i][1] = "Delete";
+                data[i][2] = order.getAssetType().getName();
+                data[i][3] = order.getQuantity();
+                data[i][4] = order.getPrice();
+                data[i][5] = order.getTransactionType().toString();
+                data[i][6] = order.getCreatedDate();
                 i++;
             }
+        }
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
         }
         @Override
         public int getRowCount() {
@@ -193,7 +241,7 @@ public class OrganisationalUnit extends JPanel {
         }
 
         public boolean isCellEditable(int row, int column){
-            if (column < 2) {
+            if (column >= 2) {
                 return false;
             } else {
                 return true;
