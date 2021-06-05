@@ -139,14 +139,12 @@ public class NavigationHelper {
         });
     }
 
-<<<<<<< HEAD
-=======
+
     /**
      * Used to change the GUI content panel when navigating the GUI.
      * @param panel the GUI content panel.
      * @param changeTo the content panel that is being navigated to.
      */
->>>>>>> JavaDocCommenting
     public static void changePanel(JPanel panel, JPanel changeTo){
 
         panel.removeAll();

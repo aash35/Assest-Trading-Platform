@@ -37,16 +37,12 @@ public class OrganisationalUnit extends JPanel {
     public JScrollPane scrollPane;
     public JPanel focusPanel;
 
-<<<<<<< HEAD
-    public OrganisationalUnit(User user, JPanel panel) {
-        focusPanel = panel;
-=======
     /**
      * Constructs the application page for the organisational unit the currently logged in user belongs to.
      * @param user the currently logged in user.
      */
-    public OrganisationalUnit(User user) {
->>>>>>> JavaDocCommenting
+    public OrganisationalUnit(User user, JPanel panel) {
+        focusPanel = panel;
         focusUser = user;
         setLayout(new GridBagLayout());
 
