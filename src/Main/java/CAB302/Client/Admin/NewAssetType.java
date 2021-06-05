@@ -28,7 +28,6 @@ public class NewAssetType extends JPanel{
 
     public NewAssetType() {
 
-        setBackground(new Color(243, 244, 246));
         setLayout(new GridBagLayout());
         //gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.5;
