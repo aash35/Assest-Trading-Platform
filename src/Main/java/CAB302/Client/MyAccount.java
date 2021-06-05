@@ -28,6 +28,8 @@ public class MyAccount extends JPanel {
     JButton changePassword;
     JButton submit;
 
+    JPanel toastPanel = new JPanel();
+
     JLabel passwordLabel;
     JLabel repeatPasswordLabel;
     JPasswordField password = new JPasswordField(10);
@@ -35,7 +37,7 @@ public class MyAccount extends JPanel {
 
     User selectedUser;
 
-    public MyAccount(User user) {
+    public MyAccount(User user, JPanel panel) {
         selectedUser = user;
         name = new JLabel("Name: ");
         role = new JLabel("Role: ");
@@ -137,6 +139,14 @@ public class MyAccount extends JPanel {
                         gbc.gridy = 7;
                         add(errorMessage, gbc);
 
+
+                        gbc.fill = GridBagConstraints.BOTH;
+                        gbc.anchor = GridBagConstraints.PAGE_END;
+                        gbc.gridwidth = 3;
+                        gbc.gridx = 1;
+                        gbc.gridy = 8;
+                        add(toastPanel, gbc);
+
                         password.addKeyListener(new KeyListener() {
                             @Override
                             public void keyTyped(KeyEvent e) {
@@ -225,10 +235,11 @@ public class MyAccount extends JPanel {
                         selectedUser = (CAB302.Common.User)response.getPayloadObject();
                         Toast t;
                         if (selectedUser == null) {
-                            t = new Toast("Update Failed", 150, 400);
+                            t = new Toast("Update Failed", panel);
                         }
                         else {
-                            t = new Toast("Update Complete", 150, 400);
+
+                            t = new Toast("Update Complete", panel);
                         }
                         t.showtoast();
                     }

@@ -68,7 +68,7 @@ public class MainWest extends JPanel {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new MyAccount(user));
+                        NavigationHelper.changePanel(panel, new MyAccount(user, panel));
                     }
                 });
 

@@ -3,8 +3,6 @@ package CAB302.Client.Store;
 import CAB302.Client.Client;
 import CAB302.Common.AssetType;
 import CAB302.Common.BaseObject;
-import CAB302.Common.Colors.Grey;
-import CAB302.Common.Colors.Purple;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Helpers.NavigationHelper;
 import CAB302.Common.PayloadRequest;
@@ -28,15 +26,15 @@ public class Store extends JPanel {
     public Store(JPanel panel) {
         this.panel = panel;
 
-        mainPanel = createPanel();
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(630,500));
         add(mainPanel);
 
-        titlePanel = createPanel();
+        titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
 
-        innerAssetsPanel = createPanel();
+        innerAssetsPanel = new JPanel();
         innerAssetsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         outerAssetsPanel = new JScrollPane(innerAssetsPanel);
@@ -68,15 +66,6 @@ public class Store extends JPanel {
     }
 
     /**
-     * Creates a JPanel object
-     * @return a JPanel object
-     */
-    private JPanel createPanel(){
-        JPanel panel = new JPanel();
-        return panel;
-    }
-
-    /**
      * Retrieves the list of current asset types from the database, then assigns it to the assetsList property.
      */
     private void getAssetsList() throws IOException {
@@ -100,7 +89,11 @@ public class Store extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+<<<<<<< HEAD
                 NavigationHelper.changePanel(panel, new BuySellAsset(panel, assetType));
+=======
+                NavigationHelper.changePanel(panel, new BuySellAsset(assetType, panel));
+>>>>>>> ebda36de16ef8e4696bde133fc75560e7f7e12e9
             }
         });
         button.setPreferredSize(new Dimension(140,50));

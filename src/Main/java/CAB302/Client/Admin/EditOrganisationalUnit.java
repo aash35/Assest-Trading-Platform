@@ -3,6 +3,7 @@ package CAB302.Client.Admin;
 import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Enums.TradeStatus;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +28,7 @@ public class EditOrganisationalUnit extends JPanel {
 
     private List<OrganisationalUnit> ouList;
     private List<AssetType> assetsTypeList;
+    private List<Asset> assets;
 
     public EditOrganisationalUnit() {
 
@@ -95,36 +97,44 @@ public class EditOrganisationalUnit extends JPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
 
-                        OrganisationalUnit oUnit = (OrganisationalUnit) ouList.get(ouCB.getSelectedIndex());
+                        OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
                         Integer changeAmt = (Integer) changeAmtField.getValue();
 
                         AssetType assetType;
                         if (assetCB.getSelectedIndex() == 0) {
                             editCredits(oUnit, changeAmt);
                         } else {
-                            assetType = (AssetType) assetsTypeList.get(assetCB.getSelectedIndex()-1);
-                            Asset asset = getAsset(oUnit, assetType);
+                            assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
+                            getAsset(oUnit, assetType);
+
+                            Asset asset = null;
+
+                            if (assets.size() > 0)
+                            {
+                                asset = assets.get(0);
+                            }
+
                             if (asset == null)
                             {
-                                createAsset(oUnit,assetType,changeAmt);
+                                if (changeAmt != 0){
+                                    createAsset(oUnit, assetType, changeAmt);
+                                }
                             }
                             else
                             {
-                                if (changeAmt == 0)
-                                {
-                                    if(!checkTrades(oUnit, assetType))
+                                if (!checkTrades(oUnit, assetType)){
+                                    if (changeAmt == 0)
                                     {
-                                        deleteAsset(oUnit, assetType);
+                                        deleteAsset(asset);
+                                    }
+                                    else
+                                    {
+                                        editAssets(asset, changeAmt);
                                     }
                                 }
-                                else
-                                {
-                                    editAssets(asset, changeAmt);
-                                }
+
                             }
                         }
-
-
                         messageStackLabel.setText("Successfully saved");
 
                         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -149,8 +159,6 @@ public class EditOrganisationalUnit extends JPanel {
     private boolean checkTrades(OrganisationalUnit ou, AssetType assetType){
         Trade type = new Trade();
 
-        type.setAssetType(assetType);
-
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(type);
@@ -163,11 +171,22 @@ public class EditOrganisationalUnit extends JPanel {
         }
 
         List<Trade> tradesList = (List<Trade>)(List<?>) response.getPayloadObject();
-        return (tradesList.size() != 0);
+        boolean exists = false;
+        TradeStatus waer = tradesList.get(1).getStatus();
+        for (int i = 0; i < tradesList.size(); i++)
+        {
+            if ((tradesList.get(i).getOrganisationalUnit().getUnitName() == ou.getUnitName())
+            && (tradesList.get(i).getAssetType().getName() == assetType.getName())
+            && tradesList.get(i).getStatus() == TradeStatus.InMarket)
+            {
+                exists = true;
+            }
+        }
+
+        return exists;
     }
 
-    private void deleteAsset(OrganisationalUnit ou, AssetType assetType){
-        Asset asset = getAsset(ou, assetType);
+    private void deleteAsset(Asset asset){
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(asset);
@@ -200,8 +219,7 @@ public class EditOrganisationalUnit extends JPanel {
         }
     }
 
-    private Asset getAsset(OrganisationalUnit ou, AssetType assetType) {
-
+    private void getAsset(OrganisationalUnit ou, AssetType assetType) {
         Asset type = new Asset();
 
         type.setOrganisationalUnit(ou);
@@ -210,7 +228,7 @@ public class EditOrganisationalUnit extends JPanel {
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(type);
-        request.setRequestPayloadType(RequestPayloadType.Get);
+        request.setRequestPayloadType(RequestPayloadType.List);
         PayloadResponse response = null;
         try {
             response = new Client().SendRequest(request);
@@ -218,8 +236,7 @@ public class EditOrganisationalUnit extends JPanel {
             ioException.printStackTrace();
         }
 
-        Asset asset = (Asset) response.getPayloadObject();
-        return asset;
+        assets = (List<Asset>) (List<?>) response.getPayloadObject();
     }
 
     private void editAssets (Asset asset, int changeAmt){
