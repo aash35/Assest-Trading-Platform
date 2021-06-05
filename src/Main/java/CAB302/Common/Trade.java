@@ -16,6 +16,10 @@ import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * Class stores a trade, with a transaction type, an asset type, an asset quantity, a price per unit, a date of creation
+ * a transaction status and the organisational unit that created the trade.
+ */
 @Entity
 @Table(name = "Trade")
 public class Trade extends BaseObject implements iGet, iList {
@@ -71,11 +75,24 @@ public class Trade extends BaseObject implements iGet, iList {
     public AssetType getAssetType() { return assetType; }
     public void setAssetType(AssetType assetType) { this.assetType = assetType; }
 
+    /**
+     * Construct an empty trade object.
+     */
     public Trade() { }
 
+    /**
+     * Used by the server side of the application to retrieve an object from the database. The database will select
+     * where the asset types match.
+     * @return an object from the database that matches the select criteria, or null if none exists.
+     */
     public BaseObject get() {
 
         Session session = RuntimeSettings.Session;
+
+        HibernateUtil.openOrGetTransaction();
+
+        session.flush();
+        session.clear();
 
         HibernateUtil.openOrGetTransaction();
 
@@ -83,7 +100,12 @@ public class Trade extends BaseObject implements iGet, iList {
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
 
-        criteria.select(root).where(criteriaBuilder.equal(root.get("assetType"), this.getAssetType()));
+        criteria.select(root).where(
+                this.getAssetType() != null ? criteriaBuilder.equal(root.get("assetType"), this.getAssetType()) : criteriaBuilder.and(),
+                this.getTransactionType() != null ? criteriaBuilder.equal(root.get("transactionType"), this.getTransactionType()) : criteriaBuilder.and(),
+                this.getStatus() != null ? criteriaBuilder.equal(root.get("status"), this.getStatus()) : criteriaBuilder.and(),
+                this.getOrganisationalUnit() != null ? criteriaBuilder.equal(root.get("organisationalUnit"), this.getOrganisationalUnit()) : criteriaBuilder.and()
+        );
 
         Query query = session.createQuery(criteria);
 
@@ -99,9 +121,20 @@ public class Trade extends BaseObject implements iGet, iList {
         return trade;
     }
 
+    /**
+     * Used by the server side of the application to retrieve a list of objects from the database. The database will
+     * select where the asset types, transaction types, transaction statuses and organisational units match, where
+     * these fields in the instance are not null.
+     * @return a list of object matching the search criteria, or null if none exists.
+     */
     public List<BaseObject> list() {
 
         Session session = RuntimeSettings.Session;
+
+        HibernateUtil.openOrGetTransaction();
+        
+        session.flush();
+        session.clear();
 
         HibernateUtil.openOrGetTransaction();
 

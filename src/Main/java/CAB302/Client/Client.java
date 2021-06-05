@@ -8,7 +8,18 @@ import java.io.*;
 import java.net.Socket;
 import java.time.Instant;
 
+/**
+ * Class allows the client side of the application to connect to the server.
+ */
 public class Client {
+
+    /**
+     * Creates a socket connection to the server, then sends a request payload via an object output stream.
+     * The client then waits for a response payload from the server.
+     * @param request request payload object being sent by the client
+     * @return response payload object received from the server.
+     * @throws IOException
+     */
     public PayloadResponse SendRequest(PayloadRequest request) throws IOException {
 
         Socket socket = null;

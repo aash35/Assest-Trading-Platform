@@ -1,5 +1,8 @@
 package CAB302.Server;
 
+/**
+ * Class handles notifications passed to the runtime settings.
+ */
 public class Notification {
     private int ouID;
 

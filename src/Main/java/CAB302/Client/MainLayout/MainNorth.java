@@ -12,12 +12,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Class creates the north panel of the application GUI.
+ */
 public class MainNorth extends JPanel {
     JLabel name;
     JLabel credits;
     JButton logoutButton;
     GridBagConstraints gbc = new GridBagConstraints();
 
+    /**
+     * Constructs the panel to be used as the north panel of the GUI, which displays the organisational unit
+     * of the logged in user, the credits available to the unit and the logout button.
+     * @param user the currently logged in user
+     * @param contentFrame is passed to the NavigationHelper.logout method.
+     */
     public MainNorth(User user, JFrame contentFrame) {
         setLayout(new GridBagLayout());
         setBackground(new Grey());

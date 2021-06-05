@@ -13,6 +13,12 @@ public class Toast extends JFrame {
 
     // JWindow
     JWindow w;
+
+    /**
+     * Constructs the Toast message to be displayed in a given frame.
+     * @param s the message to be displayed.
+     * @param frame the container the toast will be displayed in.
+     */
     public Toast(String s, JFrame frame)
     {
         w = new JWindow();
@@ -59,6 +65,12 @@ public class Toast extends JFrame {
         int y = panelPoint.y + bounds.height-(height/2);
         w.setLocation(x, y);
     }
+
+    /**
+     * Constructs the Toast message to be displayed in a given panel.
+     * @param s the message to be displayed.
+     * @param panel the container the toast will be displayed in.
+     */
     public Toast(String s, JPanel panel)
     {
         panel = panel;
@@ -107,7 +119,9 @@ public class Toast extends JFrame {
         w.setLocation(x, y);
     }
 
-    // function to pop up the toast
+    /**
+     * Displays the Toast instance in the GUI. Occurs in an isolated thread.
+     */
     public void showtoast()
     {
         new Thread() {

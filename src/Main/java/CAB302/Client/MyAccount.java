@@ -18,6 +18,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
+/**
+ * Class constructs and displays the account screen for the logged in user.
+ */
 public class MyAccount extends JPanel {
     GridBagConstraints gbc = new GridBagConstraints();
 
@@ -37,6 +40,11 @@ public class MyAccount extends JPanel {
 
     User selectedUser;
 
+    /**
+     * Construct the account page for the logged in user.
+     * @param user the currently logged in user.
+     * @param panel the container for the account page.
+     */
     public MyAccount(User user, JPanel panel) {
         selectedUser = user;
         name = new JLabel("Name: ");

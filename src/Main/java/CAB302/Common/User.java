@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import CAB302.Common.Interfaces.*;
 
+/**
+ * Class stores a user, with a username, a hashed password, an account role type, and an organisational unit the user
+ * belongs to.
+ */
 @Entity
 @Table(name = "User")
 public class User extends BaseObject implements iGet, iList {
@@ -51,8 +55,16 @@ public class User extends BaseObject implements iGet, iList {
     public OrganisationalUnit getOrganisationalUnit() { return this.organisationalUnit; }
     public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) { this.organisationalUnit = organisationalUnit; }
 
+    /**
+     * Construct an empty user object.
+     */
     public User() { }
 
+    /**
+     * Used by the server side of the application to retrieve an object from the database. The database will select
+     * where the usernames and hashed passwords match.
+     * @return an object from the database that matches the select criteria, or null if none exists.
+     */
     public BaseObject get() {
         Session session = RuntimeSettings.Session;
 
@@ -77,6 +89,12 @@ public class User extends BaseObject implements iGet, iList {
         return user;
     }
 
+    /**
+     * Used by the server side of the application to retrieve a list of objects from the database. If the instance's
+     * hashed password is not null, the database will select where the usernames and hashed passwords match. If the
+     * instance's hashed password is null, the database will select where the usernames match.
+     * @return a list of object matching the search criteria, or null if none exists.
+     */
     public List<BaseObject> list() {
         Session session = RuntimeSettings.Session;
 

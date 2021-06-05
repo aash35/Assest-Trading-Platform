@@ -11,7 +11,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.Console;
 
+/**
+ * Class used to run the server side of the application.
+ */
 public class Main {
+
+    /**
+     * Method initialises a new server.
+     * @param args
+     */
     public static void main( String[] args )
     {
         Console console = System.console();
