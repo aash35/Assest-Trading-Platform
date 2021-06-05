@@ -1,10 +1,8 @@
 package CAB302.Client.MainLayout;
 
 import CAB302.Common.Colors.Grey;
-import CAB302.Common.Colors.LightBlue;
-import CAB302.Common.Colors.Purple;
 import CAB302.Common.Helpers.NavigationHelper;
-import CAB302.Common.RuntimeSettings;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import CAB302.Common.User;
 
 import javax.swing.*;

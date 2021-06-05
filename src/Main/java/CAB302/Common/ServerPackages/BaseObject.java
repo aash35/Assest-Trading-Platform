@@ -1,4 +1,4 @@
-package CAB302.Common;
+package CAB302.Common.ServerPackages;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.annotations.GenericGenerator;

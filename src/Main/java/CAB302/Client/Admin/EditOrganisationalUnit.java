@@ -4,6 +4,8 @@ import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;

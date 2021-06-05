@@ -5,10 +5,10 @@ import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.HibernateUtil;
 import CAB302.Common.Interfaces.*;
-import org.hibernate.Hibernate;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -416,7 +416,6 @@ class RequestHandler extends Thread {
                 return response;
 
             case Notification:
-
                 if (object instanceof User) {
                     List<Notification> notifications = RuntimeSettings.notifications.stream().filter(x -> x.getOuID() == ((User)object).id).collect(Collectors.toList());
 

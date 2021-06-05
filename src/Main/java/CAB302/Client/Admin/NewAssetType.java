@@ -2,8 +2,8 @@ package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
 import CAB302.Common.Enums.RequestPayloadType;
-import CAB302.Common.PayloadRequest;
-import CAB302.Common.PayloadResponse;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;

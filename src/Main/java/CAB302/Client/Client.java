@@ -1,8 +1,8 @@
 package CAB302.Client;
 
-import CAB302.Common.PayloadRequest;
-import CAB302.Common.PayloadResponse;
-import CAB302.Common.RuntimeSettings;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 
 import java.io.*;
 import java.net.Socket;
