@@ -28,7 +28,7 @@ public class OrganisationalUnit extends JPanel {
     private List<Asset> assetsList;
     private List<Trade> tradesList;
     private JTable currentTradesTable;
-    private JScrollPane currentTradesPanelOne;
+    public JScrollPane currentTradesPanelOne;
 
     public JScrollPane scrollPane;
 
@@ -75,8 +75,11 @@ public class OrganisationalUnit extends JPanel {
         JPanel allPanel = new JPanel();
         JPanel credit = creditPanel();
         allPanel.add(credit);
-        for (Asset asset: assetsList) {
-            allPanel.add(createAssets(asset));
+
+        if (assetsList != null) {
+            for (Asset asset : assetsList) {
+                allPanel.add(createAssets(asset));
+            }
         }
         scrollPane = new JScrollPane(allPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setPreferredSize(new Dimension(650, 110));
@@ -112,6 +115,7 @@ public class OrganisationalUnit extends JPanel {
         currentTradesTable = new JTable(new MyTableModel());
         currentTradesTable.setRowHeight(30);
 
+
         ButtonColumn buttonColumnEdit = new ButtonColumn(currentTradesTable, edit, 0);
         buttonColumnEdit.setMnemonic(KeyEvent.VK_D);
 
@@ -120,6 +124,7 @@ public class OrganisationalUnit extends JPanel {
 
 
         currentTradesPanelOne = new JScrollPane(currentTradesTable);
+        currentTradesPanelOne.setPreferredSize(new Dimension(600, 300));
         //currentTradesTable.setFillsViewportHeight(true);
 
 
@@ -210,20 +215,24 @@ public class OrganisationalUnit extends JPanel {
                 "Order Type",
                 "Date Created"};
 
-        private Object[][] data = new Object[tradesList.size()][8];
+        private Object[][] data = new Object[tradesList != null ? tradesList.size() : 0][8];
 
         public MyTableModel(){
             int i = 0;
-            for (Trade order: tradesList){
+            if (tradesList != null) {
+                for (Trade order : tradesList) {
 
-                data[i][0] = "Edit";
-                data[i][1] = "Delete";
-                data[i][2] = order.getAssetType().getName();
-                data[i][3] = order.getQuantity();
-                data[i][4] = order.getPrice();
-                data[i][5] = order.getTransactionType().toString();
-                data[i][6] = order.getCreatedDate();
-                i++;
+                    if (order != null) {
+                        data[i][0] = "Edit";
+                        data[i][1] = "Delete";
+                        data[i][2] = order.getAssetType().getName();
+                        data[i][3] = order.getQuantity();
+                        data[i][4] = order.getPrice();
+                        data[i][5] = order.getTransactionType().toString();
+                        data[i][6] = order.getCreatedDate();
+                        i++;
+                    }
+                }
             }
         }
         @Override
