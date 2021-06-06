@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTests {
     /**
      * Pre-Test class declaration
@@ -31,6 +32,8 @@ public class UserTests {
     public static OrganisationalUnit OU;
     public static User user;
     public static Asset asset;
+
+    public static OrganisationalUnitTests org;
 
     @BeforeAll
     public static void before() {
@@ -44,7 +47,7 @@ public class UserTests {
 
         client = new Client();
 
-        OrganisationalUnitTests org = new OrganisationalUnitTests();
+        org = new OrganisationalUnitTests();
         org.createOrganisationalUnit();
         OU = org.OU;
     }
@@ -52,7 +55,7 @@ public class UserTests {
 
     @AfterAll
     public static void afterAll() {
-        OrganisationalUnitTests org = new OrganisationalUnitTests();
+        org.updateOrganisationalUnit();
         org.deleteOrganisationalUnit();
     }
 
@@ -96,7 +99,10 @@ public class UserTests {
     public void getUser() {
         PayloadRequest request = new PayloadRequest();
 
-        request.setPayloadObject(new User());
+        User user = new User();
+        user.setUsername("Unit Test User");
+
+        request.setPayloadObject(user);
         request.setRequestPayloadType(RequestPayloadType.Get);
         PayloadResponse response = null;
 
@@ -189,7 +195,7 @@ public class UserTests {
 
         Assert.assertNotNull(types);
 
-        type = types.stream().filter(x -> x.getUsername() == "Unit Test User - Updated").findFirst().orElse(null);
+        type = types.stream().filter(x -> x.getUsername().equals("Unit Test User - Updated")).findFirst().orElse(null);
 
         Assert.assertNotNull(type);
 

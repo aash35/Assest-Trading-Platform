@@ -38,11 +38,12 @@ public class AssetTests {
     @AfterAll
     public static void afterAll() {
 
+        org.updateOrganisationalUnit();
         org.deleteOrganisationalUnit();
 
+        assetTypeTest.updateAssetType();
         assetTypeTest.deleteAssetType();
     }
-
 
     @BeforeAll
     public static void before() {
@@ -73,6 +74,16 @@ public class AssetTests {
 
         asset = new Asset();
 
+        if (org == null) {
+            org = new OrganisationalUnitTests();
+            org.createOrganisationalUnit();
+        }
+
+        if (assetTypeTest == null) {
+            assetTypeTest = new AssetTypeTests();
+            assetTypeTest.createAssetType();
+        }
+
         PayloadRequest request = new PayloadRequest();
         asset.setQuantity(1);
         asset.setOrganisationalUnit(org.OU);
@@ -87,9 +98,8 @@ public class AssetTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         response.getPayloadObject();
-
-
 
         Assert.assertNotNull(response);
 
@@ -136,9 +146,13 @@ public class AssetTests {
         Client client = new Client();
 
         PayloadRequest request = new PayloadRequest();
-        asset.setQuantity(50);
+
+        Asset asset = new Asset();
+        asset.setOrganisationalUnit(org.OU);
+        asset.setAssetType(assetTypeTest.type);
+
         request.setPayloadObject(asset);
-        request.setRequestPayloadType(RequestPayloadType.Update);
+        request.setRequestPayloadType(RequestPayloadType.Get);
         PayloadResponse response = null;
 
         try {
@@ -146,7 +160,27 @@ public class AssetTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        asset = (Asset)response.getPayloadObject();
+
+        request = new PayloadRequest();
+        asset.setQuantity(50);
+        request.setPayloadObject(asset);
+        request.setRequestPayloadType(RequestPayloadType.Update);
+
+        response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         response.getPayloadObject();
+
         Assert.assertNotNull(response);
 
         Assert.assertNotNull(response.getPayloadObject());

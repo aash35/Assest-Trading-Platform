@@ -32,6 +32,11 @@ public class TradeTests {
     public static Trade trader;
     public static Asset asset;
 
+    public static OrganisationalUnitTests org;
+
+    public static AssetTypeTests assetTypeTests;
+
+    public static AssetTests assetTests;
 
 
     @BeforeAll
@@ -45,21 +50,32 @@ public class TradeTests {
         System.out.println("Started Server");
         client = new Client();
 
-        OrganisationalUnitTests ouTests = new OrganisationalUnitTests();
-        ouTests.createOrganisationalUnit();
-        OU = ouTests.OU;
+        org = new OrganisationalUnitTests();
+        org.createOrganisationalUnit();
+        OU = org.OU;
 
-        AssetTypeTests assetTypeTests = new AssetTypeTests();
+        assetTests = new AssetTests();
+        assetTests.createAsset();
+
+        asset = assetTests.asset;
+
+        assetTypeTests = new AssetTypeTests();
         assetTypeTests.createAssetType();
         type = assetTypeTests.type;
+
+        asset.setAssetType(type);
     }
 
     @AfterAll
-    public static void cleanUp() {
-        AssetTests assetTests = new AssetTests();
+    public static void afterAll() {
+
+        assetTests.updateAsset();
         assetTests.deleteAsset();
 
-        AssetTypeTests assetTypeTests = new AssetTypeTests();
+        org.updateOrganisationalUnit();
+        org.deleteOrganisationalUnit();
+
+        assetTypeTests.updateAssetType();
         assetTypeTests.deleteAssetType();
     }
 

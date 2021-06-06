@@ -69,7 +69,6 @@ public class OrganisationalUnitTests {
         Assert.assertNotNull(payloadResponse.getPayloadObject());
 
         this.OU = (OrganisationalUnit) payloadResponse.getPayloadObject();
-
     }
 
     @Test
@@ -80,7 +79,10 @@ public class OrganisationalUnitTests {
 
         PayloadRequest request = new PayloadRequest();
 
-        request.setPayloadObject(OU);
+        OrganisationalUnit ou = new OrganisationalUnit();
+        ou.setUnitName("Unit Test Organisational Unit");
+
+        request.setPayloadObject(ou);
         request.setRequestPayloadType(RequestPayloadType.Get);
         PayloadResponse response = null;
 
