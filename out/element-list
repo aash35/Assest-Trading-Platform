@@ -1,0 +1,16 @@
+CAB302
+CAB302.Client
+CAB302.Client.Admin
+CAB302.Client.Helper
+CAB302.Client.MainLayout
+CAB302.Client.Organisation
+CAB302.Client.Store
+CAB302.Common
+CAB302.Common.Colors
+CAB302.Common.Enums
+CAB302.Common.Helpers
+CAB302.Common.Interfaces
+CAB302.Common.ServerPackages
+CAB302.Server
+UnitTests
+UnitTests2
