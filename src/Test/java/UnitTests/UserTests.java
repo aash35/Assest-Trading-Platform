@@ -1,7 +1,7 @@
 package UnitTests;
 
-import CAB302.Client.Admin.Administration;
 import CAB302.Client.Client;
+import CAB302.Client.ClientSettings;
 import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
 import CAB302.Common.Enums.AccountTypeRole;
@@ -10,14 +10,12 @@ import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import CAB302.Common.User;
 import CAB302.Server.Server;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,7 +26,7 @@ public class UserTests {
     /**
      * Pre-Test class declaration
      */
-    private static Client client;
+    public static Client client;
     public static AssetType type;
     public static OrganisationalUnit OU;
     public static User user;
@@ -36,7 +34,9 @@ public class UserTests {
 
     @BeforeAll
     public static void before() {
-        Server server = new Server(8080);
+        ClientSettings clientSettings = new ClientSettings();
+
+        Server server = new Server(RuntimeSettings.Port);
 
         server.startServer();
 
@@ -59,8 +59,8 @@ public class UserTests {
     /**
      * Test 0: Construct objects for AssetType, OrganisationalUnit, User and Asset classes.
      */
-    @BeforeEach
     @Test
+    @Order(1)
     public void createUser() {
         Client client = new Client();
 
@@ -70,7 +70,7 @@ public class UserTests {
         String hashedPass = SHA256HashHelper.generateHashedString(password);
         type.setHashedPassword(hashedPass);
         type.setOrganisationalUnit(OU);
-        type.setAccountRoleType(AccountTypeRole.Administrator);
+        type.setAccountRoleType(AccountTypeRole.Standard);
 
 
         PayloadRequest request = new PayloadRequest();
@@ -90,7 +90,27 @@ public class UserTests {
         Assert.assertNotNull(payloadResponse.getPayloadObject());
 
     }
+
     @Test
+    @Order(2)
+    public void getUser() {
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(new User());
+        request.setRequestPayloadType(RequestPayloadType.Get);
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.getPayloadObject();
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    @Order(3)
     public void updateUser() {
         Client client = new Client();
 
@@ -142,6 +162,7 @@ public class UserTests {
     }
 
     @Test
+    @Order(4)
     public void listUser() {
         Client client = new Client();
 
@@ -175,6 +196,7 @@ public class UserTests {
     }
 
     @Test
+    @Order(5)
     public void deleteUser() {
         Client client = new Client();
 
