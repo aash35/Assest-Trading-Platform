@@ -39,7 +39,81 @@ public class NewAssetType extends JPanel{
      * @param panel the container for the page.
      */
     public NewAssetType(JPanel panel) {
-        //GUI stuff
+        createGUI(panel);
+
+        confirmButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String name = nameField.getText();
+                        String description = descriptionField.getText();
+
+                        createAssetType(name, description);
+                    }
+                });
+    }
+
+    private PayloadResponse createAssetType(String name, String description)
+    {
+        PayloadResponse response = null;
+        if (name.length() > 0 && description.length() > 0)
+        {
+            CAB302.Common.AssetType type = new CAB302.Common.AssetType();
+
+            type.setName(name);
+            type.setDescription(description);
+
+            PayloadRequest request = new PayloadRequest();
+
+            request.setPayloadObject(type);
+            request.setRequestPayloadType(RequestPayloadType.Get);
+
+            response = null;
+            try {
+                response = new Client().SendRequest(request);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+
+            CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
+
+            if (assetType == null)
+            {
+                request.setRequestPayloadType(RequestPayloadType.Create);
+                try {
+                    response = new Client().SendRequest(request);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                if (response != null){
+                    Toast t;
+                    t = new Toast("New Asset Type Added", focusPanel);
+                    t.showtoast();
+                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                }
+            }
+            else
+            {
+                Toast t;
+                t = new Toast("Asset Type already exists", focusPanel);
+                t.showtoast();
+                nameField.setText("");
+                descriptionField.setText("");
+            }
+        }
+        else
+        {
+            Toast t;
+            t = new Toast("Please enter a value in all fields", focusPanel);
+            t.showtoast();
+            nameField.setText("");
+            descriptionField.setText("");
+        }
+        return response;
+    }
+
+    private void createGUI(JPanel panel)
+    {
         focusPanel = panel;
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -113,68 +187,5 @@ public class NewAssetType extends JPanel{
         gbc.gridx = 0;
         gbc.gridy = 2;
         innerPanel.add(confirmButton, gbc);
-
-        confirmButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String name = nameField.getText();
-                        String description = descriptionField.getText();
-
-                        if (name.length() > 0 && description.length() > 0)
-                        {
-                            CAB302.Common.AssetType type = new CAB302.Common.AssetType();
-
-                            type.setName(name);
-                            type.setDescription(description);
-
-                            PayloadRequest request = new PayloadRequest();
-
-                            request.setPayloadObject(type);
-                            request.setRequestPayloadType(RequestPayloadType.Get);
-
-                            PayloadResponse response = null;
-                            try {
-                                response = new Client().SendRequest(request);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
-
-                            CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
-
-                            if (assetType == null)
-                            {
-                                request.setRequestPayloadType(RequestPayloadType.Create);
-                                try {
-                                    response = new Client().SendRequest(request);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
-                                if (response != null){
-                                    Toast t;
-                                    t = new Toast("New Asset Type Added", focusPanel);
-                                    t.showtoast();
-                                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
-                                }
-                            }
-                            else
-                            {
-                                Toast t;
-                                t = new Toast("Asset Type already exists", focusPanel);
-                                t.showtoast();
-                                nameField.setText("");
-                                descriptionField.setText("");
-                            }
-                        }
-                        else
-                        {
-                            Toast t;
-                            t = new Toast("Please enter a value in all fields", focusPanel);
-                            t.showtoast();
-                            nameField.setText("");
-                            descriptionField.setText("");
-                        }
-                    }
-                });
     }
 }

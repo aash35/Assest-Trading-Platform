@@ -66,10 +66,11 @@ public class AssetTypeTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        type = typeOne;
+
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNotNull(payloadResponse.getPayloadObject());
+        type = (AssetType) payloadResponse.getPayloadObject();
     }
 
     @Test

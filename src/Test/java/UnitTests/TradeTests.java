@@ -1,35 +1,53 @@
 package UnitTests;
 
 import CAB302.Client.Client;
-import CAB302.Common.Asset;
-import CAB302.Common.AssetType;
+import CAB302.Client.ClientSettings;
+import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.SHA256HashHelper;
-import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
-import CAB302.Common.User;
 import CAB302.Server.Server;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TradeTests {
     /**
      * Pre-Test class declaration
      */
-    AssetType type;
-    OrganisationalUnit OU;
-    User user;
-    Asset asset;
+    private static Client client;
+    public static AssetType type;
+    public static OrganisationalUnit OU;
+    public static User user;
+    public static Asset asset;
+
+    @Before
+    public void preTestConstruction() {
+        client = new Client();
+
+        OrganisationalUnitTests ouTests = new OrganisationalUnitTests();
+        ouTests.createOrganisationalUnit();
+        OU = ouTests.OU;
+
+        AssetTypeTests assetTypeTests = new AssetTypeTests();
+        assetTypeTests.createAssetType();
+        type = assetTypeTests.type;
+    }
 
     @BeforeAll
     public static void before() {
+        ClientSettings clientSettings = new ClientSettings();
+
         Server server = new Server(8080);
 
         server.startServer();
@@ -37,25 +55,193 @@ public class TradeTests {
         System.out.println("Started Server");
     }
 
+    @AfterAll
+    public static void cleanUp() {
+        AssetTests assetTests = new AssetTests();
+        assetTests.deleteAsset();
+
+        AssetTypeTests assetTypeTests = new AssetTypeTests();
+        assetTypeTests.deleteAssetType();
+    }
+
     /**
      * Test 0: Construct objects for AssetType, OrganisationalUnit, User and Asset classes.
      */
-    @BeforeEach
     @Test
+    @Order(1)
     public void createTrade() {
+        Client client = new Client();
 
+        Trade trade = new Trade();
+        trade.setAssetType(type);
+        trade.setOrganisationalUnit(OU);
+        trade.setQuantity(10);
+        trade.setPrice(10);
+        trade.setTransactionType(TradeTransactionType.Buying);
+        trade.setStatus(TradeStatus.InMarket);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.Buy);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
     }
+
     @Test
+    @Order(2)
     public void updateTrade() {
+        Client client = new Client();
 
+        Trade trade = new Trade();
+        trade.setAssetType(type);
+        trade.setOrganisationalUnit(OU);
+        trade.setQuantity(10);
+        trade.setPrice(10);
+        trade.setTransactionType(TradeTransactionType.Buying);
+        trade.setStatus(TradeStatus.InMarket);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        trade = (Trade)response.getPayloadObject();
+
+        int expected = 10;
+        int actual = trade.getQuantity();
+
+        Assert.assertEquals(expected,actual);
+
+        trade.setQuantity(20);
+
+        request = new PayloadRequest();
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.Update);
+
+        response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        trade = (Trade)response.getPayloadObject();
+
+        expected = 20;
+        actual = trade.getQuantity();
+        Assert.assertEquals(expected, actual);
     }
+
     @Test
+    @Order(4)
     public void deleteTrade() {
+        Client client = new Client();
 
+        Trade trade = new Trade();
+        trade.setAssetType(type);
+        trade.setOrganisationalUnit(OU);
+        trade.setQuantity(10);
+        trade.setPrice(10);
+        trade.setTransactionType(TradeTransactionType.Buying);
+        trade.setStatus(TradeStatus.InMarket);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        trade = (Trade) response.getPayloadObject();
+
+        request = new PayloadRequest();
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+
+        response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNull(response.getPayloadObject());
     }
-    @Test
-    public void listTrades() {
 
+    @Test
+    @Order(3)
+    public void listTrades() {
+        Client client = new Client();
+
+        Trade trade = new Trade();
+        trade.setAssetType(type);
+        trade.setOrganisationalUnit(OU);
+        trade.setQuantity(20);
+        trade.setPrice(10);
+        trade.setTransactionType(TradeTransactionType.Buying);
+        trade.setStatus(TradeStatus.InMarket);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        List<Trade> trades = (List<Trade>)(List<?>)response.getPayloadObject();
+
+        Assert.assertNotNull(trades);
+
+        trade = trades.stream().filter(x -> x.getQuantity() == 20).findFirst().orElse(null);
+
+        Assert.assertNotNull(trade);
     }
 
     //need to make all the error cases

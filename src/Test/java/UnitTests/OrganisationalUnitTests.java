@@ -1,6 +1,7 @@
 package UnitTests;
 
 import CAB302.Client.Client;
+import CAB302.Client.ClientSettings;
 import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
 import CAB302.Common.Enums.AccountTypeRole;
@@ -9,29 +10,31 @@ import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import CAB302.Common.User;
 import CAB302.Server.Server;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrganisationalUnitTests {
     /**
      * Pre-Test class declaration
      */
+    public static Client client;
     public static OrganisationalUnit OU;
     User user;
 
     @BeforeAll
     public static void before() {
-        Server server = new Server(8080);
+        ClientSettings clientSettings = new ClientSettings();
+
+        Server server = new Server(RuntimeSettings.Port);
 
         server.startServer();
 
@@ -60,14 +63,34 @@ public class OrganisationalUnitTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        OU = type;
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNotNull(payloadResponse.getPayloadObject());
 
+        OU = (OrganisationalUnit) payloadResponse.getPayloadObject();
+
     }
+
     @Test
     @Order(2)
+    public void getOrganisationalUnit() {
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(new OrganisationalUnit());
+        request.setRequestPayloadType(RequestPayloadType.Get);
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.getPayloadObject();
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    @Order(3)
     public void updateOrganisationalUnit() {
         Client client = new Client();
 
@@ -119,7 +142,7 @@ public class OrganisationalUnitTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void listOrganisationalUnit() {
         Client client = new Client();
 
@@ -153,7 +176,7 @@ public class OrganisationalUnitTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void deleteOrganisationalUnit() {
         Client client = new Client();
 
