@@ -114,9 +114,32 @@ public class UserTests {
         response.getPayloadObject();
         Assert.assertNotNull(response);
     }
-
     @Test
     @Order(3)
+    public void getUserWithPass() {
+        PayloadRequest request = new PayloadRequest();
+
+        User user = new User();
+        user.setUsername("Unit Test User");
+        String password = "test";
+        String hashedPass = SHA256HashHelper.generateHashedString(password);
+        user.setHashedPassword(hashedPass);
+
+        request.setPayloadObject(user);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.getPayloadObject();
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    @Order(4)
     public void updateUser() {
         Client client = new Client();
 
@@ -168,7 +191,7 @@ public class UserTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void listUser() {
         Client client = new Client();
 
@@ -202,7 +225,44 @@ public class UserTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
+    public void listUserWithPass() {
+        Client client = new Client();
+
+        User type = new User();
+        type.setUsername("Unit Test User - Updated");
+        String password = "test";
+        String hashedPass = SHA256HashHelper.generateHashedString(password);
+        type.setHashedPassword(hashedPass);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        List<User> types = (List<User>)(List<?>)payloadResponse.getPayloadObject();
+
+        Assert.assertNotNull(types);
+
+        type = types.stream().filter(x -> x.getUsername().equals("Unit Test User - Updated")).findFirst().orElse(null);
+
+        Assert.assertNotNull(type);
+
+    }
+
+    @Test
+    @Order(7)
     public void deleteUser() {
         Client client = new Client();
 
@@ -249,4 +309,25 @@ public class UserTests {
     public void createDuplicateUser() {
 
     }
+
+    @Test
+    public void testCreation() {
+        User testUser = new User();
+        String username = "Hello";
+        String password = "test";
+        String hashedPass = SHA256HashHelper.generateHashedString(password);
+        AccountTypeRole userRole = AccountTypeRole.Administrator;
+
+        testUser.setUsername(username);
+        testUser.setOrganisationalUnit(OU);
+        testUser.setHashedPassword(hashedPass);
+        testUser.setAccountRoleType(userRole);
+
+        Assert.assertEquals(username, testUser.getUsername());
+        Assert.assertEquals(OU, testUser.getOrganisationalUnit());
+        Assert.assertEquals(hashedPass, testUser.getHashedPassword());
+        Assert.assertEquals(userRole, testUser.getAccountRoleType());
+    }
+
+
 }
