@@ -43,9 +43,15 @@ public class NewOrganisationalUnit extends JPanel {
                 });
     }
 
+    /**
+     * Creates a new Organisational Unit based on the selection of the admin
+     * @param name The username to be created.
+     * @return a response on if the method was successful or not.
+     */
     private PayloadResponse createOU(String name)
     {
         PayloadResponse response = null;
+        //Checks if the field that was entered is empty
         if (name.length() > 0)
         {
             CAB302.Common.OrganisationalUnit type = new CAB302.Common.OrganisationalUnit();
@@ -65,7 +71,7 @@ public class NewOrganisationalUnit extends JPanel {
             }
 
             OrganisationalUnit ou = (OrganisationalUnit)response.getPayloadObject();
-
+            //checks if the orgUnit searched exists in the database
             if (ou == null) {
                 request.setRequestPayloadType(RequestPayloadType.Create);
                 try {
@@ -98,6 +104,10 @@ public class NewOrganisationalUnit extends JPanel {
         return response;
     }
 
+    /**
+     * Constructs the application page to create a new organisational unit.
+     * @param panel the container for the page.
+     */
     private void createGUI(JPanel panel)
     {
         focusPanel = panel;
@@ -123,16 +133,18 @@ public class NewOrganisationalUnit extends JPanel {
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
+        //Left column
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 0;
         innerPanel.add(OUnameLabel, gbc);
 
+        // Right Column
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 1;
         innerPanel.add(OUnameField, gbc);
 
-        //Middle
+        //Middle Bottom
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = 2;
         gbc.gridx = 0;

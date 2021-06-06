@@ -27,6 +27,46 @@ public class Administration extends JPanel {
      * @param panel the container of the panel, passed to the NavigationHelper.changePanel method.
      */
     public Administration(JPanel panel) {
+        createGUI(panel);
+
+        createOrganisationalUnitBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NavigationHelper.changePanel(panel, new NewOrganisationalUnit(focusPanel));
+                    }
+                });
+
+        editOrganisationalUnitsBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NavigationHelper.changePanel(panel, new EditOrganisationalUnit(focusPanel));
+                    }
+                });
+
+        createAssetTypeBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NavigationHelper.changePanel(panel, new NewAssetType(focusPanel));
+                    }
+                });
+
+        createUserBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        NavigationHelper.changePanel(panel, new NewUser(focusPanel));
+                    }
+                });
+    }
+
+    /**
+     * Constructs the admin page.
+     * @param panel the container for the page.
+     */
+    private void createGUI(JPanel panel){
         focusPanel = panel;
 
         mainPanel = new JPanel();
@@ -59,49 +99,21 @@ public class Administration extends JPanel {
         //Create Organisational Unit
         gbc.gridx = 0;
         gbc.gridy = 2;
-        createOrganisationalUnitBtn.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new NewOrganisationalUnit(focusPanel));
-                    }
-                });
         innerPanel.add(createOrganisationalUnitBtn, gbc);
 
         //Edit Organisational Unit
         gbc.gridx = 1;
         gbc.gridy = 2;
-        editOrganisationalUnitsBtn.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new EditOrganisationalUnit(focusPanel));
-                    }
-                });
         innerPanel.add(editOrganisationalUnitsBtn, gbc);
 
         //Create Asset
         gbc.gridx = 2;
         gbc.gridy = 2;
-        createAssetTypeBtn.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new NewAssetType(focusPanel));
-                    }
-                });
         innerPanel.add(createAssetTypeBtn, gbc);
 
         //Create User
         gbc.gridx = 3;
         gbc.gridy = 2;
-        createUserBtn.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        NavigationHelper.changePanel(panel, new NewUser(focusPanel));
-                    }
-                });
         innerPanel.add(createUserBtn, gbc);
     }
 }

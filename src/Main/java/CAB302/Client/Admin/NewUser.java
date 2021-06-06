@@ -38,9 +38,9 @@ public class NewUser extends JPanel {
     private JLabel ouNameLabel = new JLabel("Organisational Unit: ");
     private JComboBox ouCB;
 
-    private List<OrganisationalUnit> ouList;
-
     private JButton confirmBtn = new JButton("Confirm");
+
+    private List<OrganisationalUnit> ouList;
     /**
      * Constructs the application page to create a new user.
      * @param panel container panel for the page.
@@ -76,22 +76,24 @@ public class NewUser extends JPanel {
                 });
     }
 
+    /**
+     * Creates a new user based on the selection of the admin
+     * @param username The username to be created.
+     * @param password The password to be created.
+     * @return a response on if the method was successful or not.
+     */
     private PayloadResponse createUser(String username, String password){
         PayloadResponse response = null;
+        //Checks if fields are empty
         if (username.length() > 0 && password.length() > 0)
         {
             String hashedPass = SHA256HashHelper.generateHashedString(password);
             OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
             AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
 
+            //Creates the conditions to search for the user
             User userCheck = new User();
             userCheck.setUsername(username);
-
-            User user = new User();
-            user.setUsername(username);
-            user.setHashedPassword(hashedPass);
-            user.setOrganisationalUnit(oUnit);
-            user.setAccountRoleType(accountType);
 
             PayloadRequest request = new PayloadRequest();
 
@@ -107,7 +109,15 @@ public class NewUser extends JPanel {
             }
             userCheck = (User)response.getPayloadObject();
 
+            // checks if the user exists
             if(userCheck == null) {
+                //Create the user to be stored in the database
+                User user = new User();
+                user.setUsername(username);
+                user.setHashedPassword(hashedPass);
+                user.setOrganisationalUnit(oUnit);
+                user.setAccountRoleType(accountType);
+
                 request = new PayloadRequest();
                 request.setPayloadObject(user);
                 request.setRequestPayloadType(RequestPayloadType.Create);
@@ -143,6 +153,10 @@ public class NewUser extends JPanel {
         return response;
     }
 
+    /**
+     * Constructs the application page to create a new user.
+     * @param panel container panel for the page.
+     */
     private void createGUI(JPanel panel){
         focusPanel = panel;
         mainPanel = new JPanel();

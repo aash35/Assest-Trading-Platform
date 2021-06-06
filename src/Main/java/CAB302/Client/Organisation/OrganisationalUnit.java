@@ -392,6 +392,9 @@ public class OrganisationalUnit extends JPanel {
     {
         CAB302.Common.OrganisationalUnit ou = trade.getOrganisationalUnit();
         PayloadResponse response = null;
+
+        //If the trade is a buy then it only changes credit amount
+        // If it is a sell then it only affects asset amount
         if(trade.getTransactionType() == TradeTransactionType.Buying)
         {
             int creditRefund = trade.getPrice() * trade.getQuantity();

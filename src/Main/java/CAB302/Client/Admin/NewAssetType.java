@@ -53,6 +53,12 @@ public class NewAssetType extends JPanel{
                 });
     }
 
+    /**
+     * Creates a new Asset Type based on the selection of the admin
+     * @param name the name of the new asset type.
+     * @param description a description of the new asset type.
+     * @return a response on if the method was successful or not.
+     */
     private PayloadResponse createAssetType(String name, String description)
     {
         PayloadResponse response = null;
@@ -77,6 +83,7 @@ public class NewAssetType extends JPanel{
 
             CAB302.Common.AssetType assetType = (CAB302.Common.AssetType)response.getPayloadObject();
 
+            //checks if the asset type exists in the database
             if (assetType == null)
             {
                 request.setRequestPayloadType(RequestPayloadType.Create);
@@ -112,6 +119,10 @@ public class NewAssetType extends JPanel{
         return response;
     }
 
+    /**
+     * Constructs the application page to create a new asset type.
+     * @param panel the container for the page.
+     */
     private void createGUI(JPanel panel)
     {
         focusPanel = panel;
@@ -137,7 +148,7 @@ public class NewAssetType extends JPanel{
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
-        // First Column
+        // Left Column
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -147,7 +158,7 @@ public class NewAssetType extends JPanel{
         gbc.gridy = 1;
         innerPanel.add(descriptionLabel, gbc);
 
-        // Second Column
+        // Right Column
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -181,7 +192,7 @@ public class NewAssetType extends JPanel{
         gbc.gridy = 1;
         innerPanel.add(descriptionField, gbc);
 
-        //Middle
+        //Middle Bottom
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = 2;
         gbc.gridx = 0;

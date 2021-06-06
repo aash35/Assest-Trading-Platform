@@ -69,79 +69,27 @@ public class EditOrganisationalUnit extends JPanel {
         }
         assetCB = new JComboBox(assetString);
 
-        //GUI stuff
-        focusPanel = panel;
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setPreferredSize(new Dimension(630,500));
-        add(mainPanel);
-
-        titlePanel = new JPanel();
-        titlePanel.setLayout(new FlowLayout());
-
-        JLabel title = new JLabel("Edit Organisational Unit");
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
-        titlePanel.add(title);
-        mainPanel.add(titlePanel, BorderLayout.NORTH);
-
-        innerPanel = new JPanel();
-        mainPanel.add(innerPanel, BorderLayout.CENTER);
-
-        innerPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.weightx = 0.5;
-        gbc.weighty = 0.5;
-
-        //Left Column
-        gbc.anchor = GridBagConstraints.LINE_END;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        innerPanel.add(ouNameLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        innerPanel.add(assetNameLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        innerPanel.add(changeAmtLabel, gbc);
-
-        //Right Column
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        innerPanel.add(ouCB, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        innerPanel.add(assetCB, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        innerPanel.add(changeAmtField, gbc);
-
-        //Middle
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        innerPanel.add(confirmBtn, gbc);
+        createGUI(panel);
 
         confirmBtn.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-
                         OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
                         Integer changeAmt = (Integer) changeAmtField.getValue();
                         editOU(oUnit, changeAmt);
-
                     }
                 });
 
     }
 
+    /**
+     * Checks the information entered by the admin and
+     * Edits the organisation assets if it passes the checks
+     * @param oUnit The Organisational Unit to be checked.
+     * @param changeAmt the amount that the asset will be changed to.
+     * @return a response on if the method was successful or not.
+     */
     private PayloadResponse editOU(OrganisationalUnit oUnit, Integer changeAmt){
         PayloadResponse response = null;
         if (assetCB.getSelectedIndex() == 0) {
@@ -278,6 +226,7 @@ public class EditOrganisationalUnit extends JPanel {
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(asset);
+        //an organisation asset can only be deleted if a trade related to that orgAsset does not exist
         if (changeAmt == 0 && !tradeExists)
         {
             request.setRequestPayloadType(RequestPayloadType.Delete);
@@ -334,7 +283,7 @@ public class EditOrganisationalUnit extends JPanel {
     }
 
     /**
-     * Retrieves the list of Organisational Units from the database,
+     * Retrieves the list of all Organisational Units from the database,
      * then assigns it to the ouList property.
      */
     private void getOUList () throws IOException
@@ -349,7 +298,7 @@ public class EditOrganisationalUnit extends JPanel {
     }
 
     /**
-     * Retrieves the list of Asset Types from the database,
+     * Retrieves the list of all Asset Types from the database,
      * then assigns it to the assetTypeList property.
      */
     private void getAssetTypeList () throws IOException
@@ -363,4 +312,68 @@ public class EditOrganisationalUnit extends JPanel {
         assetsTypeList = (List<AssetType>) (List<?>) response.getPayloadObject();
     }
 
+    /**
+     * Constructs the application page to edit organisational units.
+     * @param panel the container for the page.
+     */
+    private void createGUI(JPanel panel)
+    {
+        focusPanel = panel;
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(630,500));
+        add(mainPanel);
+
+        titlePanel = new JPanel();
+        titlePanel.setLayout(new FlowLayout());
+
+        JLabel title = new JLabel("Edit Organisational Unit");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
+        titlePanel.add(title);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        innerPanel = new JPanel();
+        mainPanel.add(innerPanel, BorderLayout.CENTER);
+
+        innerPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
+
+        //Left Column
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        innerPanel.add(ouNameLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        innerPanel.add(assetNameLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        innerPanel.add(changeAmtLabel, gbc);
+
+        //Right Column
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        innerPanel.add(ouCB, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        innerPanel.add(assetCB, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        innerPanel.add(changeAmtField, gbc);
+
+        //Middle Bottom
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        innerPanel.add(confirmBtn, gbc);
+    }
 }

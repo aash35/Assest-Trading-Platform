@@ -206,7 +206,6 @@ public class MyAccount extends JPanel {
                                 }
                             }
                         });
-
                         revalidate();
                         repaint();
                     }

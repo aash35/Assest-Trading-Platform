@@ -42,13 +42,45 @@ public class EditTrade extends JPanel {
     public EditTrade(Trade trade, User user, JPanel panel){
         focusPanel = panel;
         focusUser = user;
+        createGUI(trade);
+        confirmButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        Integer newQuantity = (Integer) editQuantityField.getValue();
+                        Integer newPrice = (Integer) editPriceField.getValue();
+
+                        //Edit Org Assets
+                        PayloadResponse response = editOrg(trade, newQuantity, newPrice, focusPanel);
+
+                        if (response != null){
+                            //Edit Trade in Database
+                            response = editTrade(trade, newQuantity, newPrice);
+                        }
+
+                        if (response != null){
+                            Toast t;
+                            t = new Toast("Trade Successfully Changed", focusPanel);
+                            t.showtoast();
+                            NavigationHelper.changePanel(focusPanel, new CAB302.Client.Organisation.OrganisationalUnit(focusUser, focusPanel));
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Constructs the application page to edit a trade.
+     * @param trade used to create the title
+     */
+    private void createGUI(Trade trade){
         title = new JLabel("Edit Trade - "+ trade.getTransactionType() + " - " + (String)trade.getAssetType().getName());
         title.setFont(title.getFont().deriveFont(Font.BOLD, 20));
         setLayout(new GridBagLayout());
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
 
-        //Middle
+        //Middle Top
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = 2;
         gbc.gridx = 0;
@@ -79,37 +111,12 @@ public class EditTrade extends JPanel {
         editPriceField.setValue(trade.getPrice());
         add(editPriceField, gbc);
 
-        //Middle
+        //Middle Bottom
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = 3;
         add(confirmButton, gbc);
-
-        confirmButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-
-                        Integer newQuantity = (Integer) editQuantityField.getValue();
-                        Integer newPrice = (Integer) editPriceField.getValue();
-
-                        //Edit Org Assets
-                        PayloadResponse response = editOrg(trade, newQuantity, newPrice, focusPanel);
-
-                        if (response != null){
-                            //Edit Trade in Database
-                            response = editTrade(trade, newQuantity, newPrice);
-                        }
-
-                        if (response != null){
-                            Toast t;
-                            t = new Toast("Trade Successfully Changed", focusPanel);
-                            t.showtoast();
-                            NavigationHelper.changePanel(focusPanel, new CAB302.Client.Organisation.OrganisationalUnit(focusUser, focusPanel));
-                        }
-                    }
-                });
     }
 
     /**
@@ -201,8 +208,8 @@ public class EditTrade extends JPanel {
      * @return the asset if it is found or null.
      */
     private Asset getAsset(OrganisationalUnit ou, AssetType assetType) {
+        //Create the conditions for the search
         Asset type = new Asset();
-
         type.setOrganisationalUnit(ou);
         type.setAssetType(assetType);
 
