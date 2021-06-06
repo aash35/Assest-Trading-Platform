@@ -94,8 +94,64 @@ public class TradeTests {
     }
 
     @Test
+    @Order(2)
     public void updateTrade() {
+        Client client = new Client();
 
+        Trade trade = new Trade();
+        trade.setAssetType(type);
+        trade.setOrganisationalUnit(OU);
+        trade.setQuantity(10);
+        trade.setPrice(10);
+        trade.setTransactionType(TradeTransactionType.Buying);
+        trade.setStatus(TradeStatus.InMarket);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        trade = (Trade)response.getPayloadObject();
+
+        int expected = 10;
+        int actual = trade.getQuantity();
+
+        Assert.assertEquals(expected,actual);
+
+        trade.setQuantity(20);
+
+        request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Update);
+
+        response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        trade = (Trade)response.getPayloadObject();
+
+        expected = 20;
+        actual = trade.getQuantity();
+        Assert.assertEquals(expected, actual);
     }
     @Test
     public void deleteTrade() {
