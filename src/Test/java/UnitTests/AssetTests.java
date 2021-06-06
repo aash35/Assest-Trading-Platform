@@ -240,6 +240,19 @@ public class AssetTests {
         Assert.assertNull(response.getPayloadObject());
     }
 
+
+    @Test
+    public void stopServerTest() {
+        ClientSettings clientSettings = new ClientSettings();
+
+        Server server = new Server(RuntimeSettings.Port);
+
+        server.startServer();
+
+        System.out.println("Started Server");
+
+        server.stopServer();
+    }
     @Test
     @Order(6)
     public void createAssetWithoutAssetType() {
