@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -60,7 +61,6 @@ public class OrganisationalUnitTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNotNull(payloadResponse.getPayloadObject());

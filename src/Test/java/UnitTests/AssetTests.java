@@ -1,6 +1,7 @@
 package UnitTests;
 
 import CAB302.Client.Client;
+import CAB302.Client.ClientSettings;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
@@ -9,6 +10,7 @@ import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import CAB302.Server.Server;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,9 +19,11 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AssetTests {
 
     private static Client client;
@@ -45,8 +49,9 @@ public class AssetTests {
     @BeforeAll
     public static void before() {
         client = new Client();
+        ClientSettings clientSettings = new ClientSettings();
 
-        Server server = new Server(8080);
+        Server server = new Server(RuntimeSettings.Port);
 
         server.startServer();
 
@@ -85,35 +90,15 @@ public class AssetTests {
         }
         response.getPayloadObject();
 
+
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
         asset = (CAB302.Common.Asset)response.getPayloadObject();
 
-        Assert.assertNotNull(asset);
-
-
-
-
-
-        AssetType type = new AssetType();
-        type.setName("Unit Test Asset Type");
-        type.setDescription("Test Description");
-
-        PayloadRequest request1 = new PayloadRequest();
-        request.setPayloadObject(type);
-        request.setRequestPayloadType(RequestPayloadType.Create);
-
-        PayloadResponse payloadResponse = null;
-
-        try {
-            payloadResponse = client.SendRequest(request);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Assert.assertNotNull(payloadResponse);
-
-        Assert.assertNotNull(payloadResponse.getPayloadObject());
-
-
+        Assert.assertNotNull(asset.id);
     }
 
     @Test
@@ -121,7 +106,7 @@ public class AssetTests {
     public void getAsset() {
         PayloadRequest request = new PayloadRequest();
 
-        request.setPayloadObject(new Asset());
+        request.setPayloadObject(asset);
         request.setRequestPayloadType(RequestPayloadType.Get);
         PayloadResponse response = null;
 
@@ -132,22 +117,82 @@ public class AssetTests {
         }
         response.getPayloadObject();
         Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        asset = (CAB302.Common.Asset)response.getPayloadObject();
+
+        Assert.assertNotNull(asset.id);
     }
 
     @Test
     @Order(3)
     public void updateAsset() {
+        PayloadRequest request = new PayloadRequest();
+        asset.setQuantity(50);
+        request.setPayloadObject(asset);
+        request.setRequestPayloadType(RequestPayloadType.Update);
+        PayloadResponse response = null;
 
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.getPayloadObject();
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        asset = (CAB302.Common.Asset)response.getPayloadObject();
+
+        Assert.assertEquals(asset.getQuantity(), 50);
     }
+
     @Test
     @Order(4)
     public void listAsset() {
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(asset);
+        request.setRequestPayloadType(RequestPayloadType.List);
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.getPayloadObject();
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        List<Asset> types = (List<Asset>)(List<?>)response.getPayloadObject();
+
+        asset = types.stream().filter(x -> x.getQuantity() == 50).findFirst().orElse(null);
+
+        Assert.assertNotNull(asset);
+        Assert.assertNotNull(asset.id);
 
     }
     @Test
     @Order(5)
     public void deleteAsset() {
+        PayloadRequest request = new PayloadRequest();
 
+        request.setPayloadObject(asset);
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertNotNull(response);
+
+        Assert.assertNull(response.getPayloadObject());
     }
 
     @Test
