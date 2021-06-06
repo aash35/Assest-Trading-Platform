@@ -25,15 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AssetTests {
-
-    private static Client client;
     /**
      * Pre-Test class declaration
      */
-    public static OrganisationalUnit OU;
     public static Asset asset;
-
-    public static AssetType assetType;
 
     public static OrganisationalUnitTests org;
 
@@ -51,7 +46,6 @@ public class AssetTests {
 
     @BeforeAll
     public static void before() {
-        client = new Client();
         ClientSettings clientSettings = new ClientSettings();
 
         Server server = new Server(RuntimeSettings.Port);
@@ -62,11 +56,9 @@ public class AssetTests {
 
         org = new OrganisationalUnitTests();
         org.createOrganisationalUnit();
-        OU = org.OU;
 
         assetTypeTest = new AssetTypeTests();
         assetTypeTest.createAssetType();
-        assetType = assetTypeTest.type;
     }
 
     /**
@@ -76,12 +68,15 @@ public class AssetTests {
     @Test
     @Order(1)
     public void createAsset() {
+
+        Client client = new Client();
+
         asset = new Asset();
 
         PayloadRequest request = new PayloadRequest();
         asset.setQuantity(1);
-        asset.setOrganisationalUnit(OU);
-        asset.setAssetType(assetType);
+        asset.setOrganisationalUnit(org.OU);
+        asset.setAssetType(assetTypeTest.type);
 
         request.setPayloadObject(asset);
         request.setRequestPayloadType(RequestPayloadType.Create);
@@ -108,7 +103,13 @@ public class AssetTests {
     @Test
     @Order(2)
     public void getAsset() {
+        Client client = new Client();
+
         PayloadRequest request = new PayloadRequest();
+
+        Asset asset = new Asset();
+        asset.setOrganisationalUnit(org.OU);
+        asset.setAssetType(assetTypeTest.type);
 
         request.setPayloadObject(asset);
         request.setRequestPayloadType(RequestPayloadType.Get);
@@ -119,7 +120,7 @@ public class AssetTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        response.getPayloadObject();
+
         Assert.assertNotNull(response);
 
         Assert.assertNotNull(response.getPayloadObject());
@@ -132,6 +133,8 @@ public class AssetTests {
     @Test
     @Order(3)
     public void updateAsset() {
+        Client client = new Client();
+
         PayloadRequest request = new PayloadRequest();
         asset.setQuantity(50);
         request.setPayloadObject(asset);
@@ -156,6 +159,8 @@ public class AssetTests {
     @Test
     @Order(4)
     public void listAsset() {
+        Client client = new Client();
+
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(asset);
@@ -183,6 +188,8 @@ public class AssetTests {
     @Test
     @Order(5)
     public void deleteAsset() {
+        Client client = new Client();
+
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(asset);

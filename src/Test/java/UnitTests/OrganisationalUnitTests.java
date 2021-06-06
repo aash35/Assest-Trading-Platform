@@ -26,8 +26,7 @@ public class OrganisationalUnitTests {
     /**
      * Pre-Test class declaration
      */
-    public static Client client;
-    public static OrganisationalUnit OU;
+    public OrganisationalUnit OU;
     User user;
 
     @BeforeAll
@@ -39,7 +38,6 @@ public class OrganisationalUnitTests {
         server.startServer();
 
         System.out.println("Started Server");
-        client = new Client();
     }
 
     /**
@@ -48,6 +46,9 @@ public class OrganisationalUnitTests {
     @Test
     @Order(1)
     public void createOrganisationalUnit() {
+
+        Client client = new Client();
+
         OrganisationalUnit type = new OrganisationalUnit();
         type.setUnitName("Unit Test Organisational Unit");
         type.setAvailableCredit(5000);
@@ -67,13 +68,16 @@ public class OrganisationalUnitTests {
 
         Assert.assertNotNull(payloadResponse.getPayloadObject());
 
-        OU = (OrganisationalUnit) payloadResponse.getPayloadObject();
+        this.OU = (OrganisationalUnit) payloadResponse.getPayloadObject();
 
     }
 
     @Test
     @Order(2)
     public void getOrganisationalUnit() {
+
+        Client client = new Client();
+
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(OU);

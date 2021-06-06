@@ -30,7 +30,7 @@ public class AssetTypeTests {
     /**
      * Pre-Test class declaration
      */
-    public static AssetType type;
+    public AssetType type;
 
     @BeforeAll
     public static void before() {
