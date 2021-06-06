@@ -1,5 +1,7 @@
 package UnitTests;
 
+import CAB302.Client.Admin.NewAssetType;
+import CAB302.Client.Admin.NewOrganisationalUnit;
 import CAB302.Client.Client;
 import CAB302.Client.ClientSettings;
 import CAB302.Common.Asset;
@@ -16,6 +18,7 @@ import CAB302.Server.Server;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -228,5 +231,85 @@ public class OrganisationalUnitTests {
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNull(payloadResponse.getPayloadObject());
+    }
+
+    @Test
+    @Order(6)
+    public void createOUEmptyName() {
+        JPanel testpanel = new JPanel();
+        NewOrganisationalUnit test = new NewOrganisationalUnit(testpanel);
+        String testName = "";
+        boolean enableToast = false;
+
+        PayloadResponse response = test.createOU(testName, enableToast);
+
+        Assert.assertNull(response);
+    }
+
+    @Test
+    @Order(9)
+    public void createDuplicateOU() {
+        JPanel testpanel = new JPanel();
+        NewOrganisationalUnit test = new NewOrganisationalUnit(testpanel);
+
+        //Create asset
+        String testName1 = "Test1";
+        boolean enableToast = false;
+
+        PayloadResponse response1 = test.createOU(testName1, enableToast);
+
+        Assert.assertNotNull(response1);
+
+        //Test if an asset of the same name can be created
+        String testName2 = "Test1";
+
+        PayloadResponse response2 = test.createOU(testName2, enableToast);
+
+        Assert.assertNull(response2);
+
+        //cleanup database
+        if(response1 != null)
+        {
+            OrganisationalUnit ou = getOU(testName1);
+            deleteOU(ou);
+        }
+    }
+
+
+    ///////////////////////////////HELPER FUNCTIONS TO CLEAN DATABASE//////////////////////
+    private OrganisationalUnit getOU (String name){
+
+        OrganisationalUnit type = new OrganisationalUnit();
+
+        type.setUnitName(name);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return (OrganisationalUnit)response.getPayloadObject();
+    }
+
+    private PayloadResponse deleteOU (OrganisationalUnit ou){
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(ou);
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return response;
     }
 }

@@ -112,6 +112,7 @@ public class NewAssetType extends JPanel{
                 }
                 nameField.setText("");
                 descriptionField.setText("");
+                response = null;
             }
         }
         else

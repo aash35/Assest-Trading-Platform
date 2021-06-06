@@ -243,10 +243,6 @@ public class AssetTypeTests {
         PayloadResponse response = test.createAssetType(testName, testDesc, enableToast);
 
         Assert.assertNull(response);
-        if (response != null)
-        {
-            Assert.assertNull(response.getPayloadObject());
-        }
     }
 
     @Test
@@ -255,15 +251,96 @@ public class AssetTypeTests {
         JPanel testpanel = new JPanel();
         NewAssetType test = new NewAssetType(testpanel);
         String testName = "";
+        String testDesc = "asdasd";
+        boolean enableToast = false;
+
+        PayloadResponse response = test.createAssetType(testName, testDesc, enableToast);
+
+        Assert.assertNull(response);
+    }
+
+    @Test
+    @Order(8)
+    public void createAssetTypeEmptyDescOnly() {
+        JPanel testpanel = new JPanel();
+        NewAssetType test = new NewAssetType(testpanel);
+        String testName = "asdasd";
         String testDesc = "";
         boolean enableToast = false;
 
         PayloadResponse response = test.createAssetType(testName, testDesc, enableToast);
 
         Assert.assertNull(response);
-        if (response != null)
+    }
+
+    @Test
+    @Order(9)
+    public void createDuplicateAssetType() {
+        JPanel testpanel = new JPanel();
+        NewAssetType test = new NewAssetType(testpanel);
+
+        //Create asset
+        String testName1 = "asdasd";
+        String testDesc1 = "asdasd";
+        boolean enableToast = false;
+
+        PayloadResponse response1 = test.createAssetType(testName1, testDesc1, enableToast);
+
+        Assert.assertNotNull(response1);
+
+        //Test if an asset of the same name can be created
+        String testName2 = "asdasd";
+        String testDesc2 = "asda";
+
+        PayloadResponse response2 = test.createAssetType(testName2, testDesc2, enableToast);
+
+        Assert.assertNull(response2);
+
+        //cleanup database
+        if(response1 != null)
         {
-            Assert.assertNull(response.getPayloadObject());
+            AssetType assetType = getAssetType(testName1, testDesc1);
+            deleteAssetType(assetType);
         }
+    }
+
+
+    ///////////////////////////////HELPER FUNCTIONS TO CLEAN DATABASE//////////////////////
+    private AssetType getAssetType (String name, String description){
+
+        CAB302.Common.AssetType type = new CAB302.Common.AssetType();
+
+        type.setName(name);
+        type.setDescription(description);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return (AssetType)response.getPayloadObject();
+    }
+
+    private PayloadResponse deleteAssetType (AssetType assetType){
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(assetType);
+        //an organisation asset can only be deleted if a trade related to that orgAsset does not exist
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return response;
     }
 }
