@@ -2,9 +2,7 @@ package CAB302.Client;
 
 import CAB302.Common.ServerPackages.RuntimeSettings;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -23,13 +21,20 @@ public class ClientSettings {
             Properties prop = new Properties();
             String propFileName = "client.properties";
 
-            inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+            if (!new File(propFileName).exists()) {
+                byte[] array = getClass().getClassLoader().getResourceAsStream(propFileName).readAllBytes();
 
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("Config file '" + propFileName + "' not found");
+                FileOutputStream out = new FileOutputStream(propFileName);
+
+                out.write(array);
+                out.close();
             }
+
+            File file = new File(propFileName);
+
+            inputStream = new FileInputStream(file);
+
+            prop.load(inputStream);
 
             RuntimeSettings.IP = prop.getProperty("IP");
             RuntimeSettings.Port = Integer.parseInt(prop.getProperty("Port"));

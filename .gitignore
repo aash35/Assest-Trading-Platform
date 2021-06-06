@@ -1,2 +1,4 @@
 .idea/uiDesigner.xml
 target/
+server.properties
+client.properties
