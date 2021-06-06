@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
