@@ -26,33 +26,39 @@ public class AssetTests {
     /**
      * Pre-Test class declaration
      */
-    public static AssetType type;
     public static OrganisationalUnit OU;
     public static Asset asset;
 
-    @Before
-    public static void beforeClient() {
-        client = new Client();
+    public static AssetType assetType;
 
-        OrganisationalUnitTests org = new OrganisationalUnitTests();
-        org.createOrganisationalUnit();
-        OU = org.OU;
-    }
 
     @AfterAll
     public static void afterAll() {
         OrganisationalUnitTests org = new OrganisationalUnitTests();
         org.deleteOrganisationalUnit();
+
+        AssetTypeTests assetTypeTest = new AssetTypeTests();
+        assetTypeTest.deleteAssetType();
     }
 
 
     @BeforeAll
     public static void before() {
+        client = new Client();
+
         Server server = new Server(8080);
 
         server.startServer();
 
         System.out.println("Started Server");
+
+        OrganisationalUnitTests org = new OrganisationalUnitTests();
+        org.createOrganisationalUnit();
+        OU = org.OU;
+
+        AssetTypeTests assetTypeTest = new AssetTypeTests();
+        assetTypeTest.createAssetType();
+        assetType = assetTypeTest.type;
     }
 
     /**
@@ -60,11 +66,15 @@ public class AssetTests {
      */
 
     @Test
+    @Order(1)
     public void createAsset() {
 
         PayloadRequest request = new PayloadRequest();
+        asset.setQuantity(1);
+        asset.setOrganisationalUnit(OU);
+        asset.setAssetType(assetType);
 
-        request.setPayloadObject(new Asset());
+        request.setPayloadObject(asset);
         request.setRequestPayloadType(RequestPayloadType.Create);
         PayloadResponse response = null;
 
@@ -78,9 +88,36 @@ public class AssetTests {
         asset = (CAB302.Common.Asset)response.getPayloadObject();
 
         Assert.assertNotNull(asset);
+
+
+
+
+
+        AssetType type = new AssetType();
+        type.setName("Unit Test Asset Type");
+        type.setDescription("Test Description");
+
+        PayloadRequest request1 = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Create);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+
     }
+
     @Test
-    @Order(3)
+    @Order(2)
     public void getAsset() {
         PayloadRequest request = new PayloadRequest();
 
@@ -98,33 +135,38 @@ public class AssetTests {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     public void updateAsset() {
 
     }
     @Test
-    @Order(3)
+    @Order(4)
     public void listAsset() {
 
     }
     @Test
+    @Order(5)
     public void deleteAsset() {
 
     }
 
     @Test
+    @Order(6)
     public void createAssetWithoutAssetType() {
 
     }
     @Test
+    @Order(7)
     public void createAssetWithoutName() {
 
     }
     @Test
+    @Order(8)
     public void createAssetWithoutOrganisation() {
 
     }
     @Test
+    @Order(9)
     public void createAssetWithoutQuantity() {
 
     }
