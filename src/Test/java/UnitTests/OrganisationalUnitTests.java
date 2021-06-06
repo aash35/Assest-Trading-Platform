@@ -61,6 +61,7 @@ public class OrganisationalUnitTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        OU = type;
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNotNull(payloadResponse.getPayloadObject());
