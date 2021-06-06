@@ -4,17 +4,15 @@ import CAB302.Client.Admin.NewAssetType;
 import CAB302.Client.Client;
 import CAB302.Client.ClientSettings;
 import CAB302.Client.Helper.Toast;
-import CAB302.Common.Asset;
-import CAB302.Common.AssetType;
+import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Helpers.SHA256HashHelper;
-import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.ServerPackages.BaseObject;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
 import CAB302.Common.ServerPackages.RuntimeSettings;
-import CAB302.Common.User;
 import CAB302.Server.Server;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -23,6 +21,7 @@ import org.junit.runners.MethodSorters;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -189,6 +188,38 @@ public class AssetTypeTests {
 
     @Test
     @Order(5)
+    public void listAssetTypeWithoutName() {
+        Client client = new Client();
+
+        AssetType type = new AssetType();
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        List<AssetType> types = (List<AssetType>)(List<?>)payloadResponse.getPayloadObject();
+
+        Assert.assertNotNull(types);
+
+        type = types.stream().filter(x -> x.getName().equals("Unit Test Asset Type - Updated")).findFirst().orElse(null);
+
+        Assert.assertNotNull(type);
+    }
+
+    @Test
+    @Order(6)
     public void deleteAssetType() {
         Client client = new Client();
 
@@ -232,7 +263,7 @@ public class AssetTypeTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void createAssetTypeEmptyNameAndDescription() {
         JPanel testpanel = new JPanel();
         NewAssetType test = new NewAssetType(testpanel);
@@ -246,7 +277,7 @@ public class AssetTypeTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void createAssetTypeEmptyNameOnly() {
         JPanel testpanel = new JPanel();
         NewAssetType test = new NewAssetType(testpanel);
@@ -260,7 +291,7 @@ public class AssetTypeTests {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     public void createAssetTypeEmptyDescOnly() {
         JPanel testpanel = new JPanel();
         NewAssetType test = new NewAssetType(testpanel);
@@ -274,7 +305,7 @@ public class AssetTypeTests {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     public void createDuplicateAssetType() {
         JPanel testpanel = new JPanel();
         NewAssetType test = new NewAssetType(testpanel);
@@ -303,6 +334,38 @@ public class AssetTypeTests {
             deleteAssetType(assetType);
         }
     }
+    @Test
+    public void testCreation() {
+        AssetType testAssetType = new AssetType();
+
+        String name = "test";
+        String description = "test";
+
+        Asset asset = new Asset();
+        asset.setAssetType(testAssetType);
+        asset.setQuantity(50);
+        List<Asset> assetsList = new ArrayList<Asset>();
+        assetsList.add(asset);
+
+        Trade trade = new Trade();
+        trade.setAssetType(testAssetType);
+        trade.setPrice(50);
+        trade.setStatus(TradeStatus.InMarket);
+        List<Trade> tradeList = new ArrayList<Trade>();
+        tradeList.add(trade);
+
+
+        testAssetType.setName(name);
+        testAssetType.setDescription(description);
+        testAssetType.setTrades(tradeList);
+        testAssetType.setAssets(assetsList);
+
+        Assert.assertEquals(name, testAssetType.getName());
+        Assert.assertEquals(description, testAssetType.getDescription());
+        Assert.assertEquals(tradeList.get(0), testAssetType.getTrades().get(0));
+        Assert.assertEquals(assetsList.get(0), testAssetType.getAssets().get(0));
+    }
+
 
 
     ///////////////////////////////HELPER FUNCTIONS TO CLEAN DATABASE//////////////////////
