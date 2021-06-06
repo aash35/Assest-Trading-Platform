@@ -4,16 +4,14 @@ import CAB302.Client.Admin.NewAssetType;
 import CAB302.Client.Admin.NewOrganisationalUnit;
 import CAB302.Client.Client;
 import CAB302.Client.ClientSettings;
-import CAB302.Common.Asset;
-import CAB302.Common.AssetType;
+import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
+import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Helpers.SHA256HashHelper;
-import CAB302.Common.OrganisationalUnit;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
 import CAB302.Common.ServerPackages.RuntimeSettings;
-import CAB302.Common.User;
 import CAB302.Server.Server;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
@@ -21,6 +19,7 @@ import org.junit.jupiter.api.*;
 import javax.swing.*;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -192,6 +191,40 @@ public class OrganisationalUnitTests {
 
     @Test
     @Order(5)
+    public void listOrganisationalUnitWithoutUnitName() {
+        Client client = new Client();
+
+        OrganisationalUnit type = new OrganisationalUnit();
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        payloadResponse.getPayloadObject();
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        List<OrganisationalUnit> types = (List<OrganisationalUnit>)(List<?>)payloadResponse.getPayloadObject();
+
+        OU = types.stream().filter(x -> x.getUnitName().equals("Unit Test Organisational Unit - Updated")).findFirst().orElse(null);
+
+        Assert.assertNotNull(payloadResponse);
+        Assert.assertNotNull(OU.id);
+
+    }
+
+    @Test
+    @Order(6)
     public void deleteOrganisationalUnit() {
         Client client = new Client();
 
@@ -234,7 +267,7 @@ public class OrganisationalUnitTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void createOUEmptyName() {
         JPanel testpanel = new JPanel();
         NewOrganisationalUnit test = new NewOrganisationalUnit(testpanel);
@@ -247,7 +280,7 @@ public class OrganisationalUnitTests {
     }
 
     @Test
-    @Order(9)
+    @Order(8)
     public void createDuplicateOU() {
         JPanel testpanel = new JPanel();
         NewOrganisationalUnit test = new NewOrganisationalUnit(testpanel);
@@ -274,6 +307,50 @@ public class OrganisationalUnitTests {
             deleteOU(ou);
         }
     }
+    @Test
+    public void testCreation() {
+        OrganisationalUnit testOrganisation = new OrganisationalUnit();
+        String unitName = "Test Org";
+
+        AssetType assetType = new AssetType();
+        assetType.setName("test");
+
+        Asset asset = new Asset();
+        asset.setAssetType(assetType);
+        asset.setQuantity(50);
+        List<Asset> assetsList = new ArrayList<Asset>();
+        assetsList.add(asset);
+
+        int credits = 5000;
+
+        Trade trade = new Trade();
+        trade.setAssetType(assetType);
+        trade.setPrice(50);
+        trade.setStatus(TradeStatus.InMarket);
+        List<Trade> tradeList = new ArrayList<Trade>();
+        tradeList.add(trade);
+
+        User userOne = new User();
+        userOne.setUsername("TestUser");;
+        userOne.setOrganisationalUnit(testOrganisation);
+        List<User> userList = new ArrayList<User>();
+        userList.add(userOne);
+
+
+
+        testOrganisation.setAssets(assetsList);
+        testOrganisation.setAvailableCredit(credits);
+        testOrganisation.setTrades(tradeList);
+        testOrganisation.setUsers(userList);
+        testOrganisation.setUnitName(unitName);
+
+        Assert.assertEquals(assetsList.get(0), testOrganisation.getAssets().get(0));
+        Assert.assertEquals(credits, testOrganisation.getAvailableCredit());
+        Assert.assertEquals(tradeList.get(0), testOrganisation.getTrades().get(0));
+        Assert.assertEquals(userList.get(0), testOrganisation.getUsers().get(0));
+        Assert.assertEquals(unitName, testOrganisation.getUnitName());
+    }
+
 /*
     @Test
     @Order(10)
