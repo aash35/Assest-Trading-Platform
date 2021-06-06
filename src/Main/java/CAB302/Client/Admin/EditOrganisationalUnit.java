@@ -41,6 +41,7 @@ public class EditOrganisationalUnit extends JPanel {
 
     /**
      * Constructs the application page to edit organisational units.
+     * @param panel the container for the page.
      */
     public EditOrganisationalUnit(JPanel panel) {
         //Get list of all OrgUnits and add to combobox
