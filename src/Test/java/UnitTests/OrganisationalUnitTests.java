@@ -11,11 +11,14 @@ import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
 import CAB302.Common.User;
 import CAB302.Server.Server;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -23,10 +26,8 @@ public class OrganisationalUnitTests {
     /**
      * Pre-Test class declaration
      */
-    AssetType type;
-    OrganisationalUnit OU;
+    public static OrganisationalUnit OU;
     User user;
-    Asset asset;
 
     @BeforeAll
     public static void before() {
@@ -40,21 +41,157 @@ public class OrganisationalUnitTests {
     /**
      * Test 0: Construct objects for AssetType, OrganisationalUnit, User and Asset classes.
      */
-    @BeforeEach
     @Test
+    @Order(1)
     public void createOrganisationalUnit() {
+        Client client = new Client();
+
+        OrganisationalUnit type = new OrganisationalUnit();
+        type.setUnitName("Unit Test Organisational Unit");
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Create);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
 
     }
     @Test
+    @Order(2)
     public void updateOrganisationalUnit() {
+        Client client = new Client();
+
+        OrganisationalUnit type = new OrganisationalUnit();
+        type.setUnitName("Unit Test Organisational Unit");
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        type = (OrganisationalUnit)payloadResponse.getPayloadObject();
+
+        Assert.assertNotNull(type.id);
+
+        type.setUnitName("Unit Test Organisational Unit - Updated");
+
+        request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Update);
+
+        payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        type = (OrganisationalUnit)payloadResponse.getPayloadObject();
+
+        Assert.assertEquals(type.getUnitName(), "Unit Test Organisational Unit - Updated");
 
     }
-    @Test
-    public void deleteOrganisationalUnit() {
 
-    }
     @Test
+    @Order(3)
     public void listOrganisationalUnit() {
+        Client client = new Client();
 
+        OrganisationalUnit type = new OrganisationalUnit();
+        type.setUnitName("Unit Test Organisational Unit - Updated");
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        List<OrganisationalUnit> types = (List<OrganisationalUnit>)(List<?>)payloadResponse.getPayloadObject();
+
+        Assert.assertNotNull(types);
+
+        type = types.stream().filter(x -> x.getUnitName() == "Unit Test Organisational Unit - Updated").findFirst().orElse(null);
+
+        Assert.assertNotNull(type);
+
+    }
+
+    @Test
+    @Order(4)
+    public void deleteOrganisationalUnit() {
+        Client client = new Client();
+
+        OrganisationalUnit type = new OrganisationalUnit();
+        type.setUnitName("Unit Test Organisational Unit - Updated");
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        type = (OrganisationalUnit)payloadResponse.getPayloadObject();
+
+        request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+
+        payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNull(payloadResponse.getPayloadObject());
     }
 }
