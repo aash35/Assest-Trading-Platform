@@ -3,13 +3,14 @@ import CAB302.Client.Client;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
-import CAB302.Common.Exceptions.IllegalTradeException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import CAB302.Common.Enums.TradeStatus;
 import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.SHA256HashHelper;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
 import CAB302.Server.Server;
 import org.junit.jupiter.api.*;
 
@@ -27,7 +28,6 @@ public class UnitTests {
     OrganisationalUnit OU;
     User user;
     Asset asset;
-
 
     @BeforeAll
     public static void before() {
@@ -205,9 +205,6 @@ public class UnitTests {
         request.setPayloadObject(buyTrade);
         request.setRequestPayloadType(RequestPayloadType.Buy);
 
-        assertThrows(IllegalTradeException.class, () ->{
-            PayloadResponse response = client.SendRequest(request);
-        });
     }
 
     /**
@@ -232,9 +229,6 @@ public class UnitTests {
         request.setPayloadObject(sellTrade);
         request.setRequestPayloadType(RequestPayloadType.Sell);
 
-        assertThrows(IllegalTradeException.class, () -> {
-            PayloadResponse response = client.SendRequest(request);
-        });
     }
 
     /**

@@ -1,24 +1,23 @@
 package CAB302.Client.Organisation;
 
-import CAB302.Client.Admin.EditOrganisationalUnit;
 import CAB302.Client.Client;
 import CAB302.Client.Helper.ButtonColumn;
-import CAB302.Client.Store.BuySellAsset;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.NavigationHelper;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.io.Console;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,8 +56,6 @@ public class OrganisationalUnit extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         add(title, c);
-
-
 
         c.fill = GridBagConstraints.CENTER;
         c.gridwidth = 2;
@@ -123,6 +120,44 @@ public class OrganisationalUnit extends JPanel {
                 JTable table = (JTable)e.getSource();
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Trade order =  tradesList.get(modelRow);
+                /**
+                 * Modified code from: https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html#button
+                 */
+                Object[] options = {"Yes",
+                        "No"};
+                int n = JOptionPane.showOptionDialog(focusPanel,
+                        "Would you like to delete trade",
+                        "Confirmation",
+                        JOptionPane.PLAIN_MESSAGE,
+                        JOptionPane.QUESTION_MESSAGE,
+                        new Icon() {
+                            @Override
+                            public void paintIcon(Component c, Graphics g, int x, int y) {
+
+                            }
+
+                            @Override
+                            public int getIconWidth() {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getIconHeight() {
+                                return 0;
+                            }
+                        },
+                        options,
+                        options[0]);
+                if(n == 0){
+                    PayloadResponse response = deleteTrade(order);
+
+                    if(response != null){
+                        Toast t;
+                        t = new Toast("Delete Complete", focusPanel);
+                        t.showtoast();
+                        NavigationHelper.changePanel(focusPanel, new OrganisationalUnit(focusUser, focusPanel));
+                    }
+                }
             }
         };
         Action edit = new AbstractAction()
@@ -132,7 +167,7 @@ public class OrganisationalUnit extends JPanel {
                 JTable table = (JTable)e.getSource();
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Trade order =  tradesList.get(modelRow);
-                NavigationHelper.changePanel(panel, new EditTrade(order));
+                NavigationHelper.changePanel(panel, new EditTrade(order, focusUser, focusPanel));
             }
         };
         currentTradesTable = new JTable(new MyTableModel());
@@ -148,7 +183,6 @@ public class OrganisationalUnit extends JPanel {
 
         currentTradesPanelOne = new JScrollPane(currentTradesTable);
         currentTradesPanelOne.setPreferredSize(new Dimension(600, 300));
-        //currentTradesTable.setFillsViewportHeight(true);
 
 
         panel.add(currentTradesPanelOne);
@@ -273,6 +307,7 @@ public class OrganisationalUnit extends JPanel {
 
         private Object[][] data = new Object[tradesList != null ? tradesList.size() : 0][8];
 
+
         /**
          * Constructs the table data.
          */
@@ -322,7 +357,6 @@ public class OrganisationalUnit extends JPanel {
         public int getColumnCount() {
             return columnNames.length;
         }
-
         /**
          * Checks if a given cell in the table is editable.
          * @param row the index of the row.
@@ -347,5 +381,114 @@ public class OrganisationalUnit extends JPanel {
         public Object getValueAt(int rowIndex, int columnIndex) {
             return data[rowIndex][columnIndex];
         }
+    }
+
+    /**
+     * Deletes the specified trade
+     * @param trade The trade to be deleted.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse deleteTrade(Trade trade)
+    {
+        CAB302.Common.OrganisationalUnit ou = trade.getOrganisationalUnit();
+        PayloadResponse response = null;
+        if(trade.getTransactionType() == TradeTransactionType.Buying)
+        {
+            int creditRefund = trade.getPrice() * trade.getQuantity();
+            int changeAmount = trade.getOrganisationalUnit().getAvailableCredit() + creditRefund;
+            response = editCredits(ou, changeAmount);
+        }
+        else
+        {
+            AssetType assetType = trade.getAssetType();
+            Asset asset = getAsset(ou, assetType);
+            int assetRefund = trade.getQuantity();
+            int changeAmt = asset.getQuantity() + assetRefund;
+            response = editAssets(asset, changeAmt);
+        }
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return response;
+    }
+
+    /**
+     * Edits a specified Organisational Units Credits
+     * @param ou the organisational unit being edited.
+     * @param changeAmt the amount that the credits will be changed to.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse editCredits(CAB302.Common.OrganisationalUnit ou, int changeAmt){
+        ou.setAvailableCredit(changeAmt);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(ou);
+
+        PayloadResponse response = null;
+
+        request.setRequestPayloadType(RequestPayloadType.Update);
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return response;
+    }
+
+    /**
+     * Edits a specified Organisational Units Assets
+     * @param asset the asset being edited.
+     * @param changeAmt the amount that the asset will be changed to.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse editAssets (Asset asset, int changeAmt){
+        asset.setQuantity(changeAmt);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(asset);
+        request.setRequestPayloadType(RequestPayloadType.Update);
+
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return response;
+    }
+
+    /**
+     * Retrieves an asset of a specified Asset Type
+     * from a specified Organisational Unit from the database,
+     * @param ou The Organisational Unit to be checked.
+     * @param assetType The asset type that is being searched for.
+     * @return the asset if it is found or null.
+     */
+    private Asset getAsset(CAB302.Common.OrganisationalUnit ou, AssetType assetType) {
+        Asset type = new Asset();
+
+        type.setOrganisationalUnit(ou);
+        type.setAssetType(assetType);
+
+        PayloadRequest request = new PayloadRequest();
+
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+        PayloadResponse response = null;
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        return (Asset)response.getPayloadObject();
     }
 }

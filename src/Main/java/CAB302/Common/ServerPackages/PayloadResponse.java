@@ -1,4 +1,4 @@
-package CAB302.Common;
+package CAB302.Common.ServerPackages;
 
 /**
  * Class is required for the server to send objects to the client. Contains a payload type description, a payload object

@@ -8,7 +8,7 @@ import javax.swing.table.*;
 
 /**
  *
- * Implementing code from:https://tips4java.wordpress.com/2009/07/12/table-button-column/
+ * Implementing code from: https://tips4java.wordpress.com/2009/07/12/table-button-column/
  * and from: http://www.camick.com/java/source/ButtonColumn.java
  *
  *  The ButtonColumn class provides a renderer and an editor that looks like a

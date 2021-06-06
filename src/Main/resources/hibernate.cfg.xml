@@ -17,7 +17,7 @@
         <property name="org.hibernate.flushMode">ALWAYS</property>
         <property name="hibernate.transaction.flush_before_completion">true</property>
 
-        <mapping class="CAB302.Common.BaseObject"/>
+        <mapping class="CAB302.Common.ServerPackages.BaseObject"/>
         <mapping class="CAB302.Common.Asset"/>
         <mapping class="CAB302.Common.AssetType"/>
         <mapping class="CAB302.Common.User"/>

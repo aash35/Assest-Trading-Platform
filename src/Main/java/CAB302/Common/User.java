@@ -1,19 +1,15 @@
 package CAB302.Common;
 
 import CAB302.Common.Enums.AccountTypeRole;
-import CAB302.Common.Helpers.HibernateUtil;
-import com.fasterxml.jackson.annotation.*;
+import CAB302.Common.ServerPackages.BaseObject;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.*;
 
 import javax.persistence.*;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 import CAB302.Common.Interfaces.*;
 
@@ -72,10 +68,17 @@ public class User extends BaseObject implements iGet, iList {
         CriteriaQuery<User> criteria = criteriaBuilder.createQuery(User.class);
         Root<User> root = criteria.from(User.class);
 
-        criteria.select(root).where(
-                criteriaBuilder.equal(root.get("username"), this.getUsername()),
-                criteriaBuilder.equal(root.get("hashedPassword"), this.getHashedPassword())
-        );
+        if (hashedPassword == null) {
+            criteria.select(root).where(
+                    criteriaBuilder.equal(root.get("username"), this.getUsername())
+            );
+        }
+        else {
+            criteria.select(root).where(
+                    criteriaBuilder.equal(root.get("username"), this.getUsername()),
+                    criteriaBuilder.equal(root.get("hashedPassword"), this.getHashedPassword())
+            );
+        }
 
         Query query = session.createQuery(criteria);
 

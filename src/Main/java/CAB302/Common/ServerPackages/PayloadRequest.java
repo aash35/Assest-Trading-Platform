@@ -1,4 +1,4 @@
-package CAB302.Common;
+package CAB302.Common.ServerPackages;
 
 import CAB302.Common.Enums.RequestPayloadType;
 import com.fasterxml.jackson.databind.ObjectMapper;

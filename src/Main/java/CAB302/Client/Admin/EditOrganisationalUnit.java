@@ -1,9 +1,13 @@
 package CAB302.Client.Admin;
 
 import CAB302.Client.Client;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.*;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Enums.TradeStatus;
+import CAB302.Common.Helpers.NavigationHelper;
+import CAB302.Common.ServerPackages.PayloadRequest;
+import CAB302.Common.ServerPackages.PayloadResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,12 +20,15 @@ import java.util.List;
  * Class creates the edit organisational unit page of the application GUI.
  */
 public class EditOrganisationalUnit extends JPanel {
-    private JLabel messageStackLabel = new JLabel("");
+    private JPanel focusPanel;
+    private JPanel titlePanel;
+    private JPanel mainPanel;
+    private JPanel innerPanel;
 
-    private JLabel assetNameLabel = new JLabel("Select Asset: ");
+    private JLabel assetNameLabel = new JLabel("Asset: ");
     private JComboBox assetCB;
 
-    private JLabel ouNameLabel = new JLabel("Select Organisational Unit: ");
+    private JLabel ouNameLabel = new JLabel("Organisational Unit: ");
     private JComboBox ouCB;
 
     private JLabel changeAmtLabel = new JLabel("Change Amount To: ");
@@ -31,13 +38,12 @@ public class EditOrganisationalUnit extends JPanel {
 
     private List<OrganisationalUnit> ouList;
     private List<AssetType> assetsTypeList;
-    private List<Asset> assets;
 
     /**
      * Constructs the application page to edit organisational units.
+     * @param panel the container for the page.
      */
-    public EditOrganisationalUnit() {
-
+    public EditOrganisationalUnit(JPanel panel) {
         //Get list of all OrgUnits and add to combobox
         try {
             getOUList();
@@ -59,44 +65,68 @@ public class EditOrganisationalUnit extends JPanel {
         String[] assetString = new String[assetsTypeList.size() + 1];
         assetString[0] = "Credits";
         for (int i = 1; i < assetString.length; i++) {
-            assetString[i] = ((AssetType) assetsTypeList.get(i - 1)).getName();
+            assetString[i] = (assetsTypeList.get(i - 1)).getName();
         }
         assetCB = new JComboBox(assetString);
 
-        setLayout(new GridBagLayout());
+        //GUI stuff
+        focusPanel = panel;
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(630,500));
+        add(mainPanel);
+
+        titlePanel = new JPanel();
+        titlePanel.setLayout(new FlowLayout());
+
+        JLabel title = new JLabel("Edit Organisational Unit");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 28));
+        titlePanel.add(title);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        innerPanel = new JPanel();
+        mainPanel.add(innerPanel, BorderLayout.CENTER);
+
+        innerPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
 
         //Left Column
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(ouNameLabel, gbc);
+        innerPanel.add(ouNameLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(assetNameLabel, gbc);
+        innerPanel.add(assetNameLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        add(changeAmtLabel, gbc);
+        innerPanel.add(changeAmtLabel, gbc);
 
         //Right Column
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 1;
         gbc.gridy = 0;
-        add(ouCB, gbc);
+        innerPanel.add(ouCB, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        add(assetCB, gbc);
+        innerPanel.add(assetCB, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 2;
-        add(changeAmtField, gbc);
+        innerPanel.add(changeAmtField, gbc);
 
-        gbc.gridx = 1;
+        //Middle
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
         gbc.gridy = 3;
-        add(confirmBtn, gbc);
+        innerPanel.add(confirmBtn, gbc);
 
         confirmBtn.addActionListener(
                 new ActionListener() {
@@ -106,54 +136,46 @@ public class EditOrganisationalUnit extends JPanel {
                         OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
                         Integer changeAmt = (Integer) changeAmtField.getValue();
 
-                        AssetType assetType;
+                        PayloadResponse response = null;
                         if (assetCB.getSelectedIndex() == 0) {
-                            editCredits(oUnit, changeAmt);
+                            response = editCredits(oUnit, changeAmt);
                         } else {
-                            assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
-
+                            AssetType assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
                             Asset asset = getAsset(oUnit, assetType);
-
                             if (asset == null)
                             {
                                 if (changeAmt != 0){
-                                    createAsset(oUnit, assetType, changeAmt);
+                                    response = createAsset(oUnit, assetType, changeAmt);
                                 }
                             }
                             else
                             {
                                 if (checkTrades(oUnit, assetType)){
-                                    editDeleteAssets(asset, changeAmt, false);
+                                    response = editDeleteAssets(asset, changeAmt, false);
                                 }
                                 else
                                 {
-                                    editDeleteAssets(asset, changeAmt, true);
+                                    response = editDeleteAssets(asset, changeAmt, true);
                                 }
-
-
                             }
                         }
-                        messageStackLabel.setText("Successfully saved");
-
-                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                        gbc.weighty = 5;
-                        gbc.insets = new Insets(20, 0, 0, 0);
-                        gbc.gridx = 1;
-                        gbc.gridy = 3;
-                        add(messageStackLabel, gbc);
-                        remove(confirmBtn);
-
-                        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-                        gbc.weighty = 5;
-                        gbc.insets = new Insets(20, 0, 0, 0);
-                        gbc.gridx = 1;
-                        gbc.gridy = 4;
-                        add(confirmBtn, gbc);
+                        if (response != null){
+                            Toast t;
+                            t = new Toast("Asset Successfully Changed", focusPanel);
+                            t.showtoast();
+                            NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                        }
                     }
                 });
 
     }
 
+    /**
+     * Checks if an organisational unit has trades for a specified asset
+     * @param ou The organisational unit to be checked.
+     * @param assetType The asset type that is being searched for.
+     * @return a boolean value that is the resulting from if a trade is found.
+     */
     private boolean checkTrades(OrganisationalUnit ou, AssetType assetType){
         Trade type = new Trade();
 
@@ -183,8 +205,15 @@ public class EditOrganisationalUnit extends JPanel {
         return exists;
     }
 
-
-    private void createAsset(OrganisationalUnit ou, AssetType assetType, int changeAmt){
+    /**
+     * Retrieves an asset of a specified Asset Type
+     * from a specified Organisational Unit from the database,
+     * @param ou The Organisational Unit to be checked.
+     * @param assetType The asset type that is being searched for.
+     * @param changeAmt the amount that the asset will be changed to.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse createAsset(OrganisationalUnit ou, AssetType assetType, int changeAmt){
         Asset type = new Asset();
         type.setQuantity(changeAmt);
         type.setAssetType(assetType);
@@ -201,8 +230,16 @@ public class EditOrganisationalUnit extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
+    /**
+     * Retrieves an asset of a specified Asset Type
+     * from a specified Organisational Unit from the database,
+     * @param ou The Organisational Unit to be checked.
+     * @param assetType The asset type that is being searched for.
+     * @return the asset if it is found or null.
+     */
     private Asset getAsset(OrganisationalUnit ou, AssetType assetType) {
         Asset type = new Asset();
 
@@ -223,7 +260,14 @@ public class EditOrganisationalUnit extends JPanel {
         return (Asset)response.getPayloadObject();
     }
 
-    private void editDeleteAssets (Asset asset, int changeAmt, boolean tradeExists){
+    /**
+     * Edits/Deletes a specified Organisational Units Assets
+     * @param asset the asset being edited.
+     * @param changeAmt the amount that the asset will be changed to.
+     * @param tradeExists determines if an asset is able to be deleted if set to 0.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse editDeleteAssets (Asset asset, int changeAmt, boolean tradeExists){
         asset.setQuantity(changeAmt);
 
         PayloadRequest request = new PayloadRequest();
@@ -244,9 +288,17 @@ public class EditOrganisationalUnit extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
-    private void editCredits(OrganisationalUnit ou, int changeAmt){
+    /**
+     * Edits a specified Organisational Units Credits
+     * @param ou the organisational unit being edited.
+     * @param changeAmt the amount that the credits will be changed to.
+     * @return a response on if the method was successful or not.
+     */
+    private PayloadResponse editCredits(OrganisationalUnit ou, int changeAmt)
+    {
         ou.setAvailableCredit(changeAmt);
 
         PayloadRequest request = new PayloadRequest();
@@ -261,16 +313,27 @@ public class EditOrganisationalUnit extends JPanel {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+        return response;
     }
 
-    private JSpinner createSpinner () {
+    /**
+     * Creates an integer spinnerbox with a minimum value of 0 and no max value.
+     * @return a JSpinner object
+     */
+    private JSpinner createSpinner ()
+    {
         SpinnerModel model = new SpinnerNumberModel(0, 0, null, 1);
         JSpinner spinner = new JSpinner(model);
         spinner.setPreferredSize(new Dimension(100, 25));
         return spinner;
     }
 
-    private void getOUList () throws IOException {
+    /**
+     * Retrieves the list of Organisational Units from the database,
+     * then assigns it to the ouList property.
+     */
+    private void getOUList () throws IOException
+    {
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new OrganisationalUnit());
@@ -280,7 +343,12 @@ public class EditOrganisationalUnit extends JPanel {
         ouList = (List<OrganisationalUnit>) (List<?>) response.getPayloadObject();
     }
 
-    private void getAssetTypeList () throws IOException {
+    /**
+     * Retrieves the list of Asset Types from the database,
+     * then assigns it to the assetTypeList property.
+     */
+    private void getAssetTypeList () throws IOException
+    {
         PayloadRequest request = new PayloadRequest();
 
         request.setPayloadObject(new AssetType());

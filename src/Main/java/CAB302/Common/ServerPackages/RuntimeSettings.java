@@ -1,5 +1,6 @@
-package CAB302.Common;
+package CAB302.Common.ServerPackages;
 
+import CAB302.Common.User;
 import CAB302.Server.Notification;
 import org.hibernate.Session;
 

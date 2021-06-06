@@ -1,7 +1,6 @@
 package CAB302.Common.Helpers;
 
-import CAB302.Common.RuntimeSettings;
-import org.hibernate.FlushMode;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
