@@ -17,6 +17,8 @@ import org.junit.Before;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -235,10 +237,38 @@ public class TradeTests {
 
         Assert.assertNotNull(trader);
     }
+    @Test
+    public void testCreation() {
+        Trade testTrade = new Trade();
+        TradeStatus status = TradeStatus.InMarket;
+        OrganisationalUnit org = OU;
+        AssetType assetType = type;
+        int price = 50;
+        TradeTransactionType transactionTypeTest = TradeTransactionType.Buying;
+        Timestamp time = Timestamp.from(Instant.now());
 
-    //need to make all the error cases
+        testTrade.setStatus(status);
+        testTrade.setOrganisationalUnit(org);
+        testTrade.setAssetType(assetType);
+        testTrade.setPrice(price);
+        testTrade.setTransactionType(transactionTypeTest);
+        testTrade.setCreatedDate(time);
+
+        Assert.assertEquals(status, testTrade.getStatus());
+        Assert.assertEquals(org, testTrade.getOrganisationalUnit());
+        Assert.assertEquals(assetType, testTrade.getAssetType());
+        Assert.assertEquals(price, testTrade.getPrice());
+        Assert.assertEquals(transactionTypeTest, testTrade.getTransactionType());
+        Assert.assertEquals(time, testTrade.getCreatedDate());
+    }
+
     @Test
     public void errorTrade() {
+
+    }
+    //TODO: coverage of the catch(ex)
+    @Test
+    public void catchExceptions() {
 
     }
 }
