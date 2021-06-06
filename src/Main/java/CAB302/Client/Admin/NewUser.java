@@ -62,7 +62,88 @@ public class NewUser extends JPanel {
         }
         ouCB = new JComboBox(organisationalUnits);
 
-        //GUI stuff
+        createGUI(panel);
+
+        confirmBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String username = enterUserField.getText();
+                        String password = new String(enterPassField.getPassword());
+
+                        createUser(username,password);
+                    }
+                });
+    }
+
+    private PayloadResponse createUser(String username, String password){
+        PayloadResponse response = null;
+        if (username.length() > 0 && password.length() > 0)
+        {
+            String hashedPass = SHA256HashHelper.generateHashedString(password);
+            OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
+            AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
+
+            User userCheck = new User();
+            userCheck.setUsername(username);
+
+            User user = new User();
+            user.setUsername(username);
+            user.setHashedPassword(hashedPass);
+            user.setOrganisationalUnit(oUnit);
+            user.setAccountRoleType(accountType);
+
+            PayloadRequest request = new PayloadRequest();
+
+            request.setPayloadObject(userCheck);
+
+            request.setRequestPayloadType(RequestPayloadType.Get);
+
+            response = null;
+            try {
+                response = new Client().SendRequest(request);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            userCheck = (User)response.getPayloadObject();
+
+            if(userCheck == null) {
+                request = new PayloadRequest();
+                request.setPayloadObject(user);
+                request.setRequestPayloadType(RequestPayloadType.Create);
+                try {
+                    response = new Client().SendRequest(request);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+
+                if (response != null){
+                    Toast t;
+                    t = new Toast("New User Added", focusPanel);
+                    t.showtoast();
+                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                }
+            }
+            else {
+                Toast t;
+                t = new Toast("User already exists", focusPanel);
+                t.showtoast();
+                enterUserField.setText("");
+                enterPassField.setText("");
+            }
+        }
+        else
+        {
+            Toast t;
+            t = new Toast("Please enter values in all fields", focusPanel);
+            t.showtoast();
+            enterUserField.setText("");
+            enterPassField.setText("");
+        }
+        return response;
+    }
+
+    private void createGUI(JPanel panel){
         focusPanel = panel;
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -128,80 +209,6 @@ public class NewUser extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 5;
         innerPanel.add(confirmBtn, gbc);
-
-        confirmBtn.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String username = enterUserField.getText();
-                        String password = new String(enterPassField.getPassword());
-
-                        if (username.length() > 0 && password.length() > 0)
-                        {
-                            String hashedPass = SHA256HashHelper.generateHashedString(password);
-                            OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
-                            AccountTypeRole accountType = (AccountTypeRole) accountTypeCB.getSelectedItem();
-
-                            User userCheck = new User();
-                            userCheck.setUsername(username);
-
-                            User user = new User();
-                            user.setUsername(username);
-                            user.setHashedPassword(hashedPass);
-                            user.setOrganisationalUnit(oUnit);
-                            user.setAccountRoleType(accountType);
-
-                            PayloadRequest request = new PayloadRequest();
-
-                            request.setPayloadObject(userCheck);
-
-                            request.setRequestPayloadType(RequestPayloadType.Get);
-
-                            PayloadResponse response = null;
-                            try {
-                                response = new Client().SendRequest(request);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
-                            userCheck = (User)response.getPayloadObject();
-
-                            if(userCheck == null) {
-                                request = new PayloadRequest();
-                                request.setPayloadObject(user);
-                                request.setRequestPayloadType(RequestPayloadType.Create);
-                                try {
-                                    response = new Client().SendRequest(request);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
-
-                                if (response != null){
-                                    Toast t;
-                                    t = new Toast("New User Added", focusPanel);
-                                    t.showtoast();
-                                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
-                                }
-                            }
-                            else {
-                                Toast t;
-                                t = new Toast("User already exists", focusPanel);
-                                t.showtoast();
-                                enterUserField.setText("");
-                                enterPassField.setText("");
-                            }
-                        }
-                        else
-                        {
-                            Toast t;
-                            t = new Toast("Please enter values in all fields", focusPanel);
-                            t.showtoast();
-                            enterUserField.setText("");
-                            enterPassField.setText("");
-                        }
-
-
-                    }
-                });
     }
 
     /**

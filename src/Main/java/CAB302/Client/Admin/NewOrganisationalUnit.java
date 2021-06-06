@@ -31,7 +31,75 @@ public class NewOrganisationalUnit extends JPanel {
      * @param panel the container for the page.
      */
     public NewOrganisationalUnit(JPanel panel){
-        //GUI stuff
+        createGUI(panel);
+
+        confirmBtn.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String name = OUnameField.getText();
+                        createOU(name);
+                    }
+                });
+    }
+
+    private PayloadResponse createOU(String name)
+    {
+        PayloadResponse response = null;
+        if (name.length() > 0)
+        {
+            CAB302.Common.OrganisationalUnit type = new CAB302.Common.OrganisationalUnit();
+
+            type.setUnitName(name);
+
+            PayloadRequest request = new PayloadRequest();
+
+            request.setPayloadObject(type);
+            request.setRequestPayloadType(RequestPayloadType.Get);
+
+            response = null;
+            try {
+                response = new Client().SendRequest(request);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+
+            OrganisationalUnit ou = (OrganisationalUnit)response.getPayloadObject();
+
+            if (ou == null) {
+                request.setRequestPayloadType(RequestPayloadType.Create);
+                try {
+                    response = new Client().SendRequest(request);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+
+                if (response != null){
+                    Toast t;
+                    t = new Toast("New Organisational Unit Added", focusPanel);
+                    t.showtoast();
+                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+                }
+            }
+            else {
+                Toast t;
+                t = new Toast("Organisational Unit already exists", focusPanel);
+                t.showtoast();
+                OUnameField.setText("");
+            }
+        }
+        else
+        {
+            Toast t;
+            t = new Toast("Please enter a value in the field", focusPanel);
+            t.showtoast();
+            OUnameField.setText("");
+        }
+        return response;
+    }
+
+    private void createGUI(JPanel panel)
+    {
         focusPanel = panel;
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -70,62 +138,5 @@ public class NewOrganisationalUnit extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 2;
         innerPanel.add(confirmBtn, gbc);
-
-        confirmBtn.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String name = OUnameField.getText();
-                        if (name.length() > 0)
-                        {
-                            CAB302.Common.OrganisationalUnit type = new CAB302.Common.OrganisationalUnit();
-
-                            type.setUnitName(name);
-
-                            PayloadRequest request = new PayloadRequest();
-
-                            request.setPayloadObject(type);
-                            request.setRequestPayloadType(RequestPayloadType.Get);
-
-                            PayloadResponse response = null;
-                            try {
-                                response = new Client().SendRequest(request);
-                            } catch (IOException ioException) {
-                                ioException.printStackTrace();
-                            }
-
-                            OrganisationalUnit ou = (OrganisationalUnit)response.getPayloadObject();
-
-                            if (ou == null) {
-                                request.setRequestPayloadType(RequestPayloadType.Create);
-                                try {
-                                    response = new Client().SendRequest(request);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
-
-                                if (response != null){
-                                    Toast t;
-                                    t = new Toast("New Organisational Unit Added", focusPanel);
-                                    t.showtoast();
-                                    NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
-                                }
-                            }
-                            else {
-                                Toast t;
-                                t = new Toast("Organisational Unit already exists", focusPanel);
-                                t.showtoast();
-                                OUnameField.setText("");
-                            }
-                        }
-                        else
-                        {
-                            Toast t;
-                            t = new Toast("Please enter a value in the field", focusPanel);
-                            t.showtoast();
-                            OUnameField.setText("");
-                        }
-                    }
-                });
     }
 }

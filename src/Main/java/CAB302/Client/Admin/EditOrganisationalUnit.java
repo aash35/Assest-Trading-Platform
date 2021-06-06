@@ -135,39 +135,44 @@ public class EditOrganisationalUnit extends JPanel {
 
                         OrganisationalUnit oUnit = ouList.get(ouCB.getSelectedIndex());
                         Integer changeAmt = (Integer) changeAmtField.getValue();
+                        editOU(oUnit, changeAmt);
 
-                        PayloadResponse response = null;
-                        if (assetCB.getSelectedIndex() == 0) {
-                            response = editCredits(oUnit, changeAmt);
-                        } else {
-                            AssetType assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
-                            Asset asset = getAsset(oUnit, assetType);
-                            if (asset == null)
-                            {
-                                if (changeAmt != 0){
-                                    response = createAsset(oUnit, assetType, changeAmt);
-                                }
-                            }
-                            else
-                            {
-                                if (checkTrades(oUnit, assetType)){
-                                    response = editDeleteAssets(asset, changeAmt, false);
-                                }
-                                else
-                                {
-                                    response = editDeleteAssets(asset, changeAmt, true);
-                                }
-                            }
-                        }
-                        if (response != null){
-                            Toast t;
-                            t = new Toast("Asset Successfully Changed", focusPanel);
-                            t.showtoast();
-                            NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
-                        }
                     }
                 });
 
+    }
+
+    private PayloadResponse editOU(OrganisationalUnit oUnit, Integer changeAmt){
+        PayloadResponse response = null;
+        if (assetCB.getSelectedIndex() == 0) {
+            response = editCredits(oUnit, changeAmt);
+        } else {
+            AssetType assetType = assetsTypeList.get(assetCB.getSelectedIndex()-1);
+            Asset asset = getAsset(oUnit, assetType);
+            if (asset == null)
+            {
+                if (changeAmt != 0){
+                    response = createAsset(oUnit, assetType, changeAmt);
+                }
+            }
+            else
+            {
+                if (checkTrades(oUnit, assetType)){
+                    response = editDeleteAssets(asset, changeAmt, false);
+                }
+                else
+                {
+                    response = editDeleteAssets(asset, changeAmt, true);
+                }
+            }
+        }
+        if (response != null){
+            Toast t;
+            t = new Toast("Asset Successfully Changed", focusPanel);
+            t.showtoast();
+            NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
+        }
+        return response;
     }
 
     /**
