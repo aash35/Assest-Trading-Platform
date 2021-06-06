@@ -42,42 +42,19 @@ public class OrganisationalUnitTests {
      */
     @BeforeEach
     @Test
-    public void tradeTestData() {
-        type = new AssetType();
-        type.setName("Potatoes");
-        type.setDescription("Many potatoes");
+    public void createOrganisationalUnit() {
 
-        OU = new OrganisationalUnit();
-        OU.setUnitName("Unit A");
-        OU.setAvailableCredit(100);
-
-        user = new User();
-        user.setUsername("User");
-        user.setHashedPassword(SHA256HashHelper.generateHashedString("password"));
-        user.setOrganisationalUnit(OU);
-        user.setAccountRoleType(AccountTypeRole.Standard);
-
-        asset = new Asset();
-        asset.setAssetType(type);
-        asset.setQuantity(50);
-        //asset.setCreatedByUserID(user); TODO: FIX
     }
-
-    /**
-     * Test 1: Construct a new AssetType object
-     */
     @Test
-    public void newAssetTypeTest() throws IOException {
-        Client client = new Client();
+    public void updateOrganisationalUnit() {
 
-        PayloadRequest request = new PayloadRequest();
+    }
+    @Test
+    public void deleteOrganisationalUnit() {
 
-        request.setPayloadObject(type);
+    }
+    @Test
+    public void listOrganisationalUnit() {
 
-        request.setRequestPayloadType(RequestPayloadType.Create);
-
-        PayloadResponse response = client.SendRequest(request);
-
-        assertNull(response.getPayloadObject());
     }
 }

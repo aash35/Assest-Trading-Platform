@@ -42,41 +42,25 @@ public class UserTests {
      */
     @BeforeEach
     @Test
-    public void tradeTestData() {
-        type = new AssetType();
-        type.setName("Potatoes");
-        type.setDescription("Many potatoes");
+    public void createUser() {
 
-        OU = new OrganisationalUnit();
-        OU.setUnitName("Unit A");
-        OU.setAvailableCredit(100);
+    }
+    @Test
+    public void updateUser() {
 
-        user = new User();
-        user.setUsername("User");
-        user.setHashedPassword(SHA256HashHelper.generateHashedString("password"));
-        user.setOrganisationalUnit(OU);
-        user.setAccountRoleType(AccountTypeRole.Standard);
+    }
+    @Test
+    public void deleteUser() {
 
-        asset = new Asset();
-        asset.setAssetType(type);
-        asset.setQuantity(50);
+    }
+    @Test
+    public void listUser() {
+
     }
 
-    /**
-     * Test 1: Construct a new AssetType object
-     */
+    //need to make all the error cases
     @Test
-    public void newAssetTypeTest() throws IOException {
-        Client client = new Client();
+    public void createDuplicateUser() {
 
-        PayloadRequest request = new PayloadRequest();
-
-        request.setPayloadObject(type);
-
-        request.setRequestPayloadType(RequestPayloadType.Create);
-
-        PayloadResponse response = client.SendRequest(request);
-
-        assertNull(response.getPayloadObject());
     }
 }
