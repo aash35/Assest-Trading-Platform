@@ -68,55 +68,6 @@ public class Login extends JPanel {
                 if(e.getKeyChar()==KeyEvent.VK_ENTER){
                     passwordField.grabFocus();
                 }
-
-                //need to remove on the way out
-                if (e.getKeyChar()==KeyEvent.VK_ESCAPE) {
-
-                    User user = new User();
-                    user.setHashedPassword(SHA256HashHelper.generateHashedString("admin"));
-                    user.setUsername("admin");
-
-                    PayloadRequest request = new PayloadRequest();
-
-                    request.setPayloadObject(user);
-                    request.setRequestPayloadType(RequestPayloadType.Get);
-
-                    PayloadResponse response = null;
-                    try {
-                        response = new Client().SendRequest(request);
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-
-                    user = (CAB302.Common.User)response.getPayloadObject();
-
-                    if (user != null) {
-                        RuntimeSettings.CurrentUser = user;
-
-                        NavigationHelper.mainMenu(frame);
-                    } else {
-                        Toast t;
-                        t = new Toast("Login Failed", theFrame);
-                        t.showtoast();
-                    }
-                }
-                //need to remove on the way out
-                if ((int)e.getKeyChar()==96) {
-
-                    User user = new User();
-
-                    user.setUsername("user");
-                    user.setAccountRoleType(AccountTypeRole.Standard);
-
-                    CAB302.Common.OrganisationalUnit userOrg = new CAB302.Common.OrganisationalUnit();
-                    userOrg.setUnitName("Potatos Farmers");
-                    userOrg.setAvailableCredit(5000);
-
-                    user.setOrganisationalUnit(userOrg);
-                    RuntimeSettings.CurrentUser = user;
-
-                    NavigationHelper.mainMenu(frame);
-                }
             }
 
             @Override
