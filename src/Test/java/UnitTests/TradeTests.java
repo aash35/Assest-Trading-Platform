@@ -167,6 +167,35 @@ public class TradeTests {
         actual = trader.getQuantity();
         Assert.assertEquals(expected, actual);
     }
+    @Test
+    @Order(3)
+    public void listTrades() {
+        Client client = new Client();
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(trader);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        List<Trade> trades = (List<Trade>)(List<?>)response.getPayloadObject();
+
+        Assert.assertNotNull(trades);
+
+        trader = trades.stream().filter(x -> x.getQuantity() == 20).findFirst().orElse(null);
+
+        Assert.assertNotNull(trader);
+    }
 
     @Test
     @Order(4)
@@ -208,35 +237,7 @@ public class TradeTests {
         Assert.assertNull(response.getPayloadObject());
     }
 
-    @Test
-    @Order(3)
-    public void listTrades() {
-        Client client = new Client();
 
-        PayloadRequest request = new PayloadRequest();
-        request.setPayloadObject(trader);
-        request.setRequestPayloadType(RequestPayloadType.List);
-
-        PayloadResponse response = null;
-
-        try {
-            response = client.SendRequest(request);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Assert.assertNotNull(response);
-
-        Assert.assertNotNull(response.getPayloadObject());
-
-        List<Trade> trades = (List<Trade>)(List<?>)response.getPayloadObject();
-
-        Assert.assertNotNull(trades);
-
-        trader = trades.stream().filter(x -> x.getQuantity() == 20).findFirst().orElse(null);
-
-        Assert.assertNotNull(trader);
-    }
     @Test
     public void testCreation() {
         Trade testTrade = new Trade();
