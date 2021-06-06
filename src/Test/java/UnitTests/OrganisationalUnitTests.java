@@ -12,17 +12,14 @@ import CAB302.Common.ServerPackages.PayloadResponse;
 import CAB302.Common.User;
 import CAB302.Server.Server;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrganisationalUnitTests {
     /**
      * Pre-Test class declaration

@@ -73,6 +73,7 @@ public class AssetTests {
     @Test
     @Order(1)
     public void createAsset() {
+        asset = new Asset();
 
         PayloadRequest request = new PayloadRequest();
         asset.setQuantity(1);

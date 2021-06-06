@@ -1,5 +1,6 @@
 package UnitTests;
 
+import CAB302.Client.Admin.Administration;
 import CAB302.Client.Client;
 import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
@@ -69,7 +70,7 @@ public class UserTests {
         String hashedPass = SHA256HashHelper.generateHashedString(password);
         type.setHashedPassword(hashedPass);
         type.setOrganisationalUnit(OU);
-        type.setAccountRoleType();
+        type.setAccountRoleType(AccountTypeRole.Administrator);
 
 
         PayloadRequest request = new PayloadRequest();
