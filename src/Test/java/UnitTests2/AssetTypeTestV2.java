@@ -1,4 +1,4 @@
-package UnitTests;
+package UnitTests2;
 
 import CAB302.Client.Admin.NewAssetType;
 import CAB302.Client.Client;
