@@ -36,6 +36,7 @@ public class NewAssetType extends JPanel{
 
     /**
      * Constructs the application page to create a new asset type.
+     * @param panel the container for the page.
      */
     public NewAssetType(JPanel panel) {
         //GUI stuff
