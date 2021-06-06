@@ -11,6 +11,8 @@ import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
 import CAB302.Common.User;
 import CAB302.Server.Server;
+import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +25,25 @@ public class TradeTests {
     /**
      * Pre-Test class declaration
      */
-    AssetType type;
-    OrganisationalUnit OU;
-    User user;
-    Asset asset;
+    private static Client client;
+    public static AssetType type;
+    public static OrganisationalUnit OU;
+    public static User user;
+    public static Asset asset;
+
+    @Before
+    public void preTestConstruction() {
+        client = new Client();
+
+        AssetTests assetTests = new AssetTests();
+        assetTests.createAsset();
+        asset = assetTests.asset;
+        OU = assetTests.OU;
+
+        AssetTypeTests assetTypeTests = new AssetTypeTests();
+        assetTypeTests.createAssetType();
+        type = assetTypeTests.type;
+    }
 
     @BeforeAll
     public static void before() {
@@ -37,14 +54,23 @@ public class TradeTests {
         System.out.println("Started Server");
     }
 
+    @AfterAll
+    public static void cleanUp() {
+        AssetTests assetTests = new AssetTests();
+        assetTests.deleteAsset();
+
+        AssetTypeTests assetTypeTests = new AssetTypeTests();
+        assetTypeTests.deleteAssetType();
+    }
+
     /**
      * Test 0: Construct objects for AssetType, OrganisationalUnit, User and Asset classes.
      */
-    @BeforeEach
     @Test
     public void createTrade() {
 
     }
+
     @Test
     public void updateTrade() {
 
