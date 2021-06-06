@@ -1,4 +1,4 @@
-package CAB302.Common.UnitTests;
+package UnitTests;
 
 import CAB302.Client.Client;
 import CAB302.Common.Asset;
