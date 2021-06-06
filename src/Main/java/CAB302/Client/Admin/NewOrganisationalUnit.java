@@ -38,17 +38,18 @@ public class NewOrganisationalUnit extends JPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String name = OUnameField.getText();
-                        createOU(name);
+                        boolean enableToast = true;
+                        createOU(name, enableToast);
                     }
                 });
     }
 
     /**
      * Creates a new Organisational Unit based on the selection of the admin
-     * @param name The username to be created.
+     * @param name The name of the orgUnit to be created.
      * @return a response on if the method was successful or not.
      */
-    private PayloadResponse createOU(String name)
+    public PayloadResponse createOU(String name, boolean enableToast)
     {
         PayloadResponse response = null;
         //Checks if the field that was entered is empty
@@ -81,24 +82,34 @@ public class NewOrganisationalUnit extends JPanel {
                 }
 
                 if (response != null){
-                    Toast t;
-                    t = new Toast("New Organisational Unit Added", focusPanel);
-                    t.showtoast();
+                    if (enableToast)
+                    {
+                        Toast t;
+                        t = new Toast("New Organisational Unit Added", focusPanel);
+                        t.showtoast();
+                    }
                     NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
                 }
             }
             else {
-                Toast t;
-                t = new Toast("Organisational Unit already exists", focusPanel);
-                t.showtoast();
+                if (enableToast)
+                {
+                    Toast t;
+                    t = new Toast("Organisational Unit already exists", focusPanel);
+                    t.showtoast();
+                }
                 OUnameField.setText("");
+                response = null;
             }
         }
         else
         {
-            Toast t;
-            t = new Toast("Please enter a value in the field", focusPanel);
-            t.showtoast();
+            if (enableToast)
+            {
+                Toast t;
+                t = new Toast("Please enter a value in the field", focusPanel);
+                t.showtoast();
+            }
             OUnameField.setText("");
         }
         return response;
