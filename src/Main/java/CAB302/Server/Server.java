@@ -404,6 +404,8 @@ class RequestHandler extends Thread {
             case Delete:
                 session = RuntimeSettings.Session;
 
+                session.clear();
+
                 HibernateUtil.openOrGetTransaction();
 
                 session.delete(object);
@@ -412,7 +414,7 @@ class RequestHandler extends Thread {
 
                 response = new PayloadResponse();
 
-                response.setPayloadObject(object);
+                response.setPayloadObject(null);
 
                 return response;
 

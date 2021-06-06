@@ -1,21 +1,23 @@
 package UnitTests;
 
 import CAB302.Client.Client;
+import CAB302.Client.ClientSettings;
 import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
 import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Common.OrganisationalUnit;
+import CAB302.Common.ServerPackages.BaseObject;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import CAB302.Common.User;
 import CAB302.Server.Server;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.*;
+import org.junit.runners.MethodSorters;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AssetTypeTests {
     /**
      * Pre-Test class declaration
@@ -34,7 +37,9 @@ public class AssetTypeTests {
 
     @BeforeAll
     public static void before() {
-        Server server = new Server(8080);
+        ClientSettings clientSettings = new ClientSettings();
+
+        Server server = new Server(RuntimeSettings.Port);
 
         server.startServer();
 
@@ -72,6 +77,33 @@ public class AssetTypeTests {
 
     @Test
     @Order(2)
+    public void getAssetType() {
+        Client client = new Client();
+
+        AssetType type = new AssetType();
+        type.setName("Unit Test Asset Type");
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse payloadResponse = null;
+
+        try {
+            payloadResponse = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(payloadResponse);
+
+        Assert.assertNotNull(payloadResponse.getPayloadObject());
+
+        Assert.assertNotNull(((BaseObject)payloadResponse.getPayloadObject()).id);
+    }
+
+    @Test
+    @Order(3)
     public void updateAssetType() {
         Client client = new Client();
 
@@ -122,7 +154,7 @@ public class AssetTypeTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void listAssetType() {
         Client client = new Client();
 
@@ -149,13 +181,13 @@ public class AssetTypeTests {
 
         Assert.assertNotNull(types);
 
-        type = types.stream().filter(x -> x.getName() == "Unit Test Asset Type - Updated").findFirst().orElse(null);
+        type = types.stream().filter(x -> x.getName().equals("Unit Test Asset Type - Updated")).findFirst().orElse(null);
 
         Assert.assertNotNull(type);
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void deleteAssetType() {
         Client client = new Client();
 
