@@ -91,11 +91,6 @@ public class Trade extends BaseObject implements iGet, iList {
 
         HibernateUtil.openOrGetTransaction();
 
-        session.flush();
-        session.clear();
-
-        HibernateUtil.openOrGetTransaction();
-
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trade> criteria = criteriaBuilder.createQuery(Trade.class);
         Root<Trade> root = criteria.from(Trade.class);
@@ -128,7 +123,7 @@ public class Trade extends BaseObject implements iGet, iList {
      * @return a list of object matching the search criteria, or null if none exists.
      */
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
+        Session session = RuntimeSettings.Session;
 
         HibernateUtil.openOrGetTransaction();
 

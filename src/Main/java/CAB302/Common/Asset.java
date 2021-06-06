@@ -64,6 +64,10 @@ public class Asset extends BaseObject implements iGet, iList {
     public BaseObject get() {
         Session session = RuntimeSettings.Session;
 
+        session.clear();
+
+        HibernateUtil.openOrGetTransaction();
+
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Asset> criteria = criteriaBuilder.createQuery(Asset.class);
         Root<Asset> root = criteria.from(Asset.class);
@@ -94,7 +98,11 @@ public class Asset extends BaseObject implements iGet, iList {
      * @return a list of object matching the search criteria, or null if none exists.
      */
     public List<BaseObject> list() {
-        Session session = HibernateUtil.getHibernateSession();
+
+        Session session = RuntimeSettings.Session;
+
+        session.clear();
+
         HibernateUtil.openOrGetTransaction();
 
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();

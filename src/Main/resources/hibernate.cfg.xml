@@ -9,13 +9,13 @@
         <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
         <property name="connection.username">root</property>
         <property name="connection.password">839%$}ewZ`>)vqu8mcM_]zFL(CRSOKHO</property>
-        <property name="connection.pool_size">3</property>
+        <property name="connection.pool_size">1000</property>
         <property name="current_session_context_class">thread</property>
         <property name="show_sql">false</property>
         <property name="format_sql">true</property>
         <property name="hbm2ddl.auto">update</property>
-        <property name="release_mode">after_statement</property>
-        <property name="auto_close_session">true</property>
+        <property name="org.hibernate.flushMode">ALWAYS</property>
+        <property name="hibernate.transaction.flush_before_completion">true</property>
 
         <mapping class="CAB302.Common.BaseObject"/>
         <mapping class="CAB302.Common.Asset"/>

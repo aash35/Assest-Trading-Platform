@@ -48,6 +48,9 @@ public class Server extends Thread {
         {
             RuntimeSettings.Session = HibernateUtil.getHibernateSession();
 
+            TradeProcessor tradeProcessor = new TradeProcessor();
+            tradeProcessor.start();
+
             serverSocket = new ServerSocket(port);
             this.start();
         }
@@ -80,9 +83,6 @@ public class Server extends Thread {
             try
             {
                 System.out.println("Listening for a connection");
-
-                TradeProcessor tradeProcessor = new TradeProcessor();
-                //tradeProcessor.start();
 
                 Socket socket = serverSocket.accept();
 
@@ -132,18 +132,13 @@ class TradeProcessor extends Thread {
 
                 for (Trade buyTrade : buyTrades) {
 
-                    session.refresh(buyTrade);
-
                     List<Trade> availableSellTrades = sellTrades != null ? sellTrades.stream().filter(x -> x.getAssetType().id == buyTrade.getAssetType().id).collect(Collectors.toList()) : null;
 
                     if (availableSellTrades != null) {
 
                         int quantityLeftToBuy = buyTrade.getQuantity();
 
-                        sellTradeFinish:
                         for (Trade availableSellTrade : availableSellTrades) {
-
-                            HibernateUtil.openOrGetTransaction();
 
                             session.refresh(availableSellTrade);
 
@@ -210,6 +205,8 @@ class TradeProcessor extends Thread {
 
                                 ou.setAvailableCredit(newCredit);
 
+                                session.clear();
+
                                 session.update(availableSellTrade);
 
                                 session.update(ou);
@@ -231,10 +228,6 @@ class TradeProcessor extends Thread {
                                 notificationBuy.setOuID(availableSellTrade.getOrganisationalUnit().id);
 
                                 RuntimeSettings.notifications.add(notificationBuy);
-
-                                if (quantityLeftToBuy == 0) {
-                                    //break sellTradeFinish;
-                                }
                             }
                         }
                     }
@@ -316,8 +309,6 @@ class RequestHandler extends Thread {
         //need to add validation of the checksum
         var object = requestPayload.getPayloadObject();
 
-        RuntimeSettings.Session.clear();
-
         switch (requestPayload.getRequestPayloadType()) {
             case Buy:
             case Sell:
@@ -359,6 +350,12 @@ class RequestHandler extends Thread {
             case List:
                 if (object instanceof iList)
                 {
+                    Session session = RuntimeSettings.Session;
+
+                    session.clear();
+
+                    HibernateUtil.openOrGetTransaction();
+
                     var result = ((iList)object).list();
 
                     PayloadResponse response = new PayloadResponse();
@@ -384,14 +381,14 @@ class RequestHandler extends Thread {
             case Update:
                 session = RuntimeSettings.Session;
 
-                HibernateUtil.openOrGetTransaction();
-
-                session.flush();
                 session.clear();
+
+                HibernateUtil.openOrGetTransaction();
 
                 session.update(object);
 
                 session.getTransaction().commit();
+
                 session.refresh(object);
 
                 PayloadResponse response = new PayloadResponse();
@@ -404,9 +401,6 @@ class RequestHandler extends Thread {
                 session = RuntimeSettings.Session;
 
                 HibernateUtil.openOrGetTransaction();
-
-                session.flush();
-                session.clear();
 
                 session.delete(object);
 
@@ -421,7 +415,7 @@ class RequestHandler extends Thread {
             case Notification:
 
                 if (object instanceof User) {
-                    List<Notification> notifications = RuntimeSettings.notifications.stream().filter(x -> x.getOuID() == ((User)object).id).collect(Collectors.toList());
+                    List<Notification> notifications = RuntimeSettings.notifications.stream().filter(x -> ((Integer) x.getOuID()).intValue() == ((Integer)((User)object).getOrganisationalUnit().id).intValue()).collect(Collectors.toList());
 
                     response = new PayloadResponse();
 

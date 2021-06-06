@@ -175,6 +175,20 @@ public class OrganisationalUnit extends JPanel {
         constraints.gridy = 0;
         panel.add(creditTitle, constraints);
 
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(focusUser);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse response = null;
+
+        try {
+            response = new Client().SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        focusUser = (User)response.getPayloadObject();
+
         JLabel creditAmount = new JLabel("" +focusUser.getOrganisationalUnit().getAvailableCredit() );
         creditAmount.setFont(creditAmount.getFont().deriveFont(Font.BOLD, 28));
         constraints.gridx = 0;

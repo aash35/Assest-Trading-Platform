@@ -163,6 +163,10 @@ public class BuySellAsset extends JPanel {
                         sellQuantity.setValue(1);
 
                         refresh();
+
+                        Toast t;
+                        t = new Toast("Buy Trade Added to Market", storePanel);
+                        t.showtoast();
                     }
                 }
             }
