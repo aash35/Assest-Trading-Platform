@@ -27,10 +27,7 @@ public class AssetTypeTests {
     /**
      * Pre-Test class declaration
      */
-    AssetType type;
-    OrganisationalUnit OU;
-    User user;
-    Asset asset;
+    public static AssetType type;
 
     @BeforeAll
     public static void before() {
@@ -49,12 +46,12 @@ public class AssetTypeTests {
     public void createAssetType() {
         Client client = new Client();
 
-        AssetType type = new AssetType();
-        type.setName("Unit Test Asset Type");
-        type.setDescription("Test Description");
+        AssetType typeOne = new AssetType();
+        typeOne.setName("Unit Test Asset Type");
+        typeOne.setDescription("Test Description");
 
         PayloadRequest request = new PayloadRequest();
-        request.setPayloadObject(type);
+        request.setPayloadObject(typeOne);
         request.setRequestPayloadType(RequestPayloadType.Create);
 
         PayloadResponse payloadResponse = null;
@@ -64,7 +61,7 @@ public class AssetTypeTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        type = typeOne;
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNotNull(payloadResponse.getPayloadObject());
@@ -191,9 +188,10 @@ public class AssetTypeTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        type = null;
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNull(payloadResponse.getPayloadObject());
+
     }
 }
