@@ -69,7 +69,7 @@ public class UserTests {
         String hashedPass = SHA256HashHelper.generateHashedString(password);
         type.setHashedPassword(hashedPass);
         type.setOrganisationalUnit(OU);
-        type.setAccountRoleType();
+        //type.setAccountRoleType();
 
 
         PayloadRequest request = new PayloadRequest();
