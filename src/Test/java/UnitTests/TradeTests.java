@@ -1,6 +1,7 @@
 package UnitTests;
 
 import CAB302.Client.Client;
+import CAB302.Client.ClientSettings;
 import CAB302.Common.*;
 import CAB302.Common.Enums.AccountTypeRole;
 import CAB302.Common.Enums.RequestPayloadType;
@@ -45,6 +46,8 @@ public class TradeTests {
 
     @BeforeAll
     public static void before() {
+        ClientSettings clientSettings = new ClientSettings();
+
         Server server = new Server(8080);
 
         server.startServer();
