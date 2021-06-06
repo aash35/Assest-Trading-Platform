@@ -47,8 +47,8 @@ public class NewAssetType extends JPanel{
                     public void actionPerformed(ActionEvent e) {
                         String name = nameField.getText();
                         String description = descriptionField.getText();
-
-                        createAssetType(name, description);
+                        boolean enableToast = true;
+                        createAssetType(name, description, enableToast);
                     }
                 });
     }
@@ -59,7 +59,7 @@ public class NewAssetType extends JPanel{
      * @param description a description of the new asset type.
      * @return a response on if the method was successful or not.
      */
-    private PayloadResponse createAssetType(String name, String description)
+    public PayloadResponse createAssetType(String name, String description, boolean enableToast)
     {
         PayloadResponse response = null;
         if (name.length() > 0 && description.length() > 0)
@@ -93,26 +93,35 @@ public class NewAssetType extends JPanel{
                     ioException.printStackTrace();
                 }
                 if (response != null){
-                    Toast t;
-                    t = new Toast("New Asset Type Added", focusPanel);
-                    t.showtoast();
+                    if (enableToast)
+                    {
+                        Toast t;
+                        t = new Toast("New Asset Type Added", focusPanel);
+                        t.showtoast();
+                    }
                     NavigationHelper.changePanel(focusPanel, new Administration(focusPanel));
                 }
             }
             else
             {
-                Toast t;
-                t = new Toast("Asset Type already exists", focusPanel);
-                t.showtoast();
+                if (enableToast)
+                {
+                    Toast t;
+                    t = new Toast("Asset Type already exists", focusPanel);
+                    t.showtoast();
+                }
                 nameField.setText("");
                 descriptionField.setText("");
             }
         }
         else
         {
-            Toast t;
-            t = new Toast("Please enter a value in all fields", focusPanel);
-            t.showtoast();
+            if (enableToast)
+            {
+                Toast t;
+                t = new Toast("Please enter a value in all fields", focusPanel);
+                t.showtoast();
+            }
             nameField.setText("");
             descriptionField.setText("");
         }

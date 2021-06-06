@@ -1,7 +1,9 @@
 package UnitTests;
 
+import CAB302.Client.Admin.NewAssetType;
 import CAB302.Client.Client;
 import CAB302.Client.ClientSettings;
+import CAB302.Client.Helper.Toast;
 import CAB302.Common.Asset;
 import CAB302.Common.AssetType;
 import CAB302.Common.Enums.AccountTypeRole;
@@ -19,6 +21,7 @@ import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.*;
 import org.junit.runners.MethodSorters;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -226,5 +229,41 @@ public class AssetTypeTests {
 
         Assert.assertNull(payloadResponse.getPayloadObject());
 
+    }
+
+    @Test
+    @Order(6)
+    public void createAssetTypeEmptyNameAndDescription() {
+        JPanel testpanel = new JPanel();
+        NewAssetType test = new NewAssetType(testpanel);
+        String testName = "";
+        String testDesc = "";
+        boolean enableToast = false;
+
+        PayloadResponse response = test.createAssetType(testName, testDesc, enableToast);
+
+        Assert.assertNull(response);
+        if (response != null)
+        {
+            Assert.assertNull(response.getPayloadObject());
+        }
+    }
+
+    @Test
+    @Order(7)
+    public void createAssetTypeEmptyNameOnly() {
+        JPanel testpanel = new JPanel();
+        NewAssetType test = new NewAssetType(testpanel);
+        String testName = "";
+        String testDesc = "";
+        boolean enableToast = false;
+
+        PayloadResponse response = test.createAssetType(testName, testDesc, enableToast);
+
+        Assert.assertNull(response);
+        if (response != null)
+        {
+            Assert.assertNull(response.getPayloadObject());
+        }
     }
 }
