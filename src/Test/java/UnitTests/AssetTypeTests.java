@@ -40,7 +40,6 @@ public class AssetTypeTests {
     /**
      * Test 0: Construct objects for AssetType, OrganisationalUnit, User and Asset classes.
      */
-    @BeforeEach
     @Test
     public void createAssetType() {
 

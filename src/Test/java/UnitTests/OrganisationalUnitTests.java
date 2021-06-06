@@ -23,10 +23,8 @@ public class OrganisationalUnitTests {
     /**
      * Pre-Test class declaration
      */
-    AssetType type;
-    OrganisationalUnit OU;
+    public static OrganisationalUnit OU;
     User user;
-    Asset asset;
 
     @BeforeAll
     public static void before() {
