@@ -252,7 +252,7 @@ public class OrganisationalUnitTests {
         JPanel testpanel = new JPanel();
         NewOrganisationalUnit test = new NewOrganisationalUnit(testpanel);
 
-        //Create asset
+        //Create Ou
         String testName1 = "Test1";
         boolean enableToast = false;
 
@@ -274,6 +274,30 @@ public class OrganisationalUnitTests {
             deleteOU(ou);
         }
     }
+/*
+    @Test
+    @Order(10)
+    public void editOUCredits() {
+        JPanel testpanel = new JPanel();
+        NewOrganisationalUnit test = new NewOrganisationalUnit(testpanel);
+
+        //Create Ou
+        String testName1 = "Test1";
+        boolean enableToast = false;
+
+        PayloadResponse response1 = test.createOU(testName1, enableToast);
+
+        Assert.assertNotNull(response1);
+
+
+
+        //cleanup database
+        if(response1 != null)
+        {
+            OrganisationalUnit ou = getOU(testName1);
+            deleteOU(ou);
+        }
+    }*/
 
 
     ///////////////////////////////HELPER FUNCTIONS TO CLEAN DATABASE//////////////////////
