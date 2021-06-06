@@ -15,7 +15,7 @@ public class MainCentre extends JPanel {
 
     /**
      * Constructs the panel to be used as the centre panel of the application GUI.
-     * @param user
+     * @param user the currently logged in user.
      */
     public MainCentre(User user) {
         setBorder(BorderFactory.createLineBorder(Color.black, 2));
