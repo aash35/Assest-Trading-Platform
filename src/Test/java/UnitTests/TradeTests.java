@@ -42,7 +42,7 @@ public class TradeTests {
 
 
     @BeforeAll
-    public static void before() {
+    public static void before() throws IOException {
         ClientSettings clientSettings = new ClientSettings();
 
         Server server = new Server(RuntimeSettings.Port);
@@ -52,33 +52,42 @@ public class TradeTests {
         System.out.println("Started Server");
         client = new Client();
 
-        org = new OrganisationalUnitTests();
-        org.createOrganisationalUnit();
-        OU = org.OU;
+        OrganisationalUnit ouTemp  = new OrganisationalUnit();
+        ouTemp.setUnitName("Temp OU");
+        ouTemp.setAvailableCredit(5000);
 
-        assetTests = new AssetTests();
-        assetTests.createAsset();
+        PayloadRequest request = new PayloadRequest();
+        request.setRequestPayloadType(RequestPayloadType.Create);
+        request.setPayloadObject(ouTemp);
 
-        asset = assetTests.asset;
+        PayloadResponse response = new Client().SendRequest(request);
 
-        assetTypeTests = new AssetTypeTests();
-        assetTypeTests.createAssetType();
-        type = assetTypeTests.type;
+        OU = (OrganisationalUnit)response.getPayloadObject();
 
-        asset.setAssetType(type);
-    }
+        AssetType typeTemp = new AssetType();
+        typeTemp.setName("Temp Asset Type");
+        typeTemp.setDescription("Temp Asset Type");
 
-    @AfterAll
-    public static void afterAll() {
+        request = new PayloadRequest();
+        request.setRequestPayloadType(RequestPayloadType.Create);
+        request.setPayloadObject(typeTemp);
 
-        assetTests.updateAsset();
-        assetTests.deleteAsset();
+        response = new Client().SendRequest(request);
 
-        org.updateOrganisationalUnit();
-        org.deleteOrganisationalUnit();
+        type = (AssetType)response.getPayloadObject();
 
-        assetTypeTests.updateAssetType();
-        assetTypeTests.deleteAssetType();
+        Asset assetTemp = new Asset();
+        assetTemp.setOrganisationalUnit(OU);
+        assetTemp.setQuantity(1000);
+        assetTemp.setAssetType(type);
+
+        request = new PayloadRequest();
+        request.setRequestPayloadType(RequestPayloadType.Create);
+        request.setPayloadObject(assetTemp);
+
+        response = new Client().SendRequest(request);
+
+        asset = (Asset)response.getPayloadObject();
     }
 
     /**
