@@ -156,8 +156,51 @@ public class TradeTests {
     }
 
     @Test
+    @Order(4)
     public void deleteTrade() {
+        Client client = new Client();
 
+        Trade trade = new Trade();
+        trade.setAssetType(type);
+        trade.setOrganisationalUnit(OU);
+        trade.setQuantity(10);
+        trade.setPrice(10);
+        trade.setTransactionType(TradeTransactionType.Buying);
+        trade.setStatus(TradeStatus.InMarket);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(type);
+        request.setRequestPayloadType(RequestPayloadType.Get);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        trade = (Trade) response.getPayloadObject();
+
+        request = new PayloadRequest();
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.Delete);
+
+        response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNull(response.getPayloadObject());
     }
 
     @Test
