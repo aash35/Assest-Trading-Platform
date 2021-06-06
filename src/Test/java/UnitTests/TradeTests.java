@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -107,7 +108,7 @@ public class TradeTests {
         trade.setStatus(TradeStatus.InMarket);
 
         PayloadRequest request = new PayloadRequest();
-        request.setPayloadObject(type);
+        request.setPayloadObject(trade);
         request.setRequestPayloadType(RequestPayloadType.Get);
 
         PayloadResponse response = null;
@@ -132,7 +133,7 @@ public class TradeTests {
         trade.setQuantity(20);
 
         request = new PayloadRequest();
-        request.setPayloadObject(type);
+        request.setPayloadObject(trade);
         request.setRequestPayloadType(RequestPayloadType.Update);
 
         response = null;
@@ -153,13 +154,48 @@ public class TradeTests {
         actual = trade.getQuantity();
         Assert.assertEquals(expected, actual);
     }
+
     @Test
     public void deleteTrade() {
 
     }
-    @Test
-    public void listTrades() {
 
+    @Test
+    @Order(3)
+    public void listTrades() {
+        Client client = new Client();
+
+        Trade trade = new Trade();
+        trade.setAssetType(type);
+        trade.setOrganisationalUnit(OU);
+        trade.setQuantity(20);
+        trade.setPrice(10);
+        trade.setTransactionType(TradeTransactionType.Buying);
+        trade.setStatus(TradeStatus.InMarket);
+
+        PayloadRequest request = new PayloadRequest();
+        request.setPayloadObject(trade);
+        request.setRequestPayloadType(RequestPayloadType.List);
+
+        PayloadResponse response = null;
+
+        try {
+            response = client.SendRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        List<Trade> trades = (List<Trade>)(List<?>)response.getPayloadObject();
+
+        Assert.assertNotNull(trades);
+
+        trade = trades.stream().filter(x -> x.getQuantity() == 20).findFirst().orElse(null);
+
+        Assert.assertNotNull(trade);
     }
 
     //need to make all the error cases
