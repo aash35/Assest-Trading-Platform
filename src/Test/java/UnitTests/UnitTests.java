@@ -1,3 +1,4 @@
+/*
 package UnitTests;
 import CAB302.Client.Client;
 import CAB302.Common.*;
@@ -21,9 +22,11 @@ import java.time.Instant;
 
 public class UnitTests {
 
-    /**
+    */
+/**
      * Pre-Test class declaration
-     */
+     *//*
+
     AssetType type;
     OrganisationalUnit OU;
     User user;
@@ -38,9 +41,11 @@ public class UnitTests {
         System.out.println("Started Server");
     }
 
-    /**
+    */
+/**
      * Test 0: Construct objects for AssetType, OrganisationalUnit, User and Asset classes.
-     */
+     *//*
+
     @BeforeEach @Test
     public void tradeTestData() {
         type = new AssetType();
@@ -63,9 +68,11 @@ public class UnitTests {
         //asset.setCreatedByUserID(user); TODO: FIX
     }
 
-    /**
+    */
+/**
      * Test 1: Construct a new AssetType object
-     */
+     *//*
+
     @Test
     public void newAssetTypeTest() throws IOException {
         Client client = new Client();
@@ -81,9 +88,11 @@ public class UnitTests {
         assertNull(response.getPayloadObject());
     }
 
-    /**
+    */
+/**
      * Test 2: Construct a new Organisational Unit object
-     */
+     *//*
+
     @Test
     public void newOrganisationalUnit() throws IOException {
         Client client = new Client();
@@ -98,9 +107,11 @@ public class UnitTests {
     }
 
 
-    /**
+    */
+/**
      * Test 3: Construct a new User object
-     */
+     *//*
+
     @Test
     public void newUser() throws IOException {
         Client client = new Client();
@@ -114,9 +125,11 @@ public class UnitTests {
         assertNull(response.getPayloadObject());
     }
 
-    /**
+    */
+/**
      * Test 4: Construct a new Asset object
-     */
+     *//*
+
     @Test
     public void newAsset() throws IOException {
         Client client = new Client();
@@ -130,9 +143,11 @@ public class UnitTests {
         assertNull(response.getPayloadObject());
     }
 
-    /**
+    */
+/**
      * Test 5: Construct a new legal buy type trade
-     */
+     *//*
+
     @Test
     public void newLegalBuy() throws IOException {
         Trade buyTrade = new Trade();
@@ -157,9 +172,11 @@ public class UnitTests {
         assertNull(response.getPayloadObject());
     }
 
-    /**
+    */
+/**
      * Test 6: Construct a new legal sell type trade.
-     */
+     *//*
+
     @Test
     public void newLegalSell() throws IOException {
         Trade sellTrade = new Trade();
@@ -183,9 +200,11 @@ public class UnitTests {
         assertNull(response.getPayloadObject());
     }
 
-    /**
+    */
+/**
      * Test 7: Construct an illegal buy type trade, ensure that processing this trade returns an error.
-     */
+     *//*
+
     @Test
     public void newIllegalBuy() {
         Trade buyTrade = new Trade();
@@ -207,9 +226,11 @@ public class UnitTests {
 
     }
 
-    /**
+    */
+/**
      * Test 8: Construct an illegal buy type trade, ensure that processing this trade returns an error.
-     */
+     *//*
+
     @Test
     public void newIllegalSell() {
         Trade sellTrade = new Trade();
@@ -231,9 +252,11 @@ public class UnitTests {
 
     }
 
-    /**
+    */
+/**
      * Test 9: Retrieve a list of current users
-     */
+     *//*
+
     @Test
     public void listCurrentUsers() throws IOException {
         Client client = new Client();
@@ -249,9 +272,11 @@ public class UnitTests {
         response.getPayloadObject();
     }
 
-    /**
+    */
+/**
      * Test 10: Retrieve a list of current organisational units
-     */
+     *//*
+
     @Test
     public void listCurrentOrganisationalUnits() throws IOException {
         Client client = new Client();
@@ -266,9 +291,11 @@ public class UnitTests {
         response.getPayloadObject();
     }
 
-    /**
+    */
+/**
      * Test 11: Retrieve a list of current asset types
-     */
+     *//*
+
     @Test
     public void listCurrentAssetTypes() throws IOException {
         Client client = new Client();
@@ -283,9 +310,11 @@ public class UnitTests {
         response.getPayloadObject();
     }
 
-    /**
+    */
+/**
      * Test 12: Retrieve a list of current assets
-     */
+     *//*
+
     @Test
     public void listCurrentAssets() throws IOException {
         Client client = new Client();
@@ -300,9 +329,11 @@ public class UnitTests {
         response.getPayloadObject();
     }
 
-    /**
+    */
+/**
      * Test 13: Retrieve a list of current trades
-     */
+     *//*
+
     @Test
     public void listCurrentTrades() throws IOException {
         Client client = new Client();
@@ -316,4 +347,4 @@ public class UnitTests {
 
         response.getPayloadObject();
     }
-}
+}*/

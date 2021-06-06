@@ -39,6 +39,7 @@ public class OrganisationalUnitTests {
         server.startServer();
 
         System.out.println("Started Server");
+        client = new Client();
     }
 
     /**
@@ -47,10 +48,9 @@ public class OrganisationalUnitTests {
     @Test
     @Order(1)
     public void createOrganisationalUnit() {
-        Client client = new Client();
-
         OrganisationalUnit type = new OrganisationalUnit();
         type.setUnitName("Unit Test Organisational Unit");
+        type.setAvailableCredit(5000);
 
         PayloadRequest request = new PayloadRequest();
         request.setPayloadObject(type);
@@ -76,7 +76,7 @@ public class OrganisationalUnitTests {
     public void getOrganisationalUnit() {
         PayloadRequest request = new PayloadRequest();
 
-        request.setPayloadObject(new OrganisationalUnit());
+        request.setPayloadObject(OU);
         request.setRequestPayloadType(RequestPayloadType.Get);
         PayloadResponse response = null;
 
@@ -85,8 +85,13 @@ public class OrganisationalUnitTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        response.getPayloadObject();
         Assert.assertNotNull(response);
+
+        Assert.assertNotNull(response.getPayloadObject());
+
+        OU = (CAB302.Common.OrganisationalUnit)response.getPayloadObject();
+
+        Assert.assertNotNull(OU.id);
     }
 
     @Test
@@ -161,17 +166,18 @@ public class OrganisationalUnitTests {
             e.printStackTrace();
         }
 
+        payloadResponse.getPayloadObject();
+
         Assert.assertNotNull(payloadResponse);
 
         Assert.assertNotNull(payloadResponse.getPayloadObject());
 
         List<OrganisationalUnit> types = (List<OrganisationalUnit>)(List<?>)payloadResponse.getPayloadObject();
 
-        Assert.assertNotNull(types);
+        OU = types.stream().filter(x -> x.getUnitName().equals("Unit Test Organisational Unit - Updated")).findFirst().orElse(null);
 
-        type = types.stream().filter(x -> x.getUnitName() == "Unit Test Organisational Unit - Updated").findFirst().orElse(null);
-
-        Assert.assertNotNull(type);
+        Assert.assertNotNull(payloadResponse);
+        Assert.assertNotNull(OU.id);
 
     }
 

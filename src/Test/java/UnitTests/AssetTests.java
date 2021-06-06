@@ -35,13 +35,16 @@ public class AssetTests {
 
     public static AssetType assetType;
 
+    public static OrganisationalUnitTests org;
+
+    public static AssetTypeTests assetTypeTest;
+
 
     @AfterAll
     public static void afterAll() {
-        OrganisationalUnitTests org = new OrganisationalUnitTests();
+
         org.deleteOrganisationalUnit();
 
-        AssetTypeTests assetTypeTest = new AssetTypeTests();
         assetTypeTest.deleteAssetType();
     }
 
@@ -57,11 +60,11 @@ public class AssetTests {
 
         System.out.println("Started Server");
 
-        OrganisationalUnitTests org = new OrganisationalUnitTests();
+        org = new OrganisationalUnitTests();
         org.createOrganisationalUnit();
         OU = org.OU;
 
-        AssetTypeTests assetTypeTest = new AssetTypeTests();
+        assetTypeTest = new AssetTypeTests();
         assetTypeTest.createAssetType();
         assetType = assetTypeTest.type;
     }

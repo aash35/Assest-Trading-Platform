@@ -10,6 +10,7 @@ import CAB302.Common.Enums.TradeTransactionType;
 import CAB302.Common.Helpers.SHA256HashHelper;
 import CAB302.Common.ServerPackages.PayloadRequest;
 import CAB302.Common.ServerPackages.PayloadResponse;
+import CAB302.Common.ServerPackages.RuntimeSettings;
 import CAB302.Server.Server;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,11 +29,20 @@ public class TradeTests {
     private static Client client;
     public static AssetType type;
     public static OrganisationalUnit OU;
-    public static User user;
+    public static Trade trader;
     public static Asset asset;
 
-    @Before
-    public void preTestConstruction() {
+
+
+    @BeforeAll
+    public static void before() {
+        ClientSettings clientSettings = new ClientSettings();
+
+        Server server = new Server(RuntimeSettings.Port);
+
+        server.startServer();
+
+        System.out.println("Started Server");
         client = new Client();
 
         OrganisationalUnitTests ouTests = new OrganisationalUnitTests();
@@ -42,17 +52,6 @@ public class TradeTests {
         AssetTypeTests assetTypeTests = new AssetTypeTests();
         assetTypeTests.createAssetType();
         type = assetTypeTests.type;
-    }
-
-    @BeforeAll
-    public static void before() {
-        ClientSettings clientSettings = new ClientSettings();
-
-        Server server = new Server(8080);
-
-        server.startServer();
-
-        System.out.println("Started Server");
     }
 
     @AfterAll
@@ -95,6 +94,7 @@ public class TradeTests {
         Assert.assertNotNull(response);
 
         Assert.assertNotNull(response.getPayloadObject());
+        trader = (Trade) response.getPayloadObject();
     }
 
     @Test
@@ -102,16 +102,8 @@ public class TradeTests {
     public void updateTrade() {
         Client client = new Client();
 
-        Trade trade = new Trade();
-        trade.setAssetType(type);
-        trade.setOrganisationalUnit(OU);
-        trade.setQuantity(10);
-        trade.setPrice(10);
-        trade.setTransactionType(TradeTransactionType.Buying);
-        trade.setStatus(TradeStatus.InMarket);
-
         PayloadRequest request = new PayloadRequest();
-        request.setPayloadObject(trade);
+        request.setPayloadObject(trader);
         request.setRequestPayloadType(RequestPayloadType.Get);
 
         PayloadResponse response = null;
@@ -126,17 +118,17 @@ public class TradeTests {
 
         Assert.assertNotNull(response.getPayloadObject());
 
-        trade = (Trade)response.getPayloadObject();
+        trader = (Trade)response.getPayloadObject();
 
         int expected = 10;
-        int actual = trade.getQuantity();
+        int actual = trader.getQuantity();
 
         Assert.assertEquals(expected,actual);
 
-        trade.setQuantity(20);
+        trader.setQuantity(20);
 
         request = new PayloadRequest();
-        request.setPayloadObject(trade);
+        request.setPayloadObject(trader);
         request.setRequestPayloadType(RequestPayloadType.Update);
 
         response = null;
@@ -151,10 +143,10 @@ public class TradeTests {
 
         Assert.assertNotNull(response.getPayloadObject());
 
-        trade = (Trade)response.getPayloadObject();
+        trader = (Trade)response.getPayloadObject();
 
         expected = 20;
-        actual = trade.getQuantity();
+        actual = trader.getQuantity();
         Assert.assertEquals(expected, actual);
     }
 
@@ -163,16 +155,8 @@ public class TradeTests {
     public void deleteTrade() {
         Client client = new Client();
 
-        Trade trade = new Trade();
-        trade.setAssetType(type);
-        trade.setOrganisationalUnit(OU);
-        trade.setQuantity(10);
-        trade.setPrice(10);
-        trade.setTransactionType(TradeTransactionType.Buying);
-        trade.setStatus(TradeStatus.InMarket);
-
         PayloadRequest request = new PayloadRequest();
-        request.setPayloadObject(type);
+        request.setPayloadObject(trader);
         request.setRequestPayloadType(RequestPayloadType.Get);
 
         PayloadResponse response = null;
@@ -187,10 +171,10 @@ public class TradeTests {
 
         Assert.assertNotNull(response.getPayloadObject());
 
-        trade = (Trade) response.getPayloadObject();
+        trader = (Trade) response.getPayloadObject();
 
         request = new PayloadRequest();
-        request.setPayloadObject(trade);
+        request.setPayloadObject(trader);
         request.setRequestPayloadType(RequestPayloadType.Delete);
 
         response = null;
@@ -211,16 +195,8 @@ public class TradeTests {
     public void listTrades() {
         Client client = new Client();
 
-        Trade trade = new Trade();
-        trade.setAssetType(type);
-        trade.setOrganisationalUnit(OU);
-        trade.setQuantity(20);
-        trade.setPrice(10);
-        trade.setTransactionType(TradeTransactionType.Buying);
-        trade.setStatus(TradeStatus.InMarket);
-
         PayloadRequest request = new PayloadRequest();
-        request.setPayloadObject(trade);
+        request.setPayloadObject(trader);
         request.setRequestPayloadType(RequestPayloadType.List);
 
         PayloadResponse response = null;
@@ -239,9 +215,9 @@ public class TradeTests {
 
         Assert.assertNotNull(trades);
 
-        trade = trades.stream().filter(x -> x.getQuantity() == 20).findFirst().orElse(null);
+        trader = trades.stream().filter(x -> x.getQuantity() == 20).findFirst().orElse(null);
 
-        Assert.assertNotNull(trade);
+        Assert.assertNotNull(trader);
     }
 
     //need to make all the error cases
