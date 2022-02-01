@@ -1,5 +1,5 @@
-# CAB302_Major_Project
-Assignment for CAB302
+# Assest Trading Platform - Java
+Assignment for CAB302 - Software Development
 
 
 User: admin
