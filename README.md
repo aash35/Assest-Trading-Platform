@@ -1,7 +1,7 @@
 ## Asset Trading Platform - Java
 CAB302 - Software Development
 
-### Technologies
+### Languages/Frameworks
 - Java
 - Swing
 - Hibernate
