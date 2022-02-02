@@ -10,9 +10,6 @@ The purpose of this program is to create an internal assest trading system for a
 **An example** -If a member of the Operations staff sold 2 hours of server time and the Development team bought 2 hours of server time. The server would run a script to check if any buy/sell's could be resovled and if so would trade the required resources between the two departments.
 
 
-User: admin
-Password: admin
-
 ## Deployment 
 ### Database Setup
 The application comes pre-built with a database connection that is hosted on an Amazon Lightsail instance. This will have all the details you will need to connect and be up running in minutes. This comes preloaded with an admin account with the credential’s admin admin. We would strongly recommend changing this.
@@ -20,6 +17,10 @@ All connects are passed through the ORM, hibernate which controls and deals with
 These settings can be changed inside the Hibernate.xml and will need to be recompiled. The reason these are not included in the config file is to ensure that end users can not as easily see the connection string and connect directly to the datastore.
 Once these connections are changed, the application’s database will be automatically built by Hibernate adding all the required indexes, uniqueness constraints and relationships. This is actioned on the first start-up of the application where the database is not present at the connection’s location.
 For this application’s provided database, the Lightsail instance is running a MariaDB with nightly backups.
+
+**Default Credentials:**
+- **User** - admin
+- **Password** - admin
 
 ### Java Frameworks
 The application requires Java to be installed. A version higher than Java 15 is essential for the program’s execution. Our recommendation is running AdoptOpenJDK 16 which is publicly available, however other JREs or JDK’s that target version 15 will be fine. Both are required for the execution of either the client or server.
