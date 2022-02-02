@@ -6,8 +6,8 @@ CAB302 - Software Development
 - Swing
 - Hibernate
 
-The purpose of this program is to create an internal asset trading system for an organisation. Once the admin has set up the required resource types, organisation branches, organisations resource allocation and so on, then different employees within the organisation will be able to trade resources (such as time, computing power, lab space etc.) with the inbuilt credit system.
-**An example** -If a member of the Operations staff sold 2 hours of the server time and the Development team bought 2 hours of server time. The server would run a script to check if any buy/sells could be resolved and if so would trade the required resources between the two departments.
+The purpose of this program is to create an internal asset trading system for an organisation. Once the admin has set up the required resource types, organisation branches, organisations resource allocation and so on, then different employees within the organisation will be able to trade resources (such as time, computing power, lab space etc.) with the inbuilt credit system.  
+**An example** - If a member of the Operations staff sold 2 hours of the server time and the Development team bought 2 hours of server time. The server would run a script to check if any buy/sells could be resolved and if so would trade the required resources between the two departments.
 
 
 ## Deployment 
