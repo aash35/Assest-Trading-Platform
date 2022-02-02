@@ -1,6 +1,14 @@
 ## Assest Trading Platform - Java
 CAB302 - Software Development
 
+### Technologies
+- Java
+- Swing
+- Hibernate
+
+The purpose of this program is to create an internal assest trading system for an orginisation. Once the admin has setup the required resource types, organisation branches, organisations resource allocation and so on then different employees within the organisation will be able to trade resources (such as time, computing power, lab space etc.) with the inbuilt credit system.
+**An example** -If a member of the Operations staff sold 2 hours of server time and the Development team bought 2 hours of server time. The server would run a script to check if any buy/sell's could be resovled and if so would trade the required resources between the two departments.
+
 
 User: admin
 Password: admin
@@ -12,7 +20,8 @@ All connects are passed through the ORM, hibernate which controls and deals with
 These settings can be changed inside the Hibernate.xml and will need to be recompiled. The reason these are not included in the config file is to ensure that end users can not as easily see the connection string and connect directly to the datastore.
 Once these connections are changed, the application’s database will be automatically built by Hibernate adding all the required indexes, uniqueness constraints and relationships. This is actioned on the first start-up of the application where the database is not present at the connection’s location.
 For this application’s provided database, the Lightsail instance is running a MariaDB with nightly backups.
-Java Frameworks
+
+### Java Frameworks
 The application requires Java to be installed. A version higher than Java 15 is essential for the program’s execution. Our recommendation is running AdoptOpenJDK 16 which is publicly available, however other JREs or JDK’s that target version 15 will be fine. Both are required for the execution of either the client or server.
 The client application simply needs to be double clicked once the framework is installed the application will load. It is essential that the settings are set correctly in the config file for both the server and the client to ensure they connect correctly. The server can be run on the client’s machine. The only requirement for the server is the Java Framework preinstallation and the port specified in the server config file being open via your firewall if running outside of the client machine.
 The application binds to the interface of the server and accepts incoming requests and returns them on this port.
